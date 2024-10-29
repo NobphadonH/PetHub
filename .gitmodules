@@ -1,0 +1,3 @@
+[submodule "pethub-website"]
+	path = pethub-website
+	url = https://github.com/KaEnds/pethub-website.git
