@@ -7,15 +7,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        'blue': '#1fb6ff',
-        'purple': '#7e5bef',
-        'pink': '#ff49db',
-        'orange': '#ff7849',
-        'green': '#13ce66',
-        'yellow': '#ffc82c',
-        'gray-dark': '#273444',
-        'gray': '#8492a6',
-        'gray-light': '#d3dce6',
+        'pethub-color1': '#E16200',
+        'pethub-color2': '#EB8B30',
+        'pethub-color3': '#F3A62A',
+        'pethub-color4': '#F69A5E',
+        'pethub-color5': '#FEBE98',
+        'pethub-color6': '#10375C',
+
       },
     },
   },
