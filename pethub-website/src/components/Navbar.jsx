@@ -24,8 +24,9 @@ export default function Navbar() {
     }, []);
 
     return (
+        <>
         <div className="fixed top-0 left-0 right-0 dropdown z-50">
-            <div className="navbar border-b-2 bg-white px-3 md:px-20 xl:40">
+            <div className="navbar border-b-2 bg-white px-4 md:px-20 xl:px-40">
                 <div className="xl:hidden md:mr-5">
                     <a href="/"><img src={logo} alt="logo" width={40}/></a>
                 </div>
@@ -48,7 +49,7 @@ export default function Navbar() {
                             isDropdownOpen ? 'opacity-100' : 'opacity-0 hidden'
                         }`}
                     >
-                        <li><a href="/pethub-website/" className="block w-full text-center text-md">Home</a></li>
+                        <li><a href="/pethub-website/home" className="block w-full text-center text-md">Home</a></li>
                         <li><a href="/pethub-website/profile" className="block w-full text-center text-md">Profile</a></li>
                         <li><a href="/pethub-website/about" className="block w-full text-center text-md">About</a></li>
                         <li><a href="/pethub-website/contact" className="block w-full text-center text-md">Contact</a></li>
@@ -58,8 +59,8 @@ export default function Navbar() {
 
                 <div className="navbar-start text-pethub-color1">
                     <ul className="gap-10 px-1 items-center hidden xl:flex">
-                        <li><a href="/pethub-website/"><img src={logo} alt="logo" width={40}/></a></li>
-                        <li><a href="/pethub-website/" className="text-pethub-color6">Home</a></li>
+                        <li><a href="/pethub-website/home"><img src={logo} alt="logo" width={40}/></a></li>
+                        <li><a href="/pethub-website/home" className="text-pethub-color6">Home</a></li>
                         <li><a href="/pethub-website/profile">Profile</a></li>
                         <li><a href="/pethub-website/about">About</a></li>
                         <li><a href="/pethub-website/contact">Contact</a></li>
@@ -69,11 +70,12 @@ export default function Navbar() {
                 <div className="navbar-end">
                     <ul className="flex gap-10 px-1 items-center">
                         <li><a href="/pethub-website/partner" className="text-pethub-color6 hidden xl:block">มาเป็น partner กับเรา</a></li>
-                        <li><a href="/pethub-website/signin" className="btn bg-pethub-color1 text-white">Sign in</a></li>
+                        <li><a href="/pethub-website/signin" className="btn bg-pethub-color1 text-white font-normal text-xs">Sign in</a></li>
                     </ul>
                 </div>
             </div>
         </div>
+        </>
     );
 }
 
