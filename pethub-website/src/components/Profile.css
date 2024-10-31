@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.profile{
+    display: flex;
+}
+.frameprofile{
+    height:400px;
+    width:300px;
+    margin-left: 15%;
+    margin-top: 180px;
+    margin-right: 0;
+    background-image: url("C:\Users\Asus\OneDrive\Documents\GitHub\PetHub\pethub-website\src\assets\Rectangle 4949.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto;
+    border: 1px solid #ccc; /* แสดงขอบเพื่อให้เห็นชัดเจน */
+}
+.frameprofile img{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    width: 250px;
+    height: 300px;
+    object-position: 5% 40px;
+    
+}
+.profileinfo{
+    
+    margin-top: 240px;
+    width: 50%;
+    height:300px;
+    margin-left: 20px;
+    border: 1px solid #ccc; /* แสดงขอบเพื่อให้เห็นชัดเจน */
+}
+.profileinfo button{
+    margin-left: 700px;
+    margin-top: 30px;
+}
+.petprofile{
+    height: 80px;
+    border: 1px solid #ccc;
+    display: flex;
+    text-align: left;
+    margin-left: 15%;
+    margin-top: 50px;
+    
+}
+.petframeprofile{
+    height:400px;
+    width:300px;
+    margin-left: 15%;
+    margin-top:0px;
+    margin-right: 0;
+    background-image: url("C:\Users\Asus\OneDrive\Documents\GitHub\PetHub\pethub-website\src\assets\Rectangle 4949.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: auto;
+    border: 1px solid #ccc; /* แสดงขอบเพื่อให้เห็นชัดเจน */
+}
+.petframeprofile img{
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    width: 250px;
+    height: 300px;
+    object-position: 5% 40px;
+    
+}
+.petprofileinfo{
+    
+    margin-top: 40px;
+    width: 50%;
+    height:300px;
+    margin-left: 20px;
+    border: 1px solid #ccc; /* แสดงขอบเพื่อให้เห็นชัดเจน */
+}
+.petprofileinfo button{
+    margin-left: 700px;
+    margin-top: 30px;
+}
+.detail{
+    width: 50%;
+}
