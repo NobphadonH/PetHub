@@ -26,7 +26,7 @@ export async function connectToDatabase() {
               reject(new Error('SSH Tunnel creation failed'));
             }
   
-            const connection = mysql.createConnection({
+            const connection = mysql.createPool({
               ...dbConfig,
               stream
             });
