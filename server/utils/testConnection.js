@@ -2,11 +2,11 @@ import { connectToDatabase } from "./dbConnection.js"; // Adjust the path if nee
 
 const testF = async () => {
   try {
-    const { pool, sshClient } = await connectToDatabase();
+    const { dbpool, sshClient } = await connectToDatabase();
     console.log("Connection to RDS via SSH tunnel established successfully.");
 
     // Using the pool to get a connection and run a query
-    pool.getConnection((err, connection) => {
+    dbpool.getConnection((err, connection) => {
       if (err) {
         console.error("Error getting connection from pool:", err);
         sshClient.end();
@@ -30,6 +30,7 @@ const testF = async () => {
     console.error("Failed to connect to database:", error);
   }
 };
+
 
 // Call the function
 testF();

@@ -1,4 +1,4 @@
-import mysql from "mysql";
+import mysql from "mysql2";
 import { Client } from "ssh2";
 import { sshConfig } from "../config/sshConfig.js";
 import { dbConfig } from "../config/dbConfig.js";
@@ -28,19 +28,22 @@ export async function connectToDatabase() {
             }
 
             // Use connection pool without calling `.connect()`
-            const pool = mysql.createPool({
+            const dbpool = mysql.createPool({
               ...dbConfig,
               stream,
               connectionLimit: 10,
+              waitForConnections: true,
               connectTimeout: 20000, // Set to a higher value
-              acquireTimeout: 20000, // Set to a higher value
             });
 
+    
             console.log("Connected to RDS through SSH tunnel");
-            resolve({ pool, sshClient });
+            resolve({ dbpool, sshClient });
           }
         );
       })
       .connect(sshConfig);
   });
 }
+
+
