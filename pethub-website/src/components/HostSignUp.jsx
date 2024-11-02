@@ -23,7 +23,7 @@ function PasswordInput() {
                     <input
                         type={showPassword ? 'text' : 'password'}
                         placeholder="ใส่รหัสผ่านของคุณที่นี่"
-                        className="input input-bordered w-full max-w-sm pr-10"
+                        className="input input-bordered w-full max-w-sm pr-10 drop-shadow-sm focus:outline-none focus:border-pethub-color4"
                     />
                     <button
                         type="button"
@@ -53,7 +53,7 @@ function PasswordInput() {
                     <input
                         type={showConfirmPassword ? 'text' : 'password'}
                         placeholder="ยืนยันรหัสผ่านของคุณที่นี่"
-                        className="input input-bordered w-full max-w-sm pr-10"
+                        className="input input-bordered w-full max-w-sm pr-10 drop-shadow-sm focus:outline-none focus:border-pethub-color4"
                     />
                     <button
                         type="button"
@@ -89,19 +89,19 @@ function HostSignUp() {
                         <div className="label">
                             <span className="label-text">ที่อยู่อีเมล</span>
                         </div>
-                        <input type="text" placeholder="ใส่อีเมลของคุณที่นี่" className="input input-bordered w-full max-w-sm" />
+                        <input type="text" placeholder="ใส่อีเมลของคุณที่นี่" className="input input-bordered w-full max-w-sm drop-shadow-sm focus:outline-none focus:border-pethub-color4" />
                     </label>
                     <label className="form-control w-full max-w-sm mt-2">
                         <div className="label">
                             <span className="label-text">ชื่อ</span>
                         </div>
-                        <input type="text" placeholder="ใส่ชื่อของคุณที่นี่" className="input input-bordered w-full max-w-sm" />
+                        <input type="text" placeholder="ใส่ชื่อของคุณที่นี่" className="input input-bordered w-full max-w-sm drop-shadow-sm focus:outline-none focus:border-pethub-color4" />
                     </label>
                     <label className="form-control w-full max-w-sm mt-2">
                         <div className="label">
                             <span className="label-text">นามสกุล</span>
                         </div>
-                        <input type="text" placeholder="ใส่นามสกุลของคุณที่นี่" className="input input-bordered w-full max-w-sm" />
+                        <input type="text" placeholder="ใส่นามสกุลของคุณที่นี่" className="input input-bordered w-full max-w-sm drop-shadow-sm focus:outline-none focus:border-pethub-color4" />
                     </label>
                     <PasswordInput />
                     <button className="w-full max-w-sm bg-pethub-color1 text-white border border-pethub-color1 mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">

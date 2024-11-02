@@ -1,138 +1,173 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { connectToDatabase } from "../utils/dbConnection.js";
+
 
 export const signin = async (req, res) => {
-    try {
-      const { username, password, brokerID } = req.body;
-      dbpool.getConnection(async (err, connection) => {
-        if (err) throw err;
-        connection.query(
-          "SELECT * FROM Users WHERE Username = ? AND BrokerID = ?",
-          [username, brokerID],
-          async (err, rows) => {
-            if (err) throw err;
-            const user = rows[0];
-  
-            //console.log(rows)
-            //connection.release()
-            if (!user) {
-              return res
-                .status(400)
-                .json({ error: "Invalid username or password or brokerID" });
-            }
-  
-            // Compare passwords
-            const isPasswordCorrect = await bcrypt.compare(
-              password,
-              user["Password"]
-            );
-  
-            if (!isPasswordCorrect) {
-              return res
-                .status(400)
-                .json({ error: "Invalid username or password or brokerID" });
-            }
-  
-            // Login successful, generate token and set cookie
-            //constgenerateTokenAndSetCookie(user['UserID'], res); // Call the function with userId
-  
-            const userID = user["UserID"];
-  
-            // Respond with user information
-            const token = jwt.sign({ userID }, "Bhun-er", {
-              expiresIn: "15d",
-            });
-  
-            console.log("login success");
-            res
-              .cookie("jwt", token, {
-                maxAge: 15 * 24 * 60 * 60 * 1000, // MS
-                httpOnly: true, // prevent XSS attacks cross-site scripting attacks
-                sameSite: "strict", // CSRF attacks cross-site request forgery attacks
-                secure: process.env.NODE_ENV !== "development",
-              })
-              .status(200)
-              .json({ token });
+  try {
+    const { username, email, password} = req.body;
+    const { dbpool, sshClient } = await connectToDatabase();
+    
+    console.log("hello");
+
+    dbpool.getConnection(async (err, connection) => {
+      if (err) {
+        console.error("Error getting connection from pool:", err);
+        sshClient.end();
+        return;
+      }
+
+      // Update the query to check for either username or email
+      connection.query(
+        "SELECT * FROM Users WHERE (username = ?)",
+        [username],
+        async (err, rows) => {
+          if (err) throw err;
+          const user = rows[0];
+
+          if (!user) {
+            console.log("query empty");
+            return res
+              .status(400)
+              .json({ error: "Invalid username, email, or password" });
           }
-        );
-      });
-    } catch (error) {
-      console.log("Error in login controller", error.message);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  };
-  
-  // signout controller not finish wait for kennn
-  export const signout = (req, res) => {
-    try {
-      console.log(req);
-      res.cookie("user-auth", "", { maxAge: 0 });
-      res.status(200).json({ message: "Logged out successfully" });
-    } catch (error) {
-      console.log("Error in logout controller", error.message);
-      res.status(500).json({ error: "Internal Server Error" });
-    }
-  };
-  
-  export const signinStaff = (req, res) => {
-    try {
-      const { username, password } = req.body;
-      dbpool.getConnection(async (err, connection) => {
-        if (err) throw err;
-        connection.query(
-          "SELECT * FROM Broker_Staffs WHERE Username = ? ",
-          [username],
-          async (err, rows) => {
-            if (err) throw err;
-            const staff = rows[0];
-  
-            console.log(rows);
-            //connection.release()
-            if (!staff) {
-              return res
-                .status(400)
-                .json({ error: "Invalid username or password " });
-            }
-  
-            // Compare passwords
-            const isPasswordCorrect = await bcrypt.compare(
-              password,
-              staff["Password"]
-            );
-  
-            if (!isPasswordCorrect) {
-              console.log("wrong password");
-              console.log(staff["Password"]);
-              return res
-                .status(400)
-                .json({ error: "Invalid username or password" });
-            }
-  
-            // Login successful, generate token and set cookie
-            //constgenerateTokenAndSetCookie(user['UserID'], res); // Call the function with userId
-  
-            const staffID = staff["StaffID"];
-  
-            // Respond with user information
-            const token = jwt.sign({ staffID }, "Bhun-er-staff", {
-              expiresIn: "15d",
-            });
-  
-            console.log("login success");
-            res
-              .cookie("jwt", token, {
-                maxAge: 15 * 24 * 60 * 60 * 1000, // MS
-                httpOnly: true, // prevent XSS attacks cross-site scripting attacks
-                sameSite: "strict", // CSRF attacks cross-site request forgery attacks
-                secure: process.env.NODE_ENV !== "development",
-              })
-              .status(200)
-              .json({ token });
+
+          // Compare passwords
+          const isPasswordCorrect = await bcrypt.compare(
+            password,
+            user["password"]
+          );
+
+          if (!isPasswordCorrect) {
+            return res
+              .status(400)
+              .json({ error: "Invalid username, email, or password" });
           }
-        );
-      });
+
+          // Login successful, generate token and set cookie
+          const userID = user["userID"];
+          const userRole = user["userRole"];  // Retrieve userRole from query result
+
+          const token = jwt.sign({ userID, userRole }, "Bhun-er", {
+            expiresIn: "15d",
+          });
+
+          console.log("login success");
+          res
+            .cookie("jwt", token, {
+              maxAge: 15 * 24 * 60 * 60 * 1000,
+              httpOnly: true,
+              sameSite: "strict",
+              secure: process.env.NODE_ENV !== "development",
+            })
+            .status(200)
+            .json({ token, userRole });  // Add userRole to response
+
+            connection.release(); // Release the connection back to the pool
+            sshClient.end();
+            console.log("Connections closed.");
+        }
+      );
+    });
+  } catch (error) {
+    console.log("Error in login controller", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+  
+export const signout = (req, res) => {
+  try {
+    console.log(req);
+    res.cookie("user-auth", "", { maxAge: 0 });
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.log("Error in logout controller", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+  
+export const signup = async (req, res) => {
+  try {
+    const { username, fName, lName, email, password, address, phone, userRole } = req.body;
+    const { dbpool, sshClient } = await connectToDatabase();
+
+    if (!username || !email || !password) {
+      return res.status(400).json({ error: "Username, email, and password are required." });
+    }
+
+    dbpool.getConnection(async (err, connection) => {
+      if (err) {
+        console.error("Error getting connection from pool:", err);
+        sshClient.end();
+        return;
+      }
+
+      // const query = `
+      //        INSERT INTO Users (username, fName, lName, email, password, address, phone, userRole) 
+      //        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      //      `;
+
+      // const hashedPassword = await bcrypt.hash(password, 10);
+      // const values = [username, fName, lName, email, hashedPassword, address, phone, userRole];
+
+      // connection.query(query, values, (err, result) => {
+      //   //connection.release(); // Release the connection back to the pool
+
+      //   if (err) {
+      //     console.error("Error executing query:", err);
+      //     connection.release(); // Ensure connection is released on error
+      //     sshClient.end();
+      //     return res.status(500).json({ error: "Query execution failed" });
+      //   }
+        
+      //   connection.release();
+      //   sshClient.end();
+      //   res.status(201).json({ message: "User registered successfully" });
+      // });
+
+
+
+
+        // Check if username or email already exists
+      connection.query(
+        "SELECT * FROM Users WHERE Username = ? OR Email = ?",
+        [username, email],
+        async (err, rows) => {
+          if (err) throw err;
+  
+          if (rows.length > 0) {
+            return res.status(400).json({ error: "Username or email already exists" });
+          }
+          const hashedPassword = await bcrypt.hash(password, 10);
+  
+            // Insert new user without specifying userID (it will auto-increment)
+          const query = `
+            INSERT INTO Users (username, fName, lName, email, password, address, phone, userRole) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          `;
+          const values = [username, fName, lName, email, hashedPassword, address, phone, userRole];
+  
+          connection.query(query, values, (err, result) => {
+            //connection.release(); // Release the connection back to the pool
+  
+            if (err) {
+              console.error("Error executing query:", err);
+              connection.release(); // Ensure connection is released on error
+              sshClient.end();
+              return res.status(500).json({ error: "Query execution failed" });
+            }
+            
+            connection.release(); // Release the connection back to the pool
+            sshClient.end();
+            console.log("Connections closed.");
+            res.status(201).json({ message: "User registered successfully" });
+          });
+        }
+      );
+    });
     } catch (error) {
-      console.log("Error in login controller", error.message);
+      console.log("Error in register controller", error.message);
       res.status(500).json({ error: "Internal Server Error" });
     }
   };

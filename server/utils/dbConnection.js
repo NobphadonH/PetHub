@@ -1,20 +1,21 @@
-import mysql from 'mysql';
-import { Client } from 'ssh2';
-import { sshConfig } from '../config/sshConfig.js';
-import { dbConfig } from '../config/dbConfig.js';
+import mysql from "mysql2";
+import { Client } from "ssh2";
+import { sshConfig } from "../config/sshConfig.js";
+import { dbConfig } from "../config/dbConfig.js";
 
 export async function connectToDatabase() {
-    const sshClient = new Client();
-  
-    const sshTunnelConfig = {
-      srcHost: '127.0.0.1',  // Localhost
-      srcPort: 3306,         // MySQL default port
-      dstHost: dbConfig.host, // RDS endpoint
-      dstPort: 3306          // RDS MySQL port
-    };
-  
-    return new Promise((resolve, reject) => {
-      sshClient.on('ready', () => {
+  const sshClient = new Client();
+
+  const sshTunnelConfig = {
+    srcHost: "127.0.0.1", // Localhost
+    srcPort: 3306, // MySQL default port
+    dstHost: dbConfig.host, // RDS endpoint
+    dstPort: 3306, // RDS MySQL port
+  };
+
+  return new Promise((resolve, reject) => {
+    sshClient
+      .on("ready", () => {
         sshClient.forwardOut(
           sshTunnelConfig.srcHost,
           sshTunnelConfig.srcPort,
@@ -23,24 +24,26 @@ export async function connectToDatabase() {
           (err, stream) => {
             if (err) {
               sshClient.end();
-              reject(new Error('SSH Tunnel creation failed'));
+              reject(new Error("SSH Tunnel creation failed"));
             }
-  
-            const connection = mysql.createPool({
+
+            // Use connection pool without calling `.connect()`
+            const dbpool = mysql.createPool({
               ...dbConfig,
-              stream
+              stream,
+              connectionLimit: 10,
+              waitForConnections: true,
+              connectTimeout: 20000, // Set to a higher value
             });
-  
-            connection.connect(error => {
-              if (error) {
-                reject(error);
-              } else {
-                console.log('Connected to RDS through SSH tunnel');
-                resolve({ connection, sshClient });
-              }
-            });
+
+    
+            console.log("Connected to RDS through SSH tunnel");
+            resolve({ dbpool, sshClient });
           }
         );
-      }).connect(sshConfig);
-    });
-  }
+      })
+      .connect(sshConfig);
+  });
+}
+
+
