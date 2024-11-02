@@ -1,4 +1,4 @@
-import Navbar from "./Navbar"
+import Navbar from "./Utils/Navbar"
 import { useState } from 'react';
 
 function TypeChoiceBoxes() {
@@ -180,9 +180,9 @@ function Basics() {
             <Navbar />
             <div className="flex flex-col mt-24">
                 <div className="text-black font-bold text-3xl mt-4">ลงทะเบียนโรงแรมสัตว์เลี้ยงของคุณให้สมบูรณ์แบบบน PetHub</div>
-                <div class="flex justify-center">
-                    <div class="max-w-xl mx-auto">
-                        <div class="text-gray-800 text-base mt-4">
+                <div className="flex justify-center">
+                    <div className="max-w-xl mx-auto">
+                        <div className="text-gray-800 text-base mt-4">
                             กรุณากรอกแบบฟอร์มด้านล่าง ข้อมูลทุกช่องจำเป็นต้องกรอก
                         </div>
                     </div>
