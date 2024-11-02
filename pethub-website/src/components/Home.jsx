@@ -54,7 +54,18 @@ function Home() {
         setTimeout(() => {setLoading(false)}, 1000)
     }, [pageselect])
 
-    console.log(loading)
+    const districts = [
+        "เขตพระนคร", "เขตดุสิต", "เขตหนองจอก", "เขตบางรัก", "เขตบางเขน",
+        "เขตบางกะปิ", "เขตปทุมวัน", "เขตป้อมปราบศัตรูพ่าย", "เขตพระโขนง", "เขตมีนบุรี",
+        "เขตลาดกระบัง", "เขตยานนาวา", "เขตสัมพันธวงศ์", "เขตพญาไท", "เขตธนบุรี",
+        "เขตบางกอกใหญ่", "เขตห้วยขวาง", "เขตคลองสาน", "เขตตลิ่งชัน", "เขตบางกอกน้อย",
+        "เขตบางขุนเทียน", "เขตภาษีเจริญ", "เขตหนองแขม", "เขตราษฎร์บูรณะ", "เขตราชเทวี",
+        "เขตบางพลัด", "เขตดินแดง", "เขตบึงกุ่ม", "เขตสาทร", "เขตบางซื่อ",
+        "เขตจตุจักร", "เขตบางคอแหลม", "เขตประเวศ", "เขตคลองเตย", "เขตสวนหลวง",
+        "เขตจอมทอง", "เขตดอนเมือง", "เขตราชบูรณะ", "เขตหลักสี่", "เขตสายไหม",
+        "เขตคันนายาว", "เขตสะพานสูง", "เขตวังทองหลาง", "เขตคลองสามวา", "เขตบางนา",
+        "เขตทวีวัฒนา", "เขตทุ่งครุ", "เขตบางบอน"
+    ];
 
   return (
     <div>
@@ -76,13 +87,17 @@ function Home() {
                     <option disabled selected style={{ color: 'gray' }}>ประเภทสัตว์</option>
                     <option style={{ color: 'black' }}>สุนัข</option>
                     <option style={{ color: 'black' }}>แมว</option>
-                    <option style={{ color: 'black' }}>
-                        <input type="text" placeholder="สถานที่ตั้ง" className="input input-bordered w-full relative z-20 shadow-xl" />
-                    </option>
                 </select>
             </div>
             <div className="hidden md:block col-span-4">
-                <input type="text" placeholder="สถานที่ตั้ง" className="input input-bordered w-full relative z-20 shadow-xl" />
+                <select className="select select-bordered w-full max-w-xs input-shadow" style={{ color: 'gray' }}>
+                    <option disabled selected style={{ color: 'gray' }}>สถานที่ตั้ง</option>
+                    {districts.map((district, index) => (
+                        <option key={index} style={{ color: 'black' }}>
+                            {district}
+                        </option>
+                    ))}
+                </select>
             </div>
             <div className="hidden md:block col-span-3">
                 <select className="select select-bordered w-full max-w-xs input-shadow" style={{ color: 'gray' }}>
@@ -118,6 +133,32 @@ function Home() {
       {/* section2 */}
       <div className="mt-5 mb-5 text-pethub-color1">{hotelData.length} ผลการค้นหา</div>
       <div className="mx-auto my-5 grid grid-cols-12 w-11/12 md:w-[750px] h-full lg:w-full gap-5 lg:gap-10">
+        <div className="md:hidden col-span-12 flex justify-between">
+            <div className="w-[27vw] h-[10vw] max-h-10 text-[3vw] sm:text-lg">
+                <select className="h-full w-full border-2 rounded-lg px-3" style={{ color: 'gray' }}>
+                    <option disabled selected style={{ color: 'gray' }}>ประเภทสัตว์</option>
+                    <option style={{ color: 'black' }}>สุนัข</option>
+                    <option style={{ color: 'black' }}>แมว</option>
+                </select>
+            </div>
+            <div className="w-[27vw] h-[10vw] max-h-10  text-[3vw] sm:text-lg">
+                <select className="h-full w-full border-2 rounded-lg px-3" style={{ color: 'gray' }}>
+                    <option disabled selected style={{ color: 'gray' }}>สถานที่ตั้ง</option>
+                    {districts.map((district, index) => (
+                        <option key={index} style={{ color: 'black' }}>
+                            {district}
+                        </option>
+                    ))}
+                </select>
+            </div>
+            <div className="w-[27vw] h-[10vw] max-h-10 text-[3vw] sm:text-lg">
+                <select className="h-full w-full border-2 rounded-lg px-3" style={{ color: 'gray' }}>
+                    <option disabled selected style={{ color: 'gray' }}>ช่วงราคา</option>
+                    <option style={{ color: 'black' }}>500-2000 บาท</option>
+                    <option style={{ color: 'black' }}>2000-5000 บาท</option>
+                </select>
+            </div>
+        </div>
         {pagedata.map((hotel, index) => (
             <div key={index} className="col-span-6 lg:col-span-12 row-span-3">
                 {loading ? <HomeHotelBoxLoading /> : 
@@ -136,9 +177,6 @@ function Home() {
                 
             </div>
         ))}
-        {/* <div className="col-span-6 lg:col-span-12 row-span-3">
-            <HomeHotelBoxLoading />
-        </div> */}
       </div>
       <div className="w-11/12 xl:w-8/12 h-10 mx-auto flex justify-center items-center mt-8 md:mt-20 gap-5">
         <div className="max-md:text-[2.5vw] flex justify-center items-center cursor-pointer" onClick={() => handlePrev()}>Prev</div>
