@@ -1,4 +1,4 @@
-import Navbar from "./Navbar"
+import Navbar from "./Utils/Navbar"
 import logo from "../../public/logo.svg"
 
 function Login() {

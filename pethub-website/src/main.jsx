@@ -10,6 +10,7 @@ import Register from './components/Register.jsx';
 import ListHost from './components/ListHost.jsx';
 import HostSignUp from './components/HostSignUp.jsx';
 
+
 const router = createBrowserRouter([
   {path: "/pethub-website", element: <App />,},
   {path: "/pethub-website/profile", element: <Profile />,},
