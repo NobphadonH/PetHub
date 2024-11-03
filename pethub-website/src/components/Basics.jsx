@@ -157,12 +157,12 @@ function CheckInCheckOut() {
                     ))}
                 </select>
             </div>
-            <div className="flex flex-col justify-start mt-4">
-                <div className="flex text-start text-sm text-gray-600">เลือกเวลาที่ลูกค้าจะต้องเช็คเอาท์ก่อน</div>
+            <div className="flex text-start text-sm text-gray-600 mt-4">เลือกเวลาที่ลูกค้าจะต้องเช็คเอาท์ก่อน</div>
+            <div className="grid grid-cols-5">
                 <select
                     value={checkOut}
                     onChange={(e) => setCheckOut(e.target.value)}
-                    className="select select-bordered drop-shadow-sm w-full w-24 rounded-xl focus:outline-none focus:border-pethub-color4 mt-4 mb-6"
+                    className="select select-bordered drop-shadow-sm rounded-xl focus:outline-none focus:border-pethub-color4 mt-4 mb-6"
                 >
                     <option value="" disabled></option>
                     {times.map((time, index) => (
