@@ -35,7 +35,7 @@ export default function Navbar() {
                     <div
                         tabIndex={0}
                         role="button"
-                        className="btn btn-ghost xl:hidden"
+                        className="flex justify-center items-center md:btn w-14 max-sm:text-[3vw] md:bg-white max-md:text-[2vw] h-[10vw] md:w-16 max-w-16 max-h-12 font-medium btn-ghost xl:hidden"
                         onClick={toggleDropdown}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-list" viewBox="0 0 16 16">
@@ -70,7 +70,7 @@ export default function Navbar() {
                 <div className="navbar-end">
                     <ul className="flex gap-10 px-1 items-center">
                         <li><a href="/pethub-website/partner" className="text-pethub-color6 hidden xl:block">มาเป็น partner กับเรา</a></li>
-                        <li><a href="/pethub-website/signin" className="btn bg-pethub-color1 text-white font-normal text-xs">Sign in</a></li>
+                        <li><a href="/pethub-website/signin" className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-[20vw] max-sm:text-[3vw] max-md:text-[2vw] h-[10vw] md:w-28 max-w-28 max-h-12 font-medium">Sign in</a></li>
                     </ul>
                 </div>
             </div>

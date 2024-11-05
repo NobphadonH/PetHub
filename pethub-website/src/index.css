@@ -2,8 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&family=Athiti:wght@200;300;400;500;600;700&family=IBM+Plex+Sans+Thai:wght@100;200;300;400;500;600;700&family=Noto+Sans+Thai:wght@100..900&display=swap');
+
 :root {
   font-family: "Afacad Flux", sans-serif;
+  font-family: "IBM Plex Sans Thai", serif;
   font-optical-sizing: auto;
   font-style: normal;
   line-height: 1.5;
@@ -19,6 +22,7 @@
 
 
 }
+
 
 .input-shadow{
   box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);

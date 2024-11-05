@@ -6,7 +6,6 @@ function HomeHotelBox({
     rating, 
     description, 
     price, 
-    link,
     imageUrl,
     petType,
   }) {
@@ -22,7 +21,7 @@ function HomeHotelBox({
             </h1>
             <div className="flex lg:my-5 gap-1 items-center">
               {Array.from({ length: rating }).map((_, index) => (
-                <svg key={index} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-star-fill max-md:w-[8px] text-yellow-400" viewBox="0 0 16 16">
+                <svg key={index} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-star-fill max-md:w-[6px] text-yellow-400" viewBox="0 0 16 16">
                   <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                 </svg>
               ))}
@@ -36,9 +35,9 @@ function HomeHotelBox({
           </div>
           <div className="p-2 md:px-3 flex justify-between items-center">
             <div className="flex items-center gap-3">
-                <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-[17vw] max-md:text-[2vw] h-[7vw] md:w-32 font-medium">
-                <a href={link}>รายละเอียด</a>
-                </div>
+                <a href={`/pethub-website/home/${hotelName}`} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-[17vw] max-md:text-[2vw] h-[7vw] md:w-32 font-medium">
+                <a href={`/pethub-website/home/${hotelName}`}>รายละเอียด</a>
+                </a>
                 <div className="max-lg:hidden flex gap-2">
                     {petType.map((pet, index) => (
                         <div key={index} className="text-2xl">{pet}</div>

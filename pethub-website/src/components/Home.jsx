@@ -1,13 +1,22 @@
 import Navbar from "./Utils/Navbar"
 import HomeHotelBox from "./Utils/HomeHotelBox"
 import HomeHotelBoxLoading from "./Utils/HomeHotelBoxLoading";
+import HotelRecommend from "./Utils/HotelRecommend";
+import HotelRecommendLoading from "./Utils/HotelRecommedLoading";
 import { motion } from "framer-motion";
 import Footer from "./Utils/Footer"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 import { hotelData } from "../assets/dummydata";
 
+
 function Home() {
+    const containerRef = useRef(null);
+    const parentRef = useRef(null);
+    const [totalWidth, setTotalWidth] = useState(0);
+
+    console.log(totalWidth)
+
     const pageCalculate = () => {
         return Math.floor(hotelData.length/4 + 1)
     }
@@ -27,7 +36,7 @@ function Home() {
     };
     
     const handleRightClick = () => {
-        setX((prevX) => Math.max(prevX - 300, -1500));
+        setX((prevX) => Math.max(prevX - 300, -totalWidth));
     };
     
     const handlePageSelect = (index) => {
@@ -52,6 +61,22 @@ function Home() {
 
         setLoading(true)
         setTimeout(() => {setLoading(false)}, 1000)
+
+        const updateWidth = () => {
+            if (containerRef.current && parentRef.current) {
+              // Calculate total width minus parent width
+              const containerScrollWidth = containerRef.current.scrollWidth;
+              const parentOffsetWidth = parentRef.current.offsetWidth;
+              setTotalWidth(containerScrollWidth - parentOffsetWidth);
+            }
+          };
+      
+          updateWidth(); // Set initial width
+          window.addEventListener('resize', updateWidth);
+      
+          return () => {
+            window.removeEventListener('resize', updateWidth);
+          };
     }, [pageselect])
 
     const districts = [
@@ -131,7 +156,6 @@ function Home() {
         <div className="absolute bottom-0 right-0 left-0 h-12 md:h-16 bg-white z-10"></div>
       </div>
       {/* section2 */}
-      <div className="mt-5 mb-5 text-pethub-color1">{hotelData.length} ผลการค้นหา</div>
       <div className="mx-auto my-5 grid grid-cols-12 w-11/12 md:w-[750px] h-full lg:w-full gap-5 lg:gap-10">
         <div className="md:hidden col-span-12 flex justify-between">
             <div className="w-[27vw] h-[10vw] max-h-10 text-[3vw] sm:text-lg">
@@ -158,6 +182,9 @@ function Home() {
                     <option style={{ color: 'black' }}>2000-5000 บาท</option>
                 </select>
             </div>
+        </div>
+        <div className="col-span-12">
+            <div className="mt-5 mb-5 text-pethub-color1">{hotelData.length} ผลการค้นหา</div>
         </div>
         {pagedata.map((hotel, index) => (
             <div key={index} className="col-span-6 lg:col-span-12 row-span-3">
@@ -190,12 +217,15 @@ function Home() {
       <div className="mx-auto flex justify-between w-11/12 xl:w-8/12 mt-40 items-center">
         <div className="text-[4vw] md:text-3xl font-semibold text-pethub-color6">โรงแรมที่แนะนำ</div>
             
-        <div className="text-[2.5vw] h-10 px-[1vw] md:text-md flex justify-center rounded-full bg-base-200 items-center gap-3 max-md:w-[27vw] md:btn md:rounded-full hover:bg-pethub-color1 hover:text-white lg:hidden duration-300">
-            ประเภทสัตว์
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-down-fill max-md:w-[2.5vw]" viewBox="0 0 16 16">
-                <path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
-            </svg>
-            </div>
+        <div className="w-[27vw] h-[10vw] max-h-10 text-[2vw] text-end sm:text-lg lg:hidden">
+            <select className="select select-bordered w-full max-w-28 h-full border-2 px-3 rounded-full" style={{ color: 'gray' }}>
+                <option disabled selected style={{ color: 'gray' }}>
+                    ประเภทสัตว์
+                </option>
+                <option style={{ color: 'black' }}>สุนัข</option>
+                <option style={{ color: 'black' }}>แมว</option>
+            </select>
+        </div>
         <div className="hidden lg:flex gap-5">        
             <div className="btn rounded-full bg-pethub-color1 text-white"><span className="text-xl">🐱</span>แมว</div>
             <div className="btn rounded-full bg-slate-200"><span className="text-xl">🐶</span>สุนัข</div>
@@ -208,43 +238,21 @@ function Home() {
         </div>
       </div>
       {/* section3 */}
-      <div className="mt-10 w-11/12 xl:w-8/12 overflow-hidden mx-auto relative h-[83vw] md:h-[590px]">
-        <motion.div className="absolute h-[80vw] md:h-[570px] rounded-md mx-auto p-5 flex gap-5" drag="x" dragConstraints={{ left: -1500, right: 0 }} animate={{ x }}transition={{ type: "spring", stiffness: 300, damping: 30 }}>
-            <div className="w-[40vw] md:w-[300px] h-full bg-white border-2 rounded-lg p-[2vw] md:p-3 flex flex-col justify-between items-center">
-                <div className="w-full relative">
-                    <div className="absolute top-[3vw] md:top-6 left-0 w-[17vw] h-[6vw] md:w-28 md:h-10 bg-pethub-color6 opacity-70 rounded-e-full text-center text-white text-[2.5vw] md:text-lg px-4 flex items-center justify-start">Popular</div>
-                    <div className="w-full h-[42vw] sm:h-[50vw] md:h-[330px] rounded-md bg-base-200"></div>
-                    <div className="w-full text-start md:mt-5 mt-[3vw] mx-1 md:mx-3">
-                        <div className="flex">
-                            <div className="text-[3vw] md:text-2xl  w-full md:w-40 transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">Bangmode hotel</div>
-                            <span className="hidden md:block text-2xl ml-3 text-gray-400">🐱 🐶</span>
-                        </div>
-                        <div className="flex lg:my-1 gap-1 items-center">
-                        {Array.from({ length: 5 }).map((_, index) => (
-                            <svg key={index} xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" className="bi bi-star-fill max-md:w-[8px] text-yellow-400" viewBox="0 0 16 16">
-                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                            </svg>
-                        ))}
-                        <div className="max-md:text-[2vw] ml-1 md:ml-3">
-                            {5} ({25} Reviews)
-                        </div>
-                        </div>
-                        <div className="text-[2vw] md:text-lg text-gray-400">2000 บาท / คืน</div>
-                    </div>
-                </div>
-                <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-[17vw] max-md:text-[2vw] h-[7vw] md:w-40 font-medium">
-                    <a href="">viewmore</a>
-                </div>
-            </div>
-            <div className="w-[40vw] md:w-[300px] h-full bg-base-300 rounded-lg "></div>
-            <div className="w-[40vw] md:w-[300px] h-full bg-base-300 rounded-lg "></div>
-            <div className="w-[40vw] md:w-[300px] h-full bg-base-300 rounded-lg "></div>
-            <div className="w-[40vw] md:w-[300px] h-full bg-base-300 rounded-lg "></div>
-            <div className="w-[40vw] md:w-[300px] h-full bg-base-300 rounded-lg "></div>
-            <div className="w-[40vw] md:w-[300px] h-full bg-base-300 rounded-lg "></div>
-            <div className="w-[40vw] md:w-[300px] h-full bg-base-300 rounded-lg "></div>
-            <div className="w-[40vw] md:w-[300px] h-full bg-base-300 rounded-lg "></div>
-
+      <div ref={parentRef} className="mt-10 w-11/12 xl:w-8/12 overflow-hidden mx-auto relative h-[83vw] md:h-[590px]">
+        <motion.div ref={containerRef} className="absolute h-[80vw] md:h-[570px] rounded-md mx-auto p-5 flex gap-5" drag="x" dragConstraints={{ left: -totalWidth, right: 0 }} animate={{ x }} transition={{ type: "spring", stiffness: 300, damping: 30 }}>
+            <HotelRecommendLoading />
+            {hotelData.map((hotel, index) => (
+                <HotelRecommend
+                    key={index} // It's good practice to use a unique key for each mapped component
+                    hotelName={hotel.hotelName}
+                    reviews={hotel.reviews}
+                    rating={hotel.rating}
+                    price={hotel.price}
+                    link={hotel.link}
+                    imageUrl={hotel.imageUrl}
+                    petType={hotel.petType}
+                />
+            ))}
         </motion.div>
       </div>
       <Footer />

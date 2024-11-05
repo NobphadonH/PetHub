@@ -10,6 +10,8 @@ import Register from './components/Register.jsx';
 import ListHost from './components/ListHost.jsx';
 import HostSignUp from './components/HostSignUp.jsx';
 import Basics from './components/Basics.jsx';
+import HotelDetail from './components/HotelDetail.jsx';
+
 
 
 const router = createBrowserRouter([
@@ -21,6 +23,7 @@ const router = createBrowserRouter([
   {path: "/pethub-website/listhost", element: <ListHost />,},
   {path: "/pethub-website/hostsignup", element: <HostSignUp />,},
   {path: "/pethub-website/basics", element: <Basics />,},
+  {path: "/pethub-website/home/:hotelname", element: <HotelDetail />,},
 ]);
 
 createRoot(document.getElementById('root')).render(
