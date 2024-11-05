@@ -17,13 +17,13 @@ function TypeChoiceBoxes() {
         },
         {
             id: 3,
-            title: "รีสอร์ทและสปาสำหรับสัตว์เลี้ยง",
-            description: "ที่พักหรูพร้อมบริการเสริม เช่น อาบน้ำ ตัดแต่งขนเป็นพิเศษ",
+            title: "โรงพยาบาลหรือคลินิกสัตว์",
+            description: "สถานพยาบาลที่ออกแบบมาเพื่อสัตว์เลี้ยงโดยเฉพาะ",
         },
         {
             id: 4,
-            title: "โรงแรมที่เป็นมิตรกับสัตว์เลี้ยง",
-            description: "สำหรับโรงแรมที่รองรับทั้งผู้เข้าพักและสัตว์เลี้ยง",
+            title: "คาเฟ่สัตว์",
+            description: "คาเฟ่สัตว์ที่รองรับสัตว์เลี้ยงเข้าพัก เหมาะกับสัตว์ที่ต้องการเพื่อน",
         }
     ];
 
@@ -118,62 +118,6 @@ function CancellationPolicy() {
     );
 }
 
-function CheckInCheckOut() {
-    const [checkInStart, setCheckInStart] = useState("");
-    const [checkInEnd, setCheckInEnd] = useState("");
-    const [checkOut, setCheckOut] = useState("");
-
-    const times = [
-        "00:00", "1:00", "2:00", "3:00", "4:00", "5:00",
-        "6:00", "7:00", "8:00", "9:00", "10:00", "11:00",
-        "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
-        "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
-    ];
-
-    return (
-        <div className="flex flex-col mt-4">
-            <div className="grid grid-cols-6">
-                <span className="flex items-center text-sm text-gray-700">ระหว่าง</span>
-                <select
-                    value={checkInStart}
-                    onChange={(e) => setCheckInStart(e.target.value)}
-                    className="select select-bordered rounded-xl drop-shadow-sm focus:outline-none focus:border-pethub-color4"
-                >
-                    <option value="" disabled></option>
-                    {times.map((time, index) => (
-                        <option key={index} value={time}>{time}</option>
-                    ))}
-                </select>
-                
-                <span className="flex items-center justify-center text-sm text-gray-700">และ</span>
-                <select
-                    value={checkInEnd}
-                    onChange={(e) => setCheckInEnd(e.target.value)}
-                    className="select select-bordered drop-shadow-sm rounded-xl focus:outline-none focus:border-pethub-color4"
-                >
-                    <option value="" disabled></option>
-                    {times.map((time, index) => (
-                        <option key={index} value={time}>{time}</option>
-                    ))}
-                </select>
-            </div>
-            <div className="flex text-start text-sm text-gray-600 mt-4">เลือกเวลาที่ลูกค้าจะต้องเช็คเอาท์ก่อน</div>
-            <div className="grid grid-cols-5">
-                <select
-                    value={checkOut}
-                    onChange={(e) => setCheckOut(e.target.value)}
-                    className="select select-bordered drop-shadow-sm rounded-xl focus:outline-none focus:border-pethub-color4 mt-4 mb-6"
-                >
-                    <option value="" disabled></option>
-                    {times.map((time, index) => (
-                        <option key={index} value={time}>{time}</option>
-                    ))}
-                </select>
-            </div>
-        </div>
-    );
-}
-
 function Basics() {
     return (
         <div>
@@ -210,8 +154,14 @@ function Basics() {
                         <div className="text-left text-gray-600 text-sm mt-2">เลือกหนึ่งจากตัวเลือกด้านล่าง</div>
                         <TypeChoiceBoxes />
                         <div className="text-left text-black font-bold text-xl mt-12">รายละเอียดที่พักของคุณ</div>
-                        <div className="text-left text-gray-600 text-sm mt-2">ให้ข้อมูลสั้น ๆ เพื่อให้ลูกค้าเข้าใจรายละเอียดของที่พัก</div>
+                        <div className="text-left text-gray-600 text-sm mt-2">ให้ข้อมูลภาพรวมเพื่อให้ลูกค้าเข้าใจรายละเอียดของที่พัก</div>
                         <textarea placeholder="อธิบายสถานที่ของคุณ" className="textarea textarea-bordered textarea-md drop-shadow-sm w-full max-w-xl mt-4 focus:outline-none focus:border-pethub-color4"></textarea>
+                        <div className="text-left text-black font-bold text-xl mt-12">เงื่อนไขในการเข้าพักที่พักของคุณ</div>
+                        <div className="text-left text-gray-600 text-sm mt-2">ให้ข้อมูลเงื่อนไขเพื่อให้ลูกค้าเข้าใจข้อตกลง</div>
+                        <textarea placeholder="อธิบายเงื่อนไขของคุณ เช่น ประเภทสัตว์เลี้ยง การเช็คอิน การเช็คเอาท์ เป็นต้น" className="textarea textarea-bordered textarea-md drop-shadow-sm w-full max-w-xl mt-4 focus:outline-none focus:border-pethub-color4"></textarea>
+                        <div className="text-left text-black font-bold text-xl mt-12">นโยบายการยกเลิกการจอง</div>
+                        <div className="text-left text-gray-600 text-sm mt-2">เลือกหนึ่งจากตัวเลือกด้านล่าง</div>
+                        <CancellationPolicy />
                         <div className="text-left text-black font-bold text-xl mt-12">สถานที่ตั้ง</div>
                         <div className="text-left text-gray-600 text-sm mt-2">ลูกค้าจะได้รับที่อยู่ที่แน่นอนของคุณก็ต่อเมื่อทำการจองเรียบร้อยแล้ว</div>
                         <label className="form-control w-full mt-6">
@@ -250,9 +200,6 @@ function Basics() {
                                 <input type="text" placeholder="ใส่รหัสไปรษณีย์ของคุณที่นี่" className="input input-bordered drop-shadow-sm w-full focus:outline-none focus:border-pethub-color4" />
                             </label>
                         </div>
-                        <div className="text-left text-black font-bold text-xl mt-12">นโยบายการยกเลิกการจอง</div>
-                        <div className="text-left text-gray-600 text-sm mt-2">เลือกหนึ่งจากตัวเลือกด้านล่าง</div>
-                        <CancellationPolicy />
                         <div className="text-left text-black font-bold text-xl mt-12">ระยะทาง</div>
                         <div className="text-left text-gray-600 text-sm mt-2">ข้อมูลระยะทางจากสถานที่สำคัญ</div>
                         <label className="form-control w-full mt-4">
@@ -262,16 +209,13 @@ function Basics() {
                                 <div className="flex items-center justify-center text-gray-600 ml-4">กิโลเมตร</div>
                             </div>
                         </label>
-                        <label className="form-control w-full mt-4">
+                        <label className="form-control w-full mt-4 mb-8">
                             <div className="text-left text-black text-base mb-2">ระยะทางจากสนามบิน</div>
                             <div className="flex flex-row">
                                 <input type="text" placeholder="0" className="input input-bordered drop-shadow-sm w-full max-w-xs focus:outline-none focus:border-pethub-color4" />
                                 <div className="flex items-center justify-center text-gray-600 ml-4">กิโลเมตร</div>
                             </div>
                         </label>
-                        <div className="text-left text-black font-bold text-xl mt-12">เวลาเช็คอินและเช็คเอาท์</div>
-                        <div className="text-left text-gray-600 text-sm mt-2">เลือกเวลาที่ลูกค้าสามารถทำการเช็คอิน</div>
-                        <CheckInCheckOut />
                     </div>
                 </div>
                 <div className="flex justify-end items-center w-full max-w-3xl -mt-4 mb-4 p-6 mx-auto">
