@@ -1,12 +1,15 @@
 import Navbar from './Utils/Navbar'
 import Footer from './Utils/Footer'
 import { useParams } from 'react-router-dom'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
 function HotelDetail() {
     let param = useParams()
     const mapRef = useRef(null); 
+    const containerRef = useRef(null);
+    const parentRef = useRef(null);
+    const [totalWidth, setTotalWidth] = useState(0);
 
     useEffect(() => {
         const loadScript = () => {
@@ -30,8 +33,8 @@ function HotelDetail() {
           map.zoomRange({ min: 6, max: 20 });
           map.location({ lon: 100.56, lat: 13.74 }, true);
         //   map.Ui.DPad.visible(false);
-          map.Ui.Zoombar.visible(false);
-          map.Ui.Geolocation.visible(false);
+        //   map.Ui.Zoombar.visible(false);
+        //   map.Ui.Geolocation.visible(false);
         //   map.Ui.Toolbar.visible(false);
         //   map.Ui.LayerSelector.visible(false);
         //   map.Ui.Fullscreen.visible(false);
@@ -44,6 +47,22 @@ function HotelDetail() {
         } else {
           initMap();
         }
+
+        const updateWidth = () => {
+            if (containerRef.current && parentRef.current) {
+              // Calculate total width minus parent width
+              const containerScrollWidth = containerRef.current.scrollWidth;
+              const parentOffsetWidth = parentRef.current.offsetWidth;
+              setTotalWidth(containerScrollWidth - parentOffsetWidth);
+            }
+          };
+      
+          updateWidth(); // Set initial width
+          window.addEventListener('resize', updateWidth);
+      
+          return () => {
+            window.removeEventListener('resize', updateWidth);
+          };
       }, []);
     
       const handleDivClick = () => {
@@ -91,13 +110,13 @@ function HotelDetail() {
                 </div>
             </div>
             <div className='max-md:w-full max-md:h-[40vw] max-md:my-[2vw] bg-white rounded-md col-span-12 md:col-span-4 row-span-4'>
-            <div
+            {/* <div
                 id="map"
                 style={{ height: '100%', width: '100%', borderRadius: '6px', overflow: 'hidden' }} // Full height and width
-            ></div>
+            ></div> */}
             </div>
             <div className='max-md:w-[60%] max-md:h-[250px] overflow-y-hidden bg-white rounded-md col-span-8 lg:col-span-8 row-span-10 max-md:p-[3vw] max-lg:px-8 max-lg:py-4 py-12 px-14 text-start'>
-                <div className='text-md lg:text-2xl font-semibold mb-[1vw] md:mb-6 overflow-y'>Overview</div>
+                <div className='text-[3vw] lg:text-2xl font-semibold mb-[1vw] md:mb-6 overflow-y'>Overview</div>
                 <div className='text-[2vw] md:text-sm max-md:h-[200px] overflow-y-hidden scrollbar-hidden'>
                     <p>Bangmod Pet Hotel เป็นโรงแรมสัตว์เลี้ยงระดับพรีเมียม ตั้งอยู่ในย่านบางมด กรุงเทพมหานคร ที่ออกแบบมาเพื่อตอบโจทย์ความต้องการของเจ้าของสัตว์เลี้ยงที่มองหาที่พักอันปลอดภัย สะดวกสบาย และทันสมัยสำหรับเพื่อนขนฟูของพวกเขา เราให้บริการที่พักทั้งระยะสั้นและระยะยาว พร้อมสิ่งอำนวยความสะดวกครบครันและการดูแลอย่างใกล้ชิดจากผู้เชี่ยวชาญด้านสัตว์เลี้ยง</p>
                     
@@ -156,24 +175,68 @@ function HotelDetail() {
 
                 </div>
             </div>
-            <div className='max-md:w-[35%] max-md:h-[250px] bg-white rounded-md col-start-9 col-span-4 row-span-5'></div>
+            <div className='max-md:w-[35%] max-md:h-full bg-white rounded-md col-start-9 col-span-4 row-span-5 p-[3vw] md:p-3 lg:p-5'>
+                <div className='flex gap-[1vw] lg:gap-2 items-center justify-center'>
+                    <div className='text-[2vw] lg:text-xl font-semibold overflow-y'>โรงแรม</div>
+                    <svg xmlns="http://www.w3.org/2000/svg" className='w-[3vw] lg:w-12' width={20} height={20} viewBox="0 0 640 512"><path d="M32 32c17.7 0 32 14.3 32 32l0 256 224 0 0-160c0-17.7 14.3-32 32-32l224 0c53 0 96 43 96 96l0 224c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-32-224 0-32 0L64 416l0 32c0 17.7-14.3 32-32 32s-32-14.3-32-32L0 64C0 46.3 14.3 32 32 32zm144 96a80 80 0 1 1 0 160 80 80 0 1 1 0-160z"/></svg>
+                </div>
+                <div className='flex flex-col justify-between h-[90%]'>
+                    <div className='w-full'>
+                        <div className='flex justify-between items-center mt-5'>
+                            <div className='text-start text-lg font-semibold'>ประเภท: </div>
+                            <div className='font-normal'>โรงแรมสัตว์เลี้ยง</div>
+                        </div>
+                        <div className='flex justify-between items-start mt-2'>
+                            <div className='text-start text-lg font-semibold'>ประเภทห้อง: </div>
+                            <div className='flex justify-end gap-2'>
+                                <div className='font-normal'>ห้องทั่วไป,</div>
+                                <div className='font-normal'>ห้องพิเศษ,</div>
+                                <div className='font-normal'>ห้อง VIP,</div>
+
+                            </div>
+                        </div>
+                        <div className='flex justify-between items-start mt-2'>
+                            <div className='text-start text-lg font-semibold'>สัตว์เลี้ยงที่รับ: </div>
+                            <div className='flex gap-2'>
+                                <div className='font-normal'>🐱</div>
+                                <div className='font-normal'>🐶</div>
+                                <div className='font-normal'>🐶</div>
+                                <div className='font-normal'>และอื่นๆ</div>
+
+                            </div>
+                        </div>
+                        <div className='flex justify-between items-start mt-2'>
+                            <div className='text-start text-lg font-semibold'>ราคา: </div>
+                            <div className='flex justify-end gap-2'>
+                                <div className='font-normal'>2,000 - 10,000 บาท</div>
+  
+
+                            </div>
+                        </div>
+                    </div>
+                    <div>ติดต่อสอบถาม</div>
+
+                </div>
+            </div>
             
         </div>
         <div className='mt-5 md:mt-5 w-[96vw] lg:w-11/12 xl:w-11/12 2xl:w-[1280px] h-full mx-auto px-5'>
-            <div className='text-start lg:mb-5 text-2xl font-semibold'>Available rooms</div>
-            <div  className="mt-10 w-full overflow-hidden mx-auto relative h-[83vw] md:h-[650px]">
-            <motion.div className="absolute h-[80vw] md:h-[600px] rounded-md mx-auto py-5 flex gap-5" drag="x" dragConstraints={{ left: -1000, right: 0 }} transition={{ type: "spring", stiffness: 300, damping: 30 }}>
-                <div className='w-[450px] bg-white rounded-lg overflow-hidden'>
+            <div className='text-start lg:mb-5 text-[5vw] sm:text-xl lg:text-2xl xl:text-3xl font-semibold'>Available rooms</div>
+            <div ref={parentRef} className="md:mt-4 lg:mt-8 xl:mt-10 w-full overflow-hidden mx-auto relative h-[70vw] md:h-[550px]  lg:h-[650px]">
+            <motion.div ref={containerRef} className="absolute h-[60vw] md:h-[500px] lg:h-[600px] rounded-md mx-auto md:py-5 flex gap-3 lg:gap-5" drag="x" dragConstraints={{ left: -totalWidth, right: 0 }} transition={{ type: "spring", stiffness: 300, damping: 30 }}>
+                <div className='w-[45vw] md:w-[350px] xl:w-[400px] bg-white rounded-lg overflow-hidden'>
                     <div className='w-full h-[50%] bg-slate-200'></div>
-                    <div className='w-full h-[50%] p-6 text-start'>
+                    <div className='w-full h-[50%] p-[2vw] md:p-6 text-start'>
                         <div className='flex justify-between items-end'>
-                            <div className='text-2xl'>ห้องขนาดทั่วไป (แมว)</div>
-                            <div className='text-สเ'>25x25 ตรม</div>
+                            <div className='text-[2.5vw] md:text-lg lg:text-xl xl:text-2xl'>ห้องขนาดทั่วไป (แมว)</div>
+                            <div className='text-[2vw] md:text-sm lg:text-base xl:text-lg'>25x25 ตรม</div>
                         </div>
-                        <div className='my-3'>ของเล่นแมว, อาหาร, อาบน้ำ, ดูแล 24 ชั่วโมง</div>
-                        <div className='transition-all duration-300 ease-in-out line-clamp-2 overflow-hidden text-gray-400'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque voluptatum dolor, ipsam natus similique aperiam eveniet quos, magni voluptatem deserunt odio aspernatur reprehenderit laborum molestias illum unde ipsum libero pariatur?</div>
-                        <div className='my-5'>400 บาท/คืน</div>
-                        <a href="" className='btn w-full bg-pethub-color1 text-white'>จองห้องพัก</a>
+                        <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-lg md:my-1 lg:my-3'>ของเล่นแมว, อาหาร, อาบน้ำ, ดูแล 24 ชั่วโมง</div>
+                        <div className='text-[1.5vw] md:text-xs lg:text-sm xl:text-base transition-all duration-300 ease-in-out line-clamp-2 overflow-hidden text-gray-400'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque voluptatum dolor, ipsam natus similique aperiam eveniet quos, magni voluptatem deserunt odio aspernatur reprehenderit laborum molestias illum unde ipsum libero pariatur?</div>
+                        <div className='text-[2vw] md:text-base my-[1vw] md:my-2 lg:my-5'>400 บาท/คืน</div>
+                        <a className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium">
+                            <a >จองห้อง</a>
+                        </a>
                     </div>
                 </div>
                 <div className='w-[450px] bg-white rounded-lg'></div>

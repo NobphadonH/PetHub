@@ -53,7 +53,7 @@ export default function Navbar() {
                         <li><a href="/pethub-website/profile" className="block w-full text-center text-md">Profile</a></li>
                         <li><a href="/pethub-website/about" className="block w-full text-center text-md">About</a></li>
                         <li><a href="/pethub-website/contact" className="block w-full text-center text-md">Contact</a></li>
-                        <li><a href="/pethub-website/partner" className="block w-full text-center text-md">สมัครเป็น partner</a></li>
+                        <li><a href="/pethub-website/hostsignup" className="block w-full text-center text-md">สมัครเป็น partner</a></li>
                     </ul>
                 </div>
 
@@ -69,7 +69,7 @@ export default function Navbar() {
 
                 <div className="navbar-end">
                     <ul className="flex gap-10 px-1 items-center">
-                        <li><a href="/pethub-website/partner" className="text-pethub-color6 hidden xl:block">มาเป็น partner กับเรา</a></li>
+                        <li><a href="/pethub-website/hostsignup" className="text-pethub-color6 hidden xl:block">มาเป็น partner กับเรา</a></li>
                         <li><a href="/pethub-website/signin" className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-[20vw] max-sm:text-[3vw] max-md:text-[2vw] h-[10vw] md:w-28 max-w-28 max-h-12 font-medium">Sign in</a></li>
                     </ul>
                 </div>
