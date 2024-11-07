@@ -5,11 +5,9 @@ import { connectToDatabase } from "../utils/dbConnection.js";
 
 export const signin = async (req, res) => {
   try {
-    const { username, email, password} = req.body;
+    const {email, password} = req.body;
     const { dbpool, sshClient } = await connectToDatabase();
     
-    console.log("hello");
-
     dbpool.getConnection(async (err, connection) => {
       if (err) {
         console.error("Error getting connection from pool:", err);
@@ -19,8 +17,8 @@ export const signin = async (req, res) => {
 
       // Update the query to check for either username or email
       connection.query(
-        "SELECT * FROM Users WHERE (username = ?)",
-        [username],
+        "SELECT * FROM Users WHERE (email = ?)",
+        [email],
         async (err, rows) => {
           if (err) throw err;
           const user = rows[0];
@@ -29,7 +27,7 @@ export const signin = async (req, res) => {
             console.log("query empty");
             return res
               .status(400)
-              .json({ error: "Invalid username, email, or password" });
+              .json({ error: "Invalid email, or password" });
           }
 
           // Compare passwords
@@ -41,7 +39,7 @@ export const signin = async (req, res) => {
           if (!isPasswordCorrect) {
             return res
               .status(400)
-              .json({ error: "Invalid username, email, or password" });
+              .json({ error: "Invalid email, or password" });
           }
 
           // Login successful, generate token and set cookie
@@ -89,11 +87,11 @@ export const signout = (req, res) => {
   
 export const signup = async (req, res) => {
   try {
-    const { username, fName, lName, email, password, address, phone, userRole } = req.body;
+    const { fName, lName, email, password, address, phone, userRole } = req.body;
     const { dbpool, sshClient } = await connectToDatabase();
 
-    if (!username || !email || !password) {
-      return res.status(400).json({ error: "Username, email, and password are required." });
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required." });
     }
 
     dbpool.getConnection(async (err, connection) => {
@@ -103,50 +101,24 @@ export const signup = async (req, res) => {
         return;
       }
 
-      // const query = `
-      //        INSERT INTO Users (username, fName, lName, email, password, address, phone, userRole) 
-      //        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      //      `;
-
-      // const hashedPassword = await bcrypt.hash(password, 10);
-      // const values = [username, fName, lName, email, hashedPassword, address, phone, userRole];
-
-      // connection.query(query, values, (err, result) => {
-      //   //connection.release(); // Release the connection back to the pool
-
-      //   if (err) {
-      //     console.error("Error executing query:", err);
-      //     connection.release(); // Ensure connection is released on error
-      //     sshClient.end();
-      //     return res.status(500).json({ error: "Query execution failed" });
-      //   }
-        
-      //   connection.release();
-      //   sshClient.end();
-      //   res.status(201).json({ message: "User registered successfully" });
-      // });
-
-
-
-
-        // Check if username or email already exists
+      // Check if username or email already exists
       connection.query(
-        "SELECT * FROM Users WHERE Username = ? OR Email = ?",
-        [username, email],
+        "SELECT * FROM Users WHERE Email = ?",
+        [email],
         async (err, rows) => {
           if (err) throw err;
   
           if (rows.length > 0) {
-            return res.status(400).json({ error: "Username or email already exists" });
+            return res.status(400).json({ error: "Email already exists" });
           }
           const hashedPassword = await bcrypt.hash(password, 10);
   
             // Insert new user without specifying userID (it will auto-increment)
           const query = `
-            INSERT INTO Users (username, fName, lName, email, password, address, phone, userRole) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO Users (fName, lName, email, password, address, phone, userRole) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
           `;
-          const values = [username, fName, lName, email, hashedPassword, address, phone, userRole];
+          const values = [fName, lName, email, hashedPassword, address, phone, userRole];
   
           connection.query(query, values, (err, result) => {
             //connection.release(); // Release the connection back to the pool
@@ -158,10 +130,10 @@ export const signup = async (req, res) => {
               return res.status(500).json({ error: "Query execution failed" });
             }
             
+            res.status(201).json({ message: "User registered successfully" });
             connection.release(); // Release the connection back to the pool
             sshClient.end();
             console.log("Connections closed.");
-            res.status(201).json({ message: "User registered successfully" });
           });
         }
       );
