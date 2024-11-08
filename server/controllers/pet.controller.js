@@ -120,47 +120,69 @@ export const deletePetByPetID = async (req, res) => {
 };
 
 //มันหายทั้งคอลัมน์เลยอย่างพึ่งใช้
-// export const updatePetByPetID = async (req, res) => {
-//   try {
-//     const { petName, petDOB, petDetail, petID, userID } = req.body; // Extract petID and userID from request body
-//     const { dbpool, sshClient } = await connectToDatabase();
+export const updatePetByPetID = async (req, res) => {
+  try {
+    const { petID, userID, petName, petDOB, petDetail } = req.body; // Extract values from request body
+    const { dbpool, sshClient } = await connectToDatabase();
 
-//     dbpool.getConnection((err, connection) => {
-//       if (err) {
-//         console.error("Error getting connection from pool:", err);
-//         sshClient.end();
-//         return res.status(500).json({ error: "Database connection failed" });
-//       }
+    // Build query parts dynamically based on provided fields
+    const updates = [];
+    const values = [];
 
-//       // Query to update only allowed pet details (petName, petDOB, petDetail) for the specified petID and userID
-//       const query = `
-//           UPDATE Pets
-//           SET petName = ?, petDOB = ?, petDetail = ?
-//           WHERE petID = ? AND userID = ?
-//         `;
-//       const values = [petName, petDOB, petDetail, petID, userID];
+    if (petName) {
+      updates.push("petName = ?");
+      values.push(petName);
+    }
+    if (petDOB) {
+      updates.push("petDOB = ?");
+      values.push(petDOB);
+    }
+    if (petDetail) {
+      updates.push("petDetail = ?");
+      values.push(petDetail);
+    }
 
-//       connection.query(query, values, (err, result) => {
-//         if (err) {
-//           console.error("Error executing query:", err);
-//           return res.status(500).json({ error: "Query execution failed" });
-//         }
+    // Check if at least one field is provided for update
+    if (updates.length === 0) {
+      return res.status(400).json({ error: "No fields provided for update" });
+    }
 
-//         // Check if any row was affected
-//         if (result.affectedRows === 0) {
-//           return res
-//             .status(404)
-//             .json({ error: "Pet not found or does not belong to this user" });
-//         }
+    // Construct the final query with the dynamic parts
+    const query = `
+      UPDATE Pets 
+      SET ${updates.join(", ")}
+      WHERE petID = ? AND userID = ?
+    `;
+    values.push(petID, userID); // Add petID and userID to the values array
 
-//         res.status(200).json({ message: "Pet updated successfully" });
-//         connection.release(); // Release the connection back to the pool
-//         sshClient.end();
-//         console.log("Connections closed.");
-//       });
-//     });
-//   } catch (error) {
-//     console.error("Error in updatePetByPetID controller:", error.message);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
+    dbpool.getConnection((err, connection) => {
+      if (err) {
+        console.error("Error getting connection from pool:", err);
+        sshClient.end();
+        return res.status(500).json({ error: "Database connection failed" });
+      }
+
+      connection.query(query, values, (err, result) => {
+        if (err) {
+          console.error("Error executing query:", err);
+          return res.status(500).json({ error: "Query execution failed" });
+        }
+
+        // Check if any row was affected
+        if (result.affectedRows === 0) {
+          return res
+            .status(404)
+            .json({ error: "Pet not found or does not belong to this user" });
+        }
+
+        res.status(200).json({ message: "Pet updated successfully" });
+        connection.release(); // Release the connection back to the pool
+        sshClient.end();
+        console.log("Connections closed.");
+      });
+    });
+  } catch (error) {
+    console.error("Error in updatePetByPetID controller:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

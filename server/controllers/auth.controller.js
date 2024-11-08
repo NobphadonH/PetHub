@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { connectToDatabase } from "../utils/dbConnection.js";
 
-//signin เหมือนจะผิดมันเข้าไม่ได้
 export const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
