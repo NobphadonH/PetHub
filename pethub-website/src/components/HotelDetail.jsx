@@ -10,7 +10,8 @@ function HotelDetail() {
     const containerRef = useRef(null);
     const parentRef = useRef(null);
     const [totalWidth, setTotalWidth] = useState(0);
-
+    const [barSel, setBarSel] = useState(0)
+ 
     useEffect(() => {
         const loadScript = () => {
           const script = document.createElement('script');
@@ -33,8 +34,8 @@ function HotelDetail() {
           map.zoomRange({ min: 6, max: 20 });
           map.location({ lon: 100.56, lat: 13.74 }, true);
         //   map.Ui.DPad.visible(false);
-        //   map.Ui.Zoombar.visible(false);
-        //   map.Ui.Geolocation.visible(false);
+          map.Ui.Zoombar.visible(false);
+          map.Ui.Geolocation.visible(false);
         //   map.Ui.Toolbar.visible(false);
         //   map.Ui.LayerSelector.visible(false);
         //   map.Ui.Fullscreen.visible(false);
@@ -72,6 +73,12 @@ function HotelDetail() {
         }
       };
 
+      const handleSelect = (e) => {
+        setBarSel(e.target.id)
+      }
+
+      console.log(barSel)
+
   return (
     <>
      <Navbar /> 
@@ -82,9 +89,9 @@ function HotelDetail() {
      </div>
      <div className='mt-5 md:mt-10 w-[96vw] lg:w-11/12 xl:w-11/12 2xl:w-[1280px] h-full mx-auto'>
         <div className='w-full lg:h-20 flex gap-5 text-[10px] sm:text-[2vw] md:text-lg xl:text-xl font items-center'>
-            <div className='px-3 lg:px-5 py-1 lg:py-2 border-b-2 border-pethub-color1 cursor-pointer font-bold'>Overview</div>
-            <div className='px-3 lg:px-5 py-1 lg:py-2 border-b-0 border-pethub-color1 cursor-pointer'>Guest reviews</div>
-            <div className='px-3 lg:px-5 py-1 lg:py-2 border-b-0 border-pethub-color1 cursor-pointer'>Chat</div>
+            <div id='0' onClick={handleSelect} className={`px-3 lg:px-5 py-1 lg:py-2 border-pethub-color1 cursor-pointer ${barSel == 0 ? ' border-b-2 font-bold' : ''}`}>Overview</div>
+            <div id='1' onClick={handleSelect} className={`px-3 lg:px-5 py-1 lg:py-2 border-pethub-color1 cursor-pointer ${barSel == 1 ? ' border-b-2 font-bold' : ''}`}>Guest reviews</div>
+            <div id='2' onClick={handleSelect} className={`px-3 lg:px-5 py-1 lg:py-2 border-pethub-color1 cursor-pointer ${barSel == 2 ? ' border-b-2 font-bold' : ''}`}>Chat</div>
         </div>
      </div>
      <div className='w-full h-full bg-[#F4F4F4]'>
@@ -110,14 +117,14 @@ function HotelDetail() {
                 </div>
             </div>
             <div className='max-md:w-full max-md:h-[40vw] max-md:my-[2vw] bg-white rounded-md col-span-12 md:col-span-4 row-span-4'>
-            {/* <div
+            <div
                 id="map"
                 style={{ height: '100%', width: '100%', borderRadius: '6px', overflow: 'hidden' }} // Full height and width
-            ></div> */}
+            ></div>
             </div>
-            <div className='max-md:w-[60%] max-md:h-[250px] overflow-y-hidden bg-white rounded-md col-span-8 lg:col-span-8 row-span-10 max-md:p-[3vw] max-lg:px-8 max-lg:py-4 py-12 px-14 text-start'>
-                <div className='text-[3vw] lg:text-2xl font-semibold mb-[1vw] md:mb-6 overflow-y'>Overview</div>
-                <div className='text-[2vw] md:text-sm max-md:h-[200px] overflow-y-hidden scrollbar-hidden'>
+            <div className={`max-md:w-[60%] ${barSel == 1 ? 'max-md:h-full' : 'max-md:h-[250px]'}   overflow-y-hidden bg-white rounded-md col-span-8 lg:col-span-8 row-span-10 max-md:p-[3vw] max-lg:px-8 max-lg:py-4 py-12 px-14 text-start`}>
+                <div className={`text-[3vw] lg:text-2xl font-semibold mb-[1vw] md:mb-6 overflow-y  ${barSel == 0 ? '' : 'hidden'}`}>Overview</div>
+                <div className={`text-[2vw] md:text-sm max-md:h-[160px] h-[80%] lg:h-[90%] px-4 overflow-y-scroll scrollbar-hidden ${barSel == 0 ? '' : 'hidden'}`}>
                     <p>Bangmod Pet Hotel เป็นโรงแรมสัตว์เลี้ยงระดับพรีเมียม ตั้งอยู่ในย่านบางมด กรุงเทพมหานคร ที่ออกแบบมาเพื่อตอบโจทย์ความต้องการของเจ้าของสัตว์เลี้ยงที่มองหาที่พักอันปลอดภัย สะดวกสบาย และทันสมัยสำหรับเพื่อนขนฟูของพวกเขา เราให้บริการที่พักทั้งระยะสั้นและระยะยาว พร้อมสิ่งอำนวยความสะดวกครบครันและการดูแลอย่างใกล้ชิดจากผู้เชี่ยวชาญด้านสัตว์เลี้ยง</p>
                     
                     <p>โรงแรมของเรามีพื้นที่กว้างขวาง รวมถึงห้องพักที่สะอาดและมีระบบควบคุมอุณหภูมิที่เหมาะสม พร้อมสนามวิ่งเล่นสำหรับสัตว์เลี้ยง และโซนกิจกรรมที่ออกแบบมาเพื่อความสนุกสนานและการออกกำลังกายของสัตว์เลี้ยง นอกจากนี้ เรายังมีบริการดูแลพิเศษ เช่น การอาบน้ำ ตัดขน และตรวจสุขภาพเบื้องต้น โดยทีมงานที่มีความรักและประสบการณ์ในการดูแลสัตว์เลี้ยง</p>
@@ -174,47 +181,118 @@ function HotelDetail() {
                     </div>
 
                 </div>
+                <div className={`text-[2vw] lg:text-xl font-semibold mb-[1vw] md:mb-6 overflow-y  ${barSel == 1 ? '' : 'hidden'}`}>5 คะแนน <span className='text-[1.5vw] lg:text-lg'>(รีวิวจากผู้ใช้ 125 รายการ)</span></div>
+                <div className={`mb-[2vw] md:mb-5 text-[1.5vw] md:text-xs lg:text-sm xl:text-base text-gray-400 ${barSel == 1 ? '' : 'hidden'}`}>ความนิยมสูงสุด</div>
+                <div className={`text-[2vw] md:text-sm max-md:h-[160px] h-[45%] lg:h-[60%] md:px-2 xl:px-4 overflow-y-scroll scrollbar-hidden flex flex-col gap-1 lg:gap-5 ${barSel == 1 ? '' : 'hidden'}`}>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                        <div key={index} className='w-full h-28 flex'>
+                            <div className='h-full w-[15%] lg:w-[10%] flex items-start justify-center'>
+                                <div className='w-[5vw] h-[5vw] md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-slate-200'></div>
+                            </div>
+                            <div className='h-full w-[80%] md:py-2 px-1 lg:px-5 text-[1.5vw] md:text-xs lg:text-base'>
+                                <div>User001</div>
+                                <div className="flex md:my-[1vw] lg:my-1 items-center">
+                                {Array.from({ length: 5 }).map((_, index) => (
+                                <svg key={index} xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" className="bi bi-star-fill w-[1.5vw] md:w-[8px] mx-[0.2vw] lg:mx-0 sm:w-[10px] lg:w-[16px] text-yellow-400" viewBox="0 0 16 16">
+                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                </svg>
+                                ))}
+                                <div className="max-md:text-[1.5vw] ml-1 md:ml-3">
+                                ดีมาก
+                                </div>
+                            </div>
+                            <div>ห้องพักดีมากๆ เลยครับ</div>
+                            <div className='flex mt-2 items-center justify-start gap-[1vw] md:gap-1 lg:gap-3 text-[1.5vw] md:text-xs lg:text-base'>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-hand-thumbs-up-fill text-gray-200 w-[3vw] md:w-8 lg:w-15" viewBox="0 0 16 16">
+                                <path d="M6.956 1.745C7.021.81 7.908.087 8.864.325l.261.066c.463.116.874.456 1.012.965.22.816.533 2.511.062 4.51a10 10 0 0 1 .443-.051c.713-.065 1.669-.072 2.516.21.518.173.994.681 1.2 1.273.184.532.16 1.162-.234 1.733q.086.18.138.363c.077.27.113.567.113.856s-.036.586-.113.856c-.039.135-.09.273-.16.404.169.387.107.819-.003 1.148a3.2 3.2 0 0 1-.488.901c.054.152.076.312.076.465 0 .305-.089.625-.253.912C13.1 15.522 12.437 16 11.5 16H8c-.605 0-1.07-.081-1.466-.218a4.8 4.8 0 0 1-.97-.484l-.048-.03c-.504-.307-.999-.609-2.068-.722C2.682 14.464 2 13.846 2 13V9c0-.85.685-1.432 1.357-1.615.849-.232 1.574-.787 2.132-1.41.56-.627.914-1.28 1.039-1.639.199-.575.356-1.539.428-2.59z"/>
+                                </svg>
+                                <div>58</div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" className="bi bi-hand-thumbs-down-fill text-gray-200 w-[3vw] md:w-8 lg:w-12" viewBox="0 0 16 16">
+                                <path d="M6.956 14.534c.065.936.952 1.659 1.908 1.42l.261-.065a1.38 1.38 0 0 0 1.012-.965c.22-.816.533-2.512.062-4.51q.205.03.443.051c.713.065 1.669.071 2.516-.211.518-.173.994-.68 1.2-1.272a1.9 1.9 0 0 0-.234-1.734c.058-.118.103-.242.138-.362.077-.27.113-.568.113-.856 0-.29-.036-.586-.113-.857a2 2 0 0 0-.16-.403c.169-.387.107-.82-.003-1.149a3.2 3.2 0 0 0-.488-.9c.054-.153.076-.313.076-.465a1.86 1.86 0 0 0-.253-.912C13.1.757 12.437.28 11.5.28H8c-.605 0-1.07.08-1.466.217a4.8 4.8 0 0 0-.97.485l-.048.029c-.504.308-.999.61-2.068.723C2.682 1.815 2 2.434 2 3.279v4c0 .851.685 1.433 1.357 1.616.849.232 1.574.787 2.132 1.41.56.626.914 1.28 1.039 1.638.199.575.356 1.54.428 2.591"/>
+                                </svg>
+                            </div>
+                            </div>
+                            <div className='h-full w-[5%] lg:w-[10%] cursor-pointer flex flex-col items-center justify-center gap-1'>
+                                <div className='w-[0.4vw] h-[0.4vw] lg:w-1 md:h-1 bg-slate-400 rounded-full'></div>
+                                <div className='w-[0.4vw] h-[0.4vw] lg:w-1 md:h-1 bg-slate-400 rounded-full'></div>
+                                <div className='w-[0.4vw] h-[0.4vw] lg:w-1 md:h-1 bg-slate-400 rounded-full'></div>
+                            </div>
+                        </div>
+                    ))}
+
+                </div>
+                <div className={`${barSel == 1 ? '' : 'hidden'}`}>
+                    <div className='w-full h-[18vw] md:h-[160px] lg:h-[200px] flex py-[3vw] md:py-5 lg:py-8'>
+                        <div className='h-full w-[10%] flex items-start justify-center'>
+                            <div className='w-[5vw] h-[5vw] md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-slate-200'></div>
+                        </div>
+                        <div className='h-full w-[70%] md:w-[60%] xl:w-[65%] px-2 md:py-2 lg:px-5 text-[2vw] md:text-sm lg:text-base'>
+                            <div>main user</div>
+                            <div className="flex lg:my-4 gap-[0.3vw] md:gap-1 lg:gap-2 items-center">
+                            {Array.from({ length: 5 }).map((_, index) => (
+                            <svg key={index} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className=" cursor-pointer bi bi-star-fill w-[8px] sm:w-[12px] lg:w-[16px] text-gray-400" viewBox="0 0 16 16">
+                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                            </svg>
+                            ))}
+                            <div className="max-md:text-[2vw] ml-1 md:ml-3">
+                            ดีมาก
+                            </div>
+                        </div>
+                        <div>
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="แสดงความคิดเห็น"
+                            className="rounded-none w-full border-b-2 mb-3"
+                        />
+                        </div>
+                        </div>
+                        <div className='h-full w-[20%] md:w-[30%] xl:w-[25%] cursor-pointer flex items-center md:items-end py-[1vw] md:py-7 justify-between gap-1 text-[2vw] md:text-xs lg:text-base'>
+                            <div className='hidden md:block'>ยกเลิก</div>
+                            <div className='hidden md:block'>ส่งความคิดเห็น</div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="md:hidden w-[2vw] h-[2vw] text-base-300 bi bi-send-fill" viewBox="0 0 16 16">
+                            <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
             <div className='max-md:w-[35%] max-md:h-full bg-white rounded-md col-start-9 col-span-4 row-span-5 p-[3vw] md:p-3 lg:p-5'>
                 <div className='flex gap-[1vw] lg:gap-2 items-center justify-center'>
-                    <div className='text-[2vw] lg:text-xl font-semibold overflow-y'>โรงแรม</div>
+                    <div className='text-[2vw] lg:text-xl font-semibold transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>โรงแรม {param.hotelname}</div>
                     <svg xmlns="http://www.w3.org/2000/svg" className='w-[3vw] lg:w-12' width={20} height={20} viewBox="0 0 640 512"><path d="M32 32c17.7 0 32 14.3 32 32l0 256 224 0 0-160c0-17.7 14.3-32 32-32l224 0c53 0 96 43 96 96l0 224c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-32-224 0-32 0L64 416l0 32c0 17.7-14.3 32-32 32s-32-14.3-32-32L0 64C0 46.3 14.3 32 32 32zm144 96a80 80 0 1 1 0 160 80 80 0 1 1 0-160z"/></svg>
                 </div>
-                <div className='flex flex-col justify-between h-[90%]'>
-                    <div className='w-full'>
-                        <div className='flex justify-between items-center mt-5'>
-                            <div className='text-start text-lg font-semibold'>ประเภท: </div>
-                            <div className='font-normal'>โรงแรมสัตว์เลี้ยง</div>
+                <div className='flex flex-col justify-between h-[90%] text-[2vw] md:text-sm lg:text-lg'>
+                    <div className='w-full '>
+                        <div className='flex justify-between items-center mt-[1vw] md:mt-5'>
+                            <div className='text-start'>ประเภท: </div>
+                            <div className='max-w-40 font-normal transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>โรงแรมสัตว์เลี้ยงมืออาชีพ</div>
                         </div>
                         <div className='flex justify-between items-start mt-2'>
-                            <div className='text-start text-lg font-semibold'>ประเภทห้อง: </div>
-                            <div className='flex justify-end gap-2'>
-                                <div className='font-normal'>ห้องทั่วไป,</div>
-                                <div className='font-normal'>ห้องพิเศษ,</div>
-                                <div className='font-normal'>ห้อง VIP,</div>
-
+                            <div className='text-start transition-all duration-300 ease-in-out max-lg:line-clamp-1 max-lg:overflow-hidden'>ประเภทห้อง: </div>
+                            <div className='max-w-40 transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>
+                                ห้องทั่วไป, ห้องพิเศษ
                             </div>
                         </div>
                         <div className='flex justify-between items-start mt-2'>
-                            <div className='text-start text-lg font-semibold'>สัตว์เลี้ยงที่รับ: </div>
-                            <div className='flex gap-2'>
-                                <div className='font-normal'>🐱</div>
-                                <div className='font-normal'>🐶</div>
-                                <div className='font-normal'>🐶</div>
-                                <div className='font-normal'>และอื่นๆ</div>
-
+                            <div className='text-start transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>สัตว์เลี้ยงที่รับ: </div>
+                            <div className='max-w-40 transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>
+                                🐱, 🐶 และอื่นๆ
                             </div>
                         </div>
                         <div className='flex justify-between items-start mt-2'>
-                            <div className='text-start text-lg font-semibold'>ราคา: </div>
+                            <div className='text-start'>ราคา: </div>
                             <div className='flex justify-end gap-2'>
-                                <div className='font-normal'>2,000 - 10,000 บาท</div>
+                                <div className='max-w-40 font-normal transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>2,000 - 10,000 บาท</div>
   
 
                             </div>
                         </div>
                     </div>
-                    <div>ติดต่อสอบถาม</div>
+                    <a className="flex mt-6 md:mt-0 justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium">
+                        <a >ติดต่อสอบถาม</a>
+                    </a>
 
                 </div>
             </div>

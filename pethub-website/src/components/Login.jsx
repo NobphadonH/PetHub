@@ -32,8 +32,8 @@ function Login() {
       return;
     }
 
-    console.log("Submitted data:", formData);
   };
+  console.log(formData);
   return (
     <>
       <Navbar />

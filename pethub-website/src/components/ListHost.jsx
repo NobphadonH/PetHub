@@ -11,9 +11,9 @@ function ListHost() {
                     <span className="text-black">กับเรา</span>
                 </div>
                 <div className="text-black text-4xl font-bold">ลงชื่อโรงแรมของคุณบน PetHub ได้เลย</div>
-                <div class="flex justify-center">
-                    <div class="max-w-xl mx-auto">
-                        <div class="text-black text-sm mt-6">
+                <div className="flex justify-center">
+                    <div className="max-w-xl mx-auto">
+                        <div className="text-black text-sm mt-6">
                             เชิญเจ้าของที่พักลงประกาศที่พักที่เป็นมิตรกับสัตว์เลี้ยงของคุณ เพื่อเข้าถึงกลุ่มเจ้าของสัตว์เลี้ยง
                             ลงประกาศฟรี ลงทะเบียนง่าย และชำระเงินปลอดภัย
                         </div>
