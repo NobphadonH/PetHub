@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/auth.route.js";
 import petRoutes from "./routes/pet.route.js";
+import hotelRoutes from "./routes/hotel.route.js"
+import creditCardRoutes from "./routes/creditCard.route.js"
+import userRoutes from "./routes/user.route.js"
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,6 +24,9 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/pet", petRoutes);
+app.use("/api/hotel", hotelRoutes);
+app.use("/api/creditCard", creditCardRoutes);
+app.use("/api/user", userRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
