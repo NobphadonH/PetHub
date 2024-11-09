@@ -1,18 +1,24 @@
 import Navbar from "./Utils/Navbar"
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import axios from 'axios'
 
-function PictureUpload() {
+function PictureUpload({onImageSelected}) {
     const [selectedImage, setSelectedImage] = useState(null);
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            setSelectedImage(URL.createObjectURL(file));
+            const imgUrl = URL.createObjectURL(file)
+            setSelectedImage(imgUrl);
+            onImageSelected(file);
+            
         }
     };
 
     const handleDeleteImage = () => {
         setSelectedImage(null);
+        onImageSelected(null)
     };
 
     return (
@@ -34,6 +40,7 @@ function PictureUpload() {
             ) : (
                 <div className="relative flex flex-col items-center justify-center h-64">
                     <input
+                        name="selectedImage"
                         type="file"
                         id="file-upload"
                         accept="image/*"
@@ -52,7 +59,7 @@ function PictureUpload() {
     );
 }
 
-function TypeChoiceBoxes() {
+function TypeChoiceBoxes({onSelectType}) {
     const [selected, setSelected] = useState(null);
 
     const options = [
@@ -78,6 +85,11 @@ function TypeChoiceBoxes() {
         }
     ];
 
+    const handleSelect = (optionId) => {
+        setSelected(optionId);
+        onSelectType(optionId);
+    };
+
     return (
         <div className="grid grid-cols-2 gap-4 mt-4">
             {options.map(option => (
@@ -86,7 +98,7 @@ function TypeChoiceBoxes() {
                     className={`col-span-1 bg-white border p-6 rounded-xl drop-shadow-md cursor-pointer ${
                         selected === option.id ? 'border-pethub-color4' : 'border-neutral-100'
                     }`}
-                    onClick={() => setSelected(option.id)}
+                    onClick={() => handleSelect(option.id)}
                 >
                     <div className="grid grid-cols-6 gap-2">
                         <div className="col-start-1 col-span-1 flex items-center">
@@ -106,6 +118,78 @@ function TypeChoiceBoxes() {
 }
 
 function Basics() {
+
+    const navigate = useNavigate();
+   
+    const [formData, setFormData] = useState({
+        hotelName: "",
+        hotelDescription: "",
+        hotelPolicy: "",
+        hotelAddress: "",
+        district: "",
+        hotelType: null,
+        selectedImage: null, // For the image
+        checkInFrom: "15:00",     //temporary for test
+        checkOutUntil: "11:00"
+    })
+
+    const handleChange = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        setFormData((values) => ({
+            ...values,
+            [name]: value,
+        }));
+    };
+
+    const handleTypeChange = (type) => {
+        setFormData(prevState => ({
+            ...prevState,  // Keep the previous state
+            hotelType: type,  // Update only the hotelType
+        }));
+    };
+
+    const handleImageChange = (img) => {
+        setFormData(prevState => ({
+            ...prevState,  // Keep the previous state
+            selectedImage: img,  // Update only the hotelType
+        }));
+    };
+
+
+
+    const goAddRoomsPage = () => {
+        // You can pass the formData as state when navigating
+        console.log(formData);
+        // navigate("/pethub-website/rooms", { state: formData });
+    };
+
+    const testAddHotel = async () => {
+        const data = new FormData()
+        data.append('hotelName', formData.hotelName);
+        data.append('hotelDescription', formData.hotelDescription);
+        data.append('hotelPolicy', formData.hotelPolicy);
+        data.append('hotelAddress', formData.hotelAddress);
+        data.append('district', formData.district);
+        data.append('hotelType', formData.hotelType);
+        data.append('checkInFrom', formData.checkInFrom);
+        data.append('checkOutUntil', formData.checkOutUntil);
+        if (formData.selectedImage) {
+            data.append('selectedImage', formData.selectedImage, formData.selectedImage.name);
+        }
+
+        console.log(formData)
+        try{
+            const res = axios.post('http://localhost:5000/api/hotel/createHotel/', data, {headers:{"Contetnt-Type":"multipart/form-data" }})
+            console.log(res.data)
+            console.log(res.status)
+            // console.log(formData)
+            // console.log(data)
+        } catch(error) {
+            console.error(error);
+        }
+    }
+
     const districts = [
         "เขตพระนคร", "เขตดุสิต", "เขตหนองจอก", "เขตบางรัก", "เขตบางเขน",
         "เขตบางกะปิ", "เขตปทุมวัน", "เขตป้อมปราบศัตรูพ่าย", "เขตพระโขนง", "เขตมีนบุรี",
@@ -147,27 +231,33 @@ function Basics() {
                         <div className="text-left text-gray-600 text-sm mt-2">ทำให้โดดเด่นและน่าเข้าพัก เพราะนี่เป็นสิ่งแรกที่เจ้าของสัตว์เลี้ยงจะเห็น</div>
                         <label className="form-control w-full mt-6">
                             <div className="text-left text-black text-base mb-2">ชื่อที่พัก</div>
-                            <input type="text" placeholder="ใส่ชื่อที่พักของคุณที่นี่" className="input input-bordered drop-shadow-sm w-full focus:outline-none focus:border-pethub-color4" />
+                            
+                            <input name="hotelName" value = {formData.hotelName||""} onChange={handleChange} type="text" placeholder="ใส่ชื่อที่พักของคุณที่นี่" className="input input-bordered drop-shadow-sm w-full focus:outline-none focus:border-pethub-color4" />
                         </label>
                         <div className="text-left text-black font-bold text-xl mt-12">เลือกประเภทโรงแรมสัตว์เลี้ยงของคุณ</div>
                         <div className="text-left text-gray-600 text-sm mt-2">เลือกหนึ่งจากตัวเลือกด้านล่าง</div>
-                        <TypeChoiceBoxes />
+                        <TypeChoiceBoxes onSelectType={handleTypeChange}/>
                         <div className="text-left text-black font-bold text-xl mt-12">รายละเอียดที่พักของคุณ</div>
                         <div className="text-left text-gray-600 text-sm mt-2">ให้ข้อมูลภาพรวมเพื่อให้ลูกค้าเข้าใจรายละเอียดของที่พัก</div>
-                        <textarea placeholder="อธิบายสถานที่ของคุณ" className="textarea textarea-bordered textarea-md drop-shadow-sm w-full max-w-xl mt-4 focus:outline-none focus:border-pethub-color4"></textarea>
+                        <input name="hotelDescription" value = {formData.hotelDescription||""} onChange={handleChange} type="text" placeholder="อธิบายสถานที่ของคุณ" className="input input-bordered drop-shadow-sm w-full focus:outline-none focus:border-pethub-color4"/>
+                        {/* <textarea placeholder="อธิบายสถานที่ของคุณ" className="textarea textarea-bordered textarea-md drop-shadow-sm w-full max-w-xl mt-4 focus:outline-none focus:border-pethub-color4"></textarea> */}
                         <div className="text-left text-black font-bold text-xl mt-12">ข้อกำหนดในการเข้าพักที่พักของคุณ</div>
                         <div className="text-left text-gray-600 text-sm mt-2">ให้ข้อมูลเงื่อนไขเพื่อให้ลูกค้าเข้าใจข้อตกลง</div>
-                        <textarea placeholder="อธิบายเงื่อนไขของคุณ เช่น ประเภทสัตว์เลี้ยง การเช็คอิน การเช็คเอาท์ เป็นต้น" className="textarea textarea-bordered textarea-md drop-shadow-sm w-full max-w-xl mt-4 focus:outline-none focus:border-pethub-color4"></textarea>
+                        <input name="hotelPolicy" value = {formData.hotelPolicy||""} onChange={handleChange} type="text" placeholder="อธิบายเงื่อนไขของคุณ เช่น ประเภทสัตว์เลี้ยง การเช็คอิน การเช็คเอาท์ เป็นต้น" className="input input-bordered drop-shadow-sm w-full focus:outline-none focus:border-pethub-color4"/>
+
+                        {/* <textarea placeholder="อธิบายเงื่อนไขของคุณ เช่น ประเภทสัตว์เลี้ยง การเช็คอิน การเช็คเอาท์ เป็นต้น" className="textarea textarea-bordered textarea-md drop-shadow-sm w-full max-w-xl mt-4 focus:outline-none focus:border-pethub-color4"></textarea> */}
                         <div className="text-left text-black font-bold text-xl mt-12">สถานที่ตั้ง</div>
                         <div className="text-left text-gray-600 text-sm mt-2">ลูกค้าจะได้รับที่อยู่ที่แน่นอนของคุณก็ต่อเมื่อทำการจองเรียบร้อยแล้ว</div>
                         <label className="form-control w-full mt-6">
                             <div className="text-left text-black text-base mb-2">ที่อยู่</div>
-                            <textarea placeholder="อธิบายตำแหน่งสถานที่ของคุณ" className="textarea textarea-bordered textarea-md drop-shadow-sm w-full max-w-xl focus:outline-none focus:border-pethub-color4"></textarea>
+                            <input name="hotelAddress" value = {formData.hotelAddress||""} onChange={handleChange} type="text" placeholder="อธิบายตำแหน่งสถานที่ของคุณ" className="input input-bordered drop-shadow-sm w-full focus:outline-none focus:border-pethub-color4"/>
+
+                            {/* <textarea placeholder="อธิบายตำแหน่งสถานที่ของคุณ" className="textarea textarea-bordered textarea-md drop-shadow-sm w-full max-w-xl focus:outline-none focus:border-pethub-color4"></textarea> */}
                         </label>
                         <div className="grid grid-cols-2 gap-4">
                             <label className="form-control w-full mt-4">
                                 <div className="text-left text-black text-base mb-2">เขต</div>
-                                <select className="select select-bordered drop-shadow-sm w-full max-w-xs focus:outline-none focus:border-pethub-color4">
+                                <select name="district" value={formData.district} onChange={handleChange} className="select select-bordered drop-shadow-sm w-full max-w-xs focus:outline-none focus:border-pethub-color4">
                                     <option disabled selected style={{ color: 'gray' }}>เขต</option>
                                     {districts.map((district, index) => (
                                         <option key={index} style={{ color: 'black' }}>
@@ -179,12 +269,12 @@ function Basics() {
                         </div>
                         <div className="text-left text-black font-bold text-xl mt-12">ใส่รูปของโรงแรมของคุณ</div>
                         <div className="text-left text-gray-600 text-sm mt-2 mb-4">ใส่รูปเพื่อให้ลูกค้าเห็นภาพบรรยากาศของโรงแรม</div>
-                        <PictureUpload />
+                        <PictureUpload onImageSelected={handleImageChange}/>
                         
                     </div>
                 </div>
                 <div className="flex justify-end items-center w-full max-w-3xl -mt-4 mb-4 p-6 mx-auto">
-                    <button className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
+                    <button onClick={testAddHotel} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
                         ขั้นตอนต่อไป
                     </button>
                 </div>

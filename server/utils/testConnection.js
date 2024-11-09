@@ -1,5 +1,8 @@
 import { connectToDatabase } from "./dbConnection.js"; // Adjust the path if needed
+import {S3Client, ListBucketsCommand} from "@aws-sdk/client-s3";
 
+
+ 
 const testF = async () => {
   try {
     const { dbpool, sshClient } = await connectToDatabase();
@@ -20,6 +23,8 @@ const testF = async () => {
           console.log("Test query result:", results); // Log the entire results
         }
 
+        
+
         // Close the connection and SSH client after the test
         connection.release(); // Release the connection back to the pool
         sshClient.end();
@@ -31,6 +36,19 @@ const testF = async () => {
   }
 };
 
+const testS3 = async() => {
+  const s3 = new S3Client({region: 'ap-southeast-2'})
 
-// Call the function
-testF();
+  const params = {
+    Bucket: process.env.S3_BUCKET_NAME
+  }
+
+  try {
+    const data = await s3.send(new ListBucketsCommand(params))
+    console.log(data)
+  } catch (err) {
+    console.log("s3 error", err);
+  }
+}
+
+testS3()

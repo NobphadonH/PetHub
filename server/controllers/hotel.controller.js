@@ -1,5 +1,6 @@
 import { connectToDatabase } from "../utils/dbConnection.js";
 import { uploadFileToS3, downloadFileFromS3 } from "../utils/s3FileTransfer.js";
+import fs from 'fs'
 
 export const getHotelByID = async (req, res) => {
     try {
@@ -13,7 +14,7 @@ export const getHotelByID = async (req, res) => {
                 return;
             }
 
-            connection.query("SELECT * FROM hotels WHERE hotelID = ?",
+            connection.query("SELECT * FROM Hotels WHERE hotelID = ?",
                 [hotelID],
                 (err, rows) => {
                     if (err) throw err
@@ -27,13 +28,18 @@ export const getHotelByID = async (req, res) => {
                             ...hotelData,
                             hotelPhoto: `data:${photoData.ContentType};base64,${hotelPhotoBuffer.toString('base64')}`
                         })
+                        connection.release()
+                        sshClient.end()
                     }).catch((error) => {
                         console.error("download failed:", error)
+                        if (!res.headersSent) { // Ensure response is not already sent
+                            res.status(500).json({ error: 'Failed to download photo from S3' });
+                        }
                     })
 
-                    res.status(200).send(hotelData)
-                    connection.release()
-                    sshClient.end()
+                    // res.status(200).send(hotelData)
+                    // connection.release()
+                    // sshClient.end()
                 }
             )
         })
@@ -55,7 +61,7 @@ export const getHotelByVerification = async (req, res) => {
                 return;
             }
 
-            connection.query("SELECT * FROM hotels WHERE verification = ?", 
+            connection.query("SELECT * FROM Hotels WHERE verification = ?", 
                 [verification],
                 (err, rows) => {
                 if (err) throw err;
@@ -103,11 +109,15 @@ export const verifyHotel = async (req, res) => {
 
 export const createHotel = async (req, res) => {
     try {
-        const {hotelName, hotelType, hotelDetail, hotelPolicy, hotelAddress, checkInFrom, checkOutUntil} = req.body
+        const {hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, checkInFrom, checkOutUntil, selectedImage} = req.body
         const filePath = req.file.path
-        const fileName = req.file.originalName
+        const fileName = req.file.filename
         const fileContent = fs.readFileSync(filePath)
 
+        // res.status(200);
+        console.log(req.body)
+        // console.log(req.file)
+        // return;
         const { dbpool, sshClient } = await connectToDatabase();
 
         uploadFileToS3(fileName, fileContent, req.file.mimetype).then((url) => {
@@ -121,13 +131,13 @@ export const createHotel = async (req, res) => {
                 }
                 const mapLat = "20"
                 const mapLong = "30"
-                const query = `INSERT INTO Hotels (hotelName, hotelType, hotelDetail, hotelPolicy, hotelAddress, mapLat, mapLong,
+                const query = `INSERT INTO Hotels (hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, mapLat, mapLong,
                 checkInFrom, checkOutUntil, hotelPhoto, verification) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
                 connection.query(
                     query,
-                    [hotelName, hotelType, hotelDetail, hotelPolicy. hotelAddressm, mapLat, mapLong, checkInFrom, checkOutUntil, url, "unverified"],
+                    [hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, mapLat, mapLong, checkInFrom, checkOutUntil, url, "unverified"],
                     (err, results) => {
                         if (err) throw err
                         console.log(results)
