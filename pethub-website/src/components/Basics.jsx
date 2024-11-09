@@ -16,7 +16,7 @@ function PictureUpload() {
     };
 
     return (
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 w-full max-w-xl mx-auto text-center">
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 w-full max-w-xl mx-auto text-center mb-6">
             {selectedImage ? (
                 <div className="relative">
                     <img
@@ -106,6 +106,19 @@ function TypeChoiceBoxes() {
 }
 
 function Basics() {
+    const districts = [
+        "เขตพระนคร", "เขตดุสิต", "เขตหนองจอก", "เขตบางรัก", "เขตบางเขน",
+        "เขตบางกะปิ", "เขตปทุมวัน", "เขตป้อมปราบศัตรูพ่าย", "เขตพระโขนง", "เขตมีนบุรี",
+        "เขตลาดกระบัง", "เขตยานนาวา", "เขตสัมพันธวงศ์", "เขตพญาไท", "เขตธนบุรี",
+        "เขตบางกอกใหญ่", "เขตห้วยขวาง", "เขตคลองสาน", "เขตตลิ่งชัน", "เขตบางกอกน้อย",
+        "เขตบางขุนเทียน", "เขตภาษีเจริญ", "เขตหนองแขม", "เขตราษฎร์บูรณะ", "เขตราชเทวี",
+        "เขตบางพลัด", "เขตดินแดง", "เขตบึงกุ่ม", "เขตสาทร", "เขตบางซื่อ",
+        "เขตจตุจักร", "เขตบางคอแหลม", "เขตประเวศ", "เขตคลองเตย", "เขตสวนหลวง",
+        "เขตจอมทอง", "เขตดอนเมือง", "เขตราชบูรณะ", "เขตหลักสี่", "เขตสายไหม",
+        "เขตคันนายาว", "เขตสะพานสูง", "เขตวังทองหลาง", "เขตคลองสามวา", "เขตบางนา",
+        "เขตทวีวัฒนา", "เขตทุ่งครุ", "เขตบางบอน"
+    ];
+
     return (
         <div>
             <Navbar />
@@ -155,31 +168,19 @@ function Basics() {
                             <label className="form-control w-full mt-4">
                                 <div className="text-left text-black text-base mb-2">เขต</div>
                                 <select className="select select-bordered drop-shadow-sm w-full max-w-xs focus:outline-none focus:border-pethub-color4">
-                                    <option disabled selected>เขต</option>
-                                    <option>บางมด</option>
-                                    <option>บางขุนเทียน</option>
+                                    <option disabled selected style={{ color: 'gray' }}>เขต</option>
+                                    {districts.map((district, index) => (
+                                        <option key={index} style={{ color: 'black' }}>
+                                            {district}
+                                        </option>
+                                    ))}
                                 </select>
                             </label>
                         </div>
                         <div className="text-left text-black font-bold text-xl mt-12">ใส่รูปของโรงแรมของคุณ</div>
                         <div className="text-left text-gray-600 text-sm mt-2 mb-4">ใส่รูปเพื่อให้ลูกค้าเห็นภาพบรรยากาศของโรงแรม</div>
                         <PictureUpload />
-                        <div className="text-left text-black font-bold text-xl mt-12">ระยะทาง</div>
-                        <div className="text-left text-gray-600 text-sm mt-2">ข้อมูลระยะทางจากสถานที่สำคัญ</div>
-                        <label className="form-control w-full mt-4">
-                            <div className="text-left text-black text-base mb-2">ระยะทางจากเมือง</div>
-                            <div className="flex flex-row">
-                                <input type="text" placeholder="0" className="input input-bordered drop-shadow-sm w-full max-w-xs focus:outline-none focus:border-pethub-color4" />
-                                <div className="flex items-center justify-center text-gray-600 ml-4">กิโลเมตร</div>
-                            </div>
-                        </label>
-                        <label className="form-control w-full mt-4 mb-8">
-                            <div className="text-left text-black text-base mb-2">ระยะทางจากสนามบิน</div>
-                            <div className="flex flex-row">
-                                <input type="text" placeholder="0" className="input input-bordered drop-shadow-sm w-full max-w-xs focus:outline-none focus:border-pethub-color4" />
-                                <div className="flex items-center justify-center text-gray-600 ml-4">กิโลเมตร</div>
-                            </div>
-                        </label>
+                        
                     </div>
                 </div>
                 <div className="flex justify-end items-center w-full max-w-3xl -mt-4 mb-4 p-6 mx-auto">
