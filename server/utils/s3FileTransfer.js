@@ -1,6 +1,7 @@
 // Import AWS SDK and the S3 config
-const AWS = require('aws-sdk');
-const s3 = new AWS.S3();
+// import AWS from 'aws-sdk';
+import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+const s3 = new S3Client({region: 'ap-southeast-2'});
 
 const s3Params = {
     Bucket: 'YOUR_BUCKET_NAME',
@@ -19,7 +20,8 @@ export const uploadFileToS3 = async (fileName, fileContent, mimeType) => {
     }
 
       try {
-        const result = await s3.upload(s3Params).promise();
+        const command = new PutObjectCommand(s3Params);
+        const result = await s3.send(command); // send the command using the `send` method
         console.log('File uploaded successfully:', result.Location);
         return result.Location.substring(result.Location.indexOf('uploads/'));
       } catch (error) {
@@ -36,7 +38,8 @@ export const downloadFileFromS3 = async (fileName) => {
     }
 
       try {
-        const data = await s3.getObject(s3Params).promise();
+        const command = new GetObjectCommand(s3Params);
+        const data = await s3.send(command); // send the command using the `send` method
         console.log('File uploaded successfully:', result.Location);
         return data;
       } catch (error) {
