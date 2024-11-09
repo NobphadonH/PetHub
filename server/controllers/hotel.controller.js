@@ -43,7 +43,7 @@ export const getHotelByID = async (req, res) => {
     }
 }
 
-export const getHotelByVerication = async (req, res) => {
+export const getHotelByVerification = async (req, res) => {
     try {
         const {verification} = req.body
         const { dbpool, sshClient } = await connectToDatabase();
