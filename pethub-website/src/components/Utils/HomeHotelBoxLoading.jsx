@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 function HomeHotelBoxLoading() {
     return (
       <div className="bg-white mx-auto w-full md:w-[350px] lg:w-[940px] xl:w-[1040px] h-[60vw] md:h-[480px] lg:h-[320px] border-2 lg:mx-auto rounded-md p-2 md:p-4 lg:p-8 flex lg:gap-10 flex-col lg:flex-row">

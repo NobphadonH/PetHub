@@ -44,17 +44,17 @@ function Login() {
             <div className=" flex items-center justify-center gap-3">
               <h1 className="text-3xl font-bold">
                 ยินดีต้อนรับสู่{" "}
-                <span className="text-pethub-color1">Pethub</span>
+                <span className="text-pethub-color1">PET HUB</span>
               </h1>
               <span className="lg:inline-flex items-center hidden ">
                 <img src={logo} alt="logo" width={30} />
               </span>
             </div>
             <h2 className=" font-medium mt-10 mb-5">
-              เข้าสู๋ระบบด้วย Pethub account
+              เข้าสู๋ระบบด้วย PET HUB account
             </h2>
             <form onSubmit={handleSubmit}>
-              <p className="text-start text-sm my-3">Email</p>
+              <p className="text-start text-sm my-3">อีเมล</p>
               <input
                 type="email"
                 name="email"
@@ -63,13 +63,13 @@ function Login() {
                 placeholder="example@gmail.com"
                 className="input input-bordered w-full bg-gray-100 mb-3"
               />
-              <p className="text-start text-sm my-3">Password</p>
+              <p className="text-start text-sm my-3">รหัสผ่าน</p>
               <input
                 type="password"
                 name="password"
                 onChange={handleChange}
                 value={formData.password}
-                placeholder="Password"
+                placeholder="รหัสผ่าน"
                 className="input input-bordered w-full bg-gray-100 mb-6"
               />
               <button

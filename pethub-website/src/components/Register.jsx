@@ -87,7 +87,7 @@ function Register() {
                   />
                 </div>
                 <div className="col-span-2 md:col-span-1">
-                  <p className="text-start text-sm mb-3">Email</p>
+                  <p className="text-start text-sm mb-3">อีเมล</p>
                   <input
                     type="email"
                     name="email"
@@ -108,7 +108,7 @@ function Register() {
                   />
                 </div>
                 <div className="col-span-2 md:col-span-1">
-                  <p className="text-start text-sm mb-3">Password</p>
+                  <p className="text-start text-sm mb-3">รหัสผ่าน</p>
                   <input
                     type="password"
                     name="password"
@@ -118,7 +118,7 @@ function Register() {
                   />
                 </div>
                 <div className="col-span-2 md:col-span-1">
-                  <p className="text-start text-sm mb-3">Confirm Password</p>
+                  <p className="text-start text-sm mb-3">ยืนยันรหัสผ่าน</p>
                   <input
                     type="password"
                     name="confirmPassword"

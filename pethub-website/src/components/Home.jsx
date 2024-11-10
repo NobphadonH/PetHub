@@ -96,17 +96,17 @@ function Home() {
     <div>
       <Navbar />
       {/* section1 */}
-      <div className="text-start mt-20 lg:mt-32 bg-pethub-color1 w-11/12 xl:w-8/12 h-full mx-auto p-8 md:py-10 md:px-12 xl:px-28 relative rounded-md overflow-hidden z-10 opacity-80">
-        <div className="absolute top-0 right-0 left-0 bottom-0 z-0">
+      <div className="text-start mt-20 lg:mt-32 bg-pethub-color1 w-11/12 xl:w-10/12 max-w-[1200px] h-[270px] md:h-full mx-auto p-8 md:py-10 md:px-12 xl:px-28 relative rounded-md overflow-hidden z-10 opacity-80">
+        <div className="absolute top-0 right-0 left-0 md:bottom-0 z-0">
             <img
                 src="https://tidypets.store/cdn/shop/files/view-cats-dogs-being-friends.jpg?v=1726648599&width=2000"
                 alt=""
-                className="w-full h-full object-cover opacity-80"
+                className=" max-md:scale-150 w-full h-full object-cover opacity-80"
             />
         </div>
-        <h1 className="text-5xl md:text-7xl relative z-20 text-pethub-color1  ">PetHub</h1>
+        <h1 className="text-5xl md:text-7xl relative z-20 text-pethub-color1  ">PET HUB</h1>
         <h4 className="text-sm lg:text-lg relative z-20">เลือกโรงแรมให้เหมาะสมกับน้องๆของคุณ</h4>
-        <div className="md:grid grid-cols-12 md:grid-cols-12 gap-14 mt-24 relative z-20">
+        <div className="grid max-md:grid-rows-2 grid-cols-12 md:grid-cols-12 gap-5 lg:gap-7 xl:gap-14 mt-8 md:mt-24 relative z-20">
             <div className="hidden md:block col-span-3">
                 <select className="select select-bordered w-full max-w-xs shadow-xl" style={{ color: 'gray' }}>
                     <option disabled selected style={{ color: 'gray' }}>ประเภทสัตว์</option>
@@ -132,25 +132,35 @@ function Home() {
                 </select>
             </div>
             <div className="hidden md:block col-span-1"></div>
-            <div className="col-span-10">
-            <label className="input input-bordered flex items-center gap-2 input-shadow">
-                <input type="text" className="grow" placeholder="ค้นหาจากชื่อโรงแรม" />
-                <a href="">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 16 16"
-                        fill="currentColor"
-                        className="h-4 w-4 opacity-70">
-                        <path
-                        fillRule="evenodd"
-                        d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-                        clipRule="evenodd" />
-                    </svg>
-                </a>
+            <div className="col-span-6 md:col-span-3">
+                <label className="input w-[40vw] h-[10vw] max-h-12 max-w-full text-[3vw] sm:text-sm input-bordered flex items-center gap-2 input-shadow">
+                    <input type="date" className="grow " />
+                </label>
+            </div>
+            <div className="col-span-6 md:col-span-3">
+                <label className="input w-[40vw] h-[10vw] max-h-12 max-w-full text-[3vw] sm:text-xs input-bordered flex items-center gap-2 input-shadow">
+                    <input type="date" className="grow" />
+                </label>
+            </div>
+            <div className="max-md:row-start-2 col-span-12 md:col-span-4">
+                <label className="input input-bordered flex items-center gap-2 h-[10vw] max-h-12 max-w-full input-shadow  text-[3vw] sm:text-xs lg:text-base">
+                    <input type="text" className="grow" placeholder="ค้นหาจากชื่อโรงแรม" />
+                    <a href="">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 16 16"
+                            fill="currentColor"
+                            className="h-4 w-4 opacity-70">
+                            <path
+                            fillRule="evenodd"
+                            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
+                            clipRule="evenodd" />
+                        </svg>
+                    </a>
                 </label>
             </div>
             <div className="col-span-2">
-                <a href="/" className="btn bg-pethub-color1 border-pethub-color1 font-medium max-md:hidden text-white relative z-20">search</a>
+                <a href="/" className="btn bg-pethub-color1 border-pethub-color1 font-medium max-md:hidden text-white relative z-20">ค้นหา</a>
             </div>
         </div>  
         <div className="absolute bottom-0 right-0 left-0 h-12 md:h-16 bg-white z-10"></div>
@@ -184,7 +194,7 @@ function Home() {
             </div>
         </div>
         <div className="col-span-12">
-            <div className="mt-5 mb-5 text-pethub-color1">{hotelData.length} ผลการค้นหา</div>
+            <div className="my-2 lg:my-5 text-[3vw] md:text-sm lg:text-lg text-pethub-color1">{hotelData.length} ผลการค้นหา</div>
         </div>
         {pagedata.map((hotel, index) => (
             <div key={index} className="col-span-6 lg:col-span-12 row-span-3">

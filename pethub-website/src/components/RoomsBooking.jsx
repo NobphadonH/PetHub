@@ -2,13 +2,16 @@ import { useParams } from "react-router-dom";
 import Navbar from "./Utils/Navbar";
 import { useState, useEffect, useRef } from 'react';
 import Footer from "./Utils/Footer";
+import PictureUpload from "./Utils/PictureUpload";
 
 function RoomsBooking() {
   const param = useParams();
   const [currentDate, setCurrentDate] = useState('');
   const [addbut, setAddbut] = useState(false)
-  const [customPet, setCustomPet] = useState(false)
+  const [myPet, setMyPet] = useState([false, false])
+  const [customPet, setCustomPet] = useState(0)
   const elementRef = useRef(null);
+  const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
     // Get today's date in the format YYYY-MM-DD
@@ -29,14 +32,44 @@ function RoomsBooking() {
     setAddbut(e => !e)
 }
 
-const handleToggleCustom = () => {
-    setCustomPet(e => !e)
+  const handleAddCustom = () => {
+    setCustomPet((e) => (e < 3 ? e + 1 : e));
     setAddbut(false)
-  }
+  };
+  
+  const handleRemoveCustom = () => {
+    setCustomPet((e) => (e > 0 ? e - 1 : e));
+  };
+
+  const handleAddMyPet = (id) => {
+    setMyPet((prevMyPet) => {
+      const updatedMyPet = [...prevMyPet];
+      updatedMyPet[id] = true;
+      return updatedMyPet;
+    });
+  };
+  
+  const handleRemoveMyPet = (id) => {
+    setMyPet((prevMyPet) => {
+      const updatedMyPet = [...prevMyPet];
+      updatedMyPet[id] = false; 
+      return updatedMyPet;
+    });
+  };
+  
 
   const handleClickOutside = (event) => {
     if (elementRef.current && !elementRef.current.contains(event.target)) {
       setAddbut(false); // Hide the element when clicking outside
+    }
+  };
+
+  const handleImageSelected = (file) => {
+    setImageFile(file);
+    if (file) {
+      console.log("Selected image file:", file.name);
+    } else {
+      console.log("Image file removed");
     }
   };
 
@@ -99,37 +132,115 @@ const handleToggleCustom = () => {
                         <p className="font-semibold text-[2vw] md:text-lg my-6">ข้อมูลสัตว์เลี้ยง</p>
                         <div className="relative">
                             <div onClick={handleToggleAdd} className="btn bg-pethub-color1 text-white">เพิ่มสัตว์เลี้ยง +</div>
-                            <div ref={elementRef} className={` z-50 absolute bg-white rounded-md w-[70%] max-h-48 border-2 border-pethub-color3 top-14 overflow-y-hidden ${addbut ? '' : 'hidden'}`}>
-                                <div className="h-24 w-full overflow-y-scroll hide-scrollbar">
-                                    <div className="w-full h-16 flex items-center justify-between px-5 bg-gray-white">
-                                        <p className="text-start text-[1vw] md:text-sm my-3">นปโปะ</p>
-                                        <div className="hover:scale-110">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" className="text-pethub-color3 bi bi-plus-square-fill" viewBox="0 0 16 16">
-                                            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0"/>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div className="w-full h-16 flex items-center justify-between px-5 bg-gray-white">
-                                        <p className="text-start text-[1vw] md:text-sm my-3">นปโปะ</p>
-                                        <div className="hover:scale-110">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" className="text-pethub-color5 bi bi-plus-square-fill" viewBox="0 0 16 16">
-                                            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0"/>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div className="w-full h-16 flex items-center px-5 bg-gray-white">pet1</div>
-                                    <div className="w-full h-16 flex items-center px-5 bg-gray-white">pet1</div>
+                            <div ref={elementRef} className={` z-50 absolute bg-white rounded-sm w-[70%] max-h-64 border-[1px] top-14 overflow-y-hidden ${addbut ? '' : 'hidden'}`}>
+                                <div className="w-full h-16 bg-gray-100 flex items-center px-5 justify-between cursor-pointer">
+                                    <p className="text-[2vw] md:text-lg">สัตว์เลี้ยงของฉัน</p>
                                 </div>
-                                <div onClick={handleToggleCustom} className="w-full h-16 bg-gray-100 flex items-center px-5 justify-between cursor-pointer">
+                                <div className="h-24 w-full overflow-y-scroll hide-scrollbar">
+                                    {Array.from({ length: 2}).map((_, index) => {
+                                        return (
+                                            <div key={index} className="w-full h-16 flex items-center justify-between px-5 bg-gray-white">
+                                                <p className="text-start text-[1vw] md:text-sm my-3">นปโปะ</p>
+                                                <div className="hover:scale-110">
+                                                    <svg onClick={() => handleAddMyPet(index)} xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" className="text-pethub-color3 bi bi-plus-square-fill" viewBox="0 0 16 16">
+                                                    <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0"/>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                                <div className="w-full h-16 bg-gray-100 flex items-center px-5 justify-between cursor-pointer">
                                     <p className="text-[2vw] md:text-lg">กำหนดสัตว์เลี้ยงเอง</p>
-                                    <div className="hover:scale-110">
+                                    <div  onClick={handleAddCustom} className="hover:scale-110">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" className="text-gray-500 bi bi-plus-square-fill" viewBox="0 0 16 16">
                                         <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0"/>
                                         </svg>
                                     </div>
                                 </div>
-
                             </div>
+                            {Array.from({ length: 2}).map((_, index) => (
+                                <div id={index} key={index} className={`${myPet[index] ? "" : "hidden"} w-full relative h-48 border-[1px] my-3 rounded-md p-1 flex`}>
+                                    <div className="absolute right-3 top-3">
+                                        <svg onClick={() => handleRemoveMyPet(index)} xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="text-gray-400 cursor-pointer bi bi-trash3-fill" viewBox="0 0 16 16">
+                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                                        </svg>
+                                    </div>
+                                    <div className="w-[30%] h-full rounded bg-slate-300 overflow-hidden">
+                                        <img src="https://s.isanook.com/ca/0/ui/285/1425207/staywithnoppo-20240522_152537-446114668_721839553257673_573084092354014144_n.jpeg" alt="" />
+                                    </div>
+                                    <div className="w-[65%] h-full p-5">
+                                        <div className="flex justify-between">
+                                            <div>ชื่อ: นปโปะ</div>
+                                            <div>อายุ:1 ปี 2 เดือน</div>
+                                            <div>ประเภท: สุนัข</div>
+                                            <div>เพศ: เพศผู้</div>
+                                        </div>
+                                        <p className="text-start text-[1vw] md:text-sm my-3">คำอธิบายลักษณะเพิ่มเติม</p>
+                                        <textarea className="textarea w-full min-h-20 max-h-20 textarea-bordered hide-scrollbar text-gray-600" value={"นปโปะหม่ำๆ หม่ำๆ กู๊ดบอย กู๊ดบอยหม่ำๆ หม่ำๆ เก่งมาก "}></textarea>
+                                    </div>
+                                </div>
+                            ))}
+                            {Array.from({ length: customPet }).map((_, index) => (
+                                <div  key={index} className="my-5">
+                                    
+                                    <p className="font-semibold text-[2vw] md:text-lg my-3">สัตว์เลี้ยงตัวที่ {index + 1}</p>
+                                    <div className="relative w-full border-[1px] rounded-md p-3">
+                                        <div className="absolute right-3 top-3">
+                                            <svg onClick={handleRemoveCustom} xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="text-gray-400 cursor-pointer bi bi-trash3-fill" viewBox="0 0 16 16">
+                                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                                            </svg>
+                                        </div>
+
+                                        <div className="flex gap-10">
+                                            <div>
+                                                <p className="text-start text-[1vw] md:text-sm my-3">ประเภท</p>
+                                                <select className="select bg-gray-100 select-bordered w-64 max-w-xs">
+                                                    <option disabled selected>ประเภทสัตว์</option>
+                                                    <option>สุนัข</option>
+                                                    <option>แมว</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <p className="text-start text-[1vw] md:text-sm my-3">ชื่อน้องๆ</p>
+                                                <input
+                                                    type="text"
+                                                    name="email"
+                                                    placeholder="ชื่อของน้องๆ"
+                                                    className="input input-bordered w-64 bg-gray-100 mb-3"
+                                                />
+
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-10 items-end">
+                                        <div>
+                                            <p className="text-start text-[1vw] md:text-sm my-3">วันเกิดสัตว์เลี้ยง</p>
+                                            <input
+                                                type="date"
+                                                name="email"
+                                                placeholder=""
+                                                className="input input-bordered w-44 bg-gray-100 mb-3"
+                                            />
+                                            </div>
+                                            <select className="select bg-gray-100 select-bordered w-36 max-w-xs mb-3">
+                                                <option disabled selected>เพศ</option>
+                                                <option>เพศผู้</option>
+                                                <option>เพศเมีย</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <p className="text-start text-[1vw] md:text-sm my-3">คำอธิบายลักษณะเพิ่มเติม</p>
+                                            <textarea className="textarea w-full min-h-32 max-h-48 textarea-bordered" placeholder="ex. สายพันธุ์, ลักษณะเฉพาะ, สีขน หรือ นิสัย"></textarea>
+                                            <p className="text-start text-[1vw] md:text-sm my-3">*แนะนำให้บอกถึงลักษณะของสัตว์เลี้ยงเพื่อป้องกันในกรณีเกิดเหตุฉุกเฉิน</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-start text-[1vw] md:text-sm my-3">Upload รูปของสัตว์เลี้ยงของคุณ</p>
+                                            <PictureUpload onImageSelected={handleImageSelected} />
+                                            {imageFile && <p>Selected Image: {imageFile.name}</p>}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                         <div className="z-10">
                             <p className="font-semibold text-[2vw] md:text-lg my-6">ข้อมูลสัตว์การดูแลสัตว์เลี้ยง</p>
@@ -143,9 +254,11 @@ const handleToggleCustom = () => {
                     </div>
                 </div>
             </div>
-            <div className='max-md:w-full max-md:h-[40vw] max-md:my-[2vw] h-[500px] bg-white rounded-md col-span-12 md:col-span-4 '>
+            <div className='max-md:w-full max-md:h-[40vw] max-md:my-[2vw] h-[500px] bg-white rounded-md col-span-4'>
                 <div className='w-[45vw] md:w-full h-full bg-white rounded-lg overflow-hidden'>
-                    <div className='w-full h-[55%] bg-slate-200'></div>
+                    <div className='relative w-full h-[55%] overflow-hidden bg-slate-200'>
+                        <img className="absolute bottom-0" src="https://temporary-cdn.wezhan.net/contents/sitefiles3603/18016482/images/7480295.jpg" alt="" />
+                    </div>
                     <div className='w-full h-[45%] p-[2vw] md:p-6 text-start'>
                         <div className='flex justify-between items-end'>
                             <div className='text-[2.5vw] md:text-lg lg:text-xl xl:text-2xl'>รายระเอียดของห้องพัก</div>
@@ -165,6 +278,34 @@ const handleToggleCustom = () => {
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-sm md:my-1 lg:my-1'>ราคา</div>
                             <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-lg md:my-1 lg:my-1'>400 บาท</div>
+                        </div>
+                    </div>
+                </div>
+                <div className="w-full h-[350px] mt-6 rounded-lg overflow-hidden bg-white">
+                    <div className="w-full h-[20%] bg-pethub-color6 flex items-center p-5 justify-start text-white text-xl">ราคาการจอง</div>
+                    <div className="w-full h-[55%] bg-white p-5 flex flex-col gap-3">
+                        <div className="flex items-center justify-between">
+                            <div>การจอง 2 คืน</div>
+                            <div className=" text-gray-400">800.00</div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <div>สัตว์เลี้ยงที่เข้าพัก 2 ตัว</div>
+                            <div className=" text-gray-400">100.00</div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <div>ค่าบริการ</div>
+                            <div className=" text-gray-400">0.00</div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <div>ค่าอาหาร</div>
+                            <div className=" text-gray-400">0.00</div>
+                        </div>
+                    </div>
+                    <div className="w-full h-[25%] bg-white px-5 flex flex-col gap-3">
+                        <hr />
+                        <div className="flex items-center justify-between h-[70%] text-xl">
+                            <div>ทั้งหมด</div>
+                            <div className="text-xl">800 บาท</div>
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 import Navbar from "./Utils/Navbar"
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import PointerLocation from "./Utils/PointerLocation";
 import axios from 'axios'
 
 function PictureUpload({onImageSelected}) {
@@ -120,6 +121,7 @@ function TypeChoiceBoxes({onSelectType}) {
 function Basics() {
 
     const navigate = useNavigate();
+    const [pointerLocation, setPointerLocation] = useState({ lon: 100.56, lat: 13.74 });
    
     const [formData, setFormData] = useState({
         hotelName: "",
@@ -161,7 +163,7 @@ function Basics() {
     const goAddRoomsPage = () => {
         // You can pass the formData as state when navigating
         console.log(formData);
-        // navigate("/pethub-website/rooms", { state: formData });
+        navigate("/pethub-website/rooms", { state: formData });
     };
 
     const testAddHotel = async () => {
@@ -267,6 +269,14 @@ function Basics() {
                                 </select>
                             </label>
                         </div>
+                        <div className="w-full h-80 my-8 rounded-md">
+                        <div className="text-left text-black text-base mb-2">ปักหมุดตำแหน่งโรงแรมของคุณแบนแผนที่</div>
+                        <PointerLocation
+                            pointerLocation={pointerLocation}
+                            setPointerLocation={setPointerLocation}
+                        />
+                        </div>
+
                         <div className="text-left text-black font-bold text-xl mt-12">ใส่รูปของโรงแรมของคุณ</div>
                         <div className="text-left text-gray-600 text-sm mt-2 mb-4">ใส่รูปเพื่อให้ลูกค้าเห็นภาพบรรยากาศของโรงแรม</div>
                         <PictureUpload onImageSelected={handleImageChange}/>
@@ -274,7 +284,7 @@ function Basics() {
                     </div>
                 </div>
                 <div className="flex justify-end items-center w-full max-w-3xl -mt-4 mb-4 p-6 mx-auto">
-                    <button onClick={testAddHotel} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
+                    <button onClick={goAddRoomsPage} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
                         ขั้นตอนต่อไป
                     </button>
                 </div>
