@@ -23,6 +23,13 @@
 
 }
 
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Webkit browsers */
+}
 
 .input-shadow{
   box-shadow: 4px 4px 5px 0 rgba(0, 0, 0, 0.4);

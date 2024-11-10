@@ -11,8 +11,16 @@ function HotelDetail() {
     const parentRef = useRef(null);
     const [totalWidth, setTotalWidth] = useState(0);
     const [barSel, setBarSel] = useState(0)
+    const [currentDate, setCurrentDate] = useState('');
  
     useEffect(() => {
+
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const day = String(today.getDate()).padStart(2, '0');
+        setCurrentDate(`${year}-${month}-${day}`);
+
         const loadScript = () => {
           const script = document.createElement('script');
           script.src = "https://api.longdo.com/map/?key=2b0da15d101163c9f1968c6c656c8ca5";
@@ -108,12 +116,12 @@ function HotelDetail() {
                     {5} ({1200} Reviews)
                     </div>
                 </div>
-                <div className='flex gap-3 items-center justify-start text-gray-400'>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-geo-alt text-blue-400 max-md:w-[16px]" viewBox="0 0 16 16">
+                <div onClick={handleDivClick} className='flex gap-3 items-center justify-start text-gray-400'>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="cursor-pointer bi bi-geo-alt text-blue-400 max-md:w-[16px]" viewBox="0 0 16 16">
                         <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
                         <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
                     </svg>
-                    <div onClick={handleDivClick} className='hover:text-blue-500 cursor-pointer text-start text-[10px] sm:text-[2vw] md:text-[14px] xl:text-lg  transition-all duration-300 ease-in-out max-lg:line-clamp-1 max-lg:overflow-hidden'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium, voluptates?</div>
+                    <div className='hover:text-blue-500 cursor-pointer text-start text-[10px] sm:text-[2vw] md:text-[14px] xl:text-lg  transition-all duration-300 ease-in-out max-lg:line-clamp-1 max-lg:overflow-hidden'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium, voluptates?</div>
                 </div>
             </div>
             <div className='max-md:w-full max-md:h-[40vw] max-md:my-[2vw] bg-white rounded-md col-span-12 md:col-span-4 row-span-4'>
@@ -124,7 +132,7 @@ function HotelDetail() {
             </div>
             <div className={`max-md:w-[60%] ${barSel == 1 ? 'max-md:h-full' : 'max-md:h-[250px]'}   overflow-y-hidden bg-white rounded-md col-span-8 lg:col-span-8 row-span-10 max-md:p-[3vw] max-lg:px-8 max-lg:py-4 py-12 px-14 text-start`}>
                 <div className={`text-[3vw] lg:text-2xl font-semibold mb-[1vw] md:mb-6 overflow-y  ${barSel == 0 ? '' : 'hidden'}`}>Overview</div>
-                <div className={`text-[2vw] md:text-sm max-md:h-[160px] h-[80%] lg:h-[90%] px-4 overflow-y-scroll scrollbar-hidden ${barSel == 0 ? '' : 'hidden'}`}>
+                <div className={`text-[2vw] md:text-sm max-md:h-[160px] h-[80%] lg:h-[90%] px-4 overflow-y-scroll hide-scrollbar ${barSel == 0 ? '' : 'hidden'}`}>
                     <p>Bangmod Pet Hotel เป็นโรงแรมสัตว์เลี้ยงระดับพรีเมียม ตั้งอยู่ในย่านบางมด กรุงเทพมหานคร ที่ออกแบบมาเพื่อตอบโจทย์ความต้องการของเจ้าของสัตว์เลี้ยงที่มองหาที่พักอันปลอดภัย สะดวกสบาย และทันสมัยสำหรับเพื่อนขนฟูของพวกเขา เราให้บริการที่พักทั้งระยะสั้นและระยะยาว พร้อมสิ่งอำนวยความสะดวกครบครันและการดูแลอย่างใกล้ชิดจากผู้เชี่ยวชาญด้านสัตว์เลี้ยง</p>
                     
                     <p>โรงแรมของเรามีพื้นที่กว้างขวาง รวมถึงห้องพักที่สะอาดและมีระบบควบคุมอุณหภูมิที่เหมาะสม พร้อมสนามวิ่งเล่นสำหรับสัตว์เลี้ยง และโซนกิจกรรมที่ออกแบบมาเพื่อความสนุกสนานและการออกกำลังกายของสัตว์เลี้ยง นอกจากนี้ เรายังมีบริการดูแลพิเศษ เช่น การอาบน้ำ ตัดขน และตรวจสุขภาพเบื้องต้น โดยทีมงานที่มีความรักและประสบการณ์ในการดูแลสัตว์เลี้ยง</p>
@@ -299,7 +307,29 @@ function HotelDetail() {
             
         </div>
         <div className='mt-5 md:mt-5 w-[96vw] lg:w-11/12 xl:w-11/12 2xl:w-[1280px] h-full mx-auto px-5'>
-            <div className='text-start lg:mb-5 text-[5vw] sm:text-xl lg:text-2xl xl:text-3xl font-semibold'>Available rooms</div>
+            <div className='flex items-start lg:items-center justify-between flex-col lg:flex-row'>
+                <div className='text-start text-[5vw] sm:text-xl lg:text-2xl xl:text-3xl font-semibold'>Available rooms</div>
+                <div className='flex items-center gap-[2vw] md:gap-3 max-md:my-[3vw]'>
+                    <input
+                        type="date"
+                        name="email"
+                        min={currentDate}
+                        placeholder=""
+                        className="input input-bordered max-md:h-[7vw] max-md:text-[2vw] w-[32vw] md:w-64 bg-white"
+                    />
+                    <p className='text-[2vw] sm:text-sm lg:text-lg xl:text-xl'>ถึง</p>
+                    <input
+                        type="date"
+                        name="email"
+                        min={currentDate}
+                        placeholder=""
+                        className="input input-bordered  max-md:h-[7vw] max-md:text-[2vw] w-[32vw] md:w-64 bg-white"
+                    />
+                    <a className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white max-md:text-[2vw] max-md:w-[10vw] h-[7vw] font-medium">
+                        <a >ค้นหา</a>
+                    </a>
+                </div>
+            </div>
             <div ref={parentRef} className="md:mt-4 lg:mt-8 xl:mt-10 w-full overflow-hidden mx-auto relative h-[70vw] md:h-[550px]  lg:h-[650px]">
             <motion.div ref={containerRef} className="absolute h-[60vw] md:h-[500px] lg:h-[600px] rounded-md mx-auto md:py-5 flex gap-3 lg:gap-5" drag="x" dragConstraints={{ left: -totalWidth, right: 0 }} transition={{ type: "spring", stiffness: 300, damping: 30 }}>
                 <div className='w-[45vw] md:w-[350px] xl:w-[400px] bg-white rounded-lg overflow-hidden'>
@@ -312,7 +342,7 @@ function HotelDetail() {
                         <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-lg md:my-1 lg:my-3'>ของเล่นแมว, อาหาร, อาบน้ำ, ดูแล 24 ชั่วโมง</div>
                         <div className='text-[1.5vw] md:text-xs lg:text-sm xl:text-base transition-all duration-300 ease-in-out line-clamp-2 overflow-hidden text-gray-400'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque voluptatum dolor, ipsam natus similique aperiam eveniet quos, magni voluptatem deserunt odio aspernatur reprehenderit laborum molestias illum unde ipsum libero pariatur?</div>
                         <div className='text-[2vw] md:text-base my-[1vw] md:my-2 lg:my-5'>400 บาท/คืน</div>
-                        <a className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium">
+                        <a href={`/pethub-website/home/${param.hotelname}/room001`} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium">
                             <a >จองห้อง</a>
                         </a>
                     </div>
