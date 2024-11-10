@@ -64,7 +64,12 @@ export default function AddRoomsForm() {
                     </label>
                     <label className="form-control w-full">
                         <div className="text-left text-black text-base mb-2">ประเภทสัตว์เลี้ยง</div>
-                        <input type="text" placeholder="ใส่ประเภทสัตว์เลี้ยงของคุณที่นี่" className="input input-bordered drop-shadow-sm w-full focus:outline-none focus:border-pethub-color4" />
+                        <select className="select select-bordered drop-shadow-sm w-full focus:outline-none focus:border-pethub-color4" style={{ color: 'black' }}>
+                            <option disabled selected style={{ color: 'gray' }}>ประเภทสัตว์</option>
+                            <option style={{ color: 'black' }}>สุนัข</option>
+                            <option style={{ color: 'black' }}>แมว</option>
+                            <option style={{ color: 'black' }}>อื่น ๆ</option>
+                        </select>
                     </label>
                 </div>
                 <div className="grid grid-cols-2 gap-4 mt-4">
