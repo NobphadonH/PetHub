@@ -16,6 +16,7 @@ import Rooms from './components/Rooms.jsx';
 import Confirm from './components/Confirm.jsx';
 import Finish from './components/Finish.jsx';
 import RoomsBooking from './components/RoomsBooking.jsx';
+import AddRooms from './components/AddRooms.jsx';
 
 
 const router = createBrowserRouter([
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
   {path: "/pethub-website/confirm", element: <Confirm />,},
   {path: "/pethub-website/finish", element: <Finish />,},
   {path: "/pethub-website/petregister", element: <PetRegister />,},
+  {path: "/pethub-website/addrooms", element: <AddRooms />,},
 ]);
 
 createRoot(document.getElementById('root')).render(
