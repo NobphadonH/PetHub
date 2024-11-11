@@ -160,13 +160,13 @@ export const createHotel = async (req, res) => {
                 }
                 const mapLat = "20"
                 const mapLong = "30"
-                const query = `INSERT INTO Hotels (hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, mapLat, mapLong,
+                const query = `INSERT INTO Hotels (hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, mapLat, mapLong,
                  hotelPhoto, verification) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
                 connection.query(
                     query,
-                    [hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, mapLat, mapLong,  url, "unverified"],
+                    [hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, mapLat, mapLong,  url, "unverified"],
                     (err, results) => {
                         if (err) throw err
                         console.log(results)

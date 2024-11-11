@@ -138,6 +138,7 @@ function Basics() {
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
+        // console.log(pointerLocation);
         setFormData((values) => ({
             ...values,
             [name]: value,
@@ -162,8 +163,16 @@ function Basics() {
 
     const goAddRoomsPage = () => {
         // You can pass the formData as state when navigating
-        console.log(formData);
-        navigate("/pethub-website/rooms", { state: formData });
+        const data = {
+            ...formData,
+            mapLat: pointerLocation.lat,
+            mapLong: pointerLocation.lon,
+            selectedImage: formData.selectedImage ? formData.selectedImage.name : null
+        };
+
+        console.log(data);
+
+       //navigate("/pethub-website/rooms", { state: data });
     };
 
     const testAddHotel = async () => {
@@ -176,6 +185,8 @@ function Basics() {
         data.append('hotelType', formData.hotelType);
         data.append('checkInFrom', formData.checkInFrom);
         data.append('checkOutUntil', formData.checkOutUntil);
+        data.append('mapLat', pointerLocation.lat);
+        data.append('mapLong', pointerLocation.lon);
         if (formData.selectedImage) {
             data.append('selectedImage', formData.selectedImage, formData.selectedImage.name);
         }

@@ -6,14 +6,21 @@ import HotelRecommendLoading from "./Utils/HotelRecommedLoading";
 import { motion } from "framer-motion";
 import Footer from "./Utils/Footer"
 import { useState, useEffect, useRef } from "react"
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { hotelData } from "../assets/dummydata";
+import axios from "axios";
 
 
 function Home() {
     const containerRef = useRef(null);
     const parentRef = useRef(null);
     const [totalWidth, setTotalWidth] = useState(0);
+
+        
+    const navigate = useNavigate();
+    const location = useLocation()
+
 
     console.log(totalWidth)
 
@@ -30,7 +37,23 @@ function Home() {
     const [pagenumber, setPagenumber] = useState(pageCalculate);
     const [pagedata, setPagedata] = useState([]);
     const [loading, setLoading] = useState(true)
-    
+    // const [filter, setFilter] = useState({
+    //     petType:null,
+    //     hotelName: "",
+    //     district: null,
+    //     priceRangeLower: null,
+    //     priceRangeUpper: null,
+    //     checkInDate: null,
+    //     checkOutDate: null
+    // })
+    const [filter, setFilter] = useState({})
+
+
+    const [hotelResult, setHotelResult] = useState([]);
+
+    const [searchCounter, setSearchCounter] = useState(0); // counter for unique searches
+
+
     const handleLeftClick = () => {
         setX((prevX) => Math.min(prevX + 300, 0));
     };
@@ -55,7 +78,72 @@ function Home() {
         }
     }
     
-    useEffect(() => {
+
+    const handleSearchClick = (e) => {
+        e.preventDefault();
+        // const queryParams = new URLSearchParams();
+        // if (filter.petType) queryParams.set("petType", filter.petType);
+        // if (filter.hotelName) queryParams.set("hotelName", filter.hotelName);
+        // if (filter.district) queryParams.set("district", filter.district);
+        // if (filter.priceRangeLower) queryParams.set("district", filter.priceRangeLower);
+        // if (filter.priceRangeUpper) queryParams.set("district", filter.priceRangeUpper);
+        // if (filter.checkInDate) queryParams.set("district", filter.checkInDate);
+        // if (filter.checkOutDate) queryParams.set("district", filter.checkOutDate);
+
+        setSearchCounter(prevCount => prevCount + 1); 
+        const query = new URLSearchParams({...filter, searchCounter}).toString();
+        navigate(`/pethub-website/home?${query}`)
+    }
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFilter((prevFilters) => ({ ...prevFilters, [name]: value }));
+      };
+
+    const handlePriceRangeChange = (e) => {
+        const [lower, upper] = e.target.value.split('-').map(value => parseInt(value.trim()));
+        setFilter(prevFilter => ({
+            ...prevFilter,
+            priceRangeLower: lower,
+            priceRangeUpper: upper
+        }));
+    }
+
+
+
+    useEffect( () => {
+        console.log('abc')
+        const fetchData = async () => {
+            console.log('hello');
+            // setLoading(true)
+            const queryParams = new URLSearchParams(location.search);
+            // const petType = queryParams.get("petType") || null;
+            // const hotelName = queryParams.get("hotelName") || null;
+            // const district = queryParams.get("district") || null;
+            // const priceRangeLower = queryParams.get("priceRangeLower") || null;
+            // const priceRangeUpper = queryParams.get("priceRangeUpper") || null
+            // let checkInDate = queryParams.get("checkInDate") || null;
+            // let checkOutDate = queryParams.get("checkInDate") || null;
+            // if (checkInDate == null || checkOutDate == null) {
+            //     checkInDate = null;
+            //     checkOutDate = null;
+            // }
+
+            // setFilter({petType, hotelName, district, priceRangeLower, priceRangeUpper, checkInDate, checkOutDate})
+
+            try {
+                console.log(filter);
+                console.log(queryParams);
+                const res = await axios.get(`http://localhost:5000/api/roomSearch/getHotelAndRoomByFilter/?${queryParams}`);
+                setHotelResult(res.data)
+                console.log(res);
+            } catch (err){
+                console.log(err)
+            }
+        }
+
+        fetchData();
+
         setPagenumber(pageCalculate)
         setPagedata(pageSelection(pageselect))
 
@@ -70,14 +158,14 @@ function Home() {
               setTotalWidth(containerScrollWidth - parentOffsetWidth);
             }
           };
-      
           updateWidth(); // Set initial width
           window.addEventListener('resize', updateWidth);
       
           return () => {
             window.removeEventListener('resize', updateWidth);
           };
-    }, [pageselect])
+      
+    }, [location.search, pageselect])
 
     const districts = [
         "เขตพระนคร", "เขตดุสิต", "เขตหนองจอก", "เขตบางรัก", "เขตบางเขน",
@@ -91,6 +179,9 @@ function Home() {
         "เขตคันนายาว", "เขตสะพานสูง", "เขตวังทองหลาง", "เขตคลองสามวา", "เขตบางนา",
         "เขตทวีวัฒนา", "เขตทุ่งครุ", "เขตบางบอน"
     ];
+
+    
+
 
   return (
     <div>
@@ -108,27 +199,29 @@ function Home() {
         <h4 className="text-sm lg:text-lg relative z-20">เลือกโรงแรมให้เหมาะสมกับน้องๆของคุณ</h4>
         <div className="grid max-md:grid-rows-2 grid-cols-12 md:grid-cols-12 gap-5 lg:gap-7 xl:gap-14 mt-8 md:mt-24 relative z-20">
             <div className="hidden md:block col-span-3">
-                <select className="select select-bordered w-full max-w-xs shadow-xl" style={{ color: 'gray' }}>
+                <select name = "petType" value={filter.petType} onChange={handleInputChange} className="select select-bordered w-full max-w-xs shadow-xl" style={{ color: 'gray' }}>
                     <option disabled selected style={{ color: 'gray' }}>ประเภทสัตว์</option>
-                    <option style={{ color: 'black' }}>สุนัข</option>
-                    <option style={{ color: 'black' }}>แมว</option>
+                    <option value = "สุนัข" style={{ color: 'black' }}>สุนัข</option>
+                    <option value = "แมว" style={{ color: 'black' }}>แมว</option>
+                    <option value = "สัตว์ประเภทอื่นๆ" style={{ color: 'black' }}>สัตว์ประเภทอื่นๆ</option>
                 </select>
             </div>
             <div className="hidden md:block col-span-4">
-                <select className="select select-bordered w-full max-w-xs input-shadow" style={{ color: 'gray' }}>
+                <select name="district" value={filter.district} onChange={handleInputChange} className="select select-bordered w-full max-w-xs input-shadow" style={{ color: 'gray' }}>
                     <option disabled selected style={{ color: 'gray' }}>สถานที่ตั้ง</option>
                     {districts.map((district, index) => (
-                        <option key={index} style={{ color: 'black' }}>
+                        <option value = {district} key={index} style={{ color: 'black' }}>
                             {district}
                         </option>
                     ))}
                 </select>
             </div>
+            {/* Need new handle function */}
             <div className="hidden md:block col-span-3">
-                <select className="select select-bordered w-full max-w-xs input-shadow" style={{ color: 'gray' }}>
+                <select onChange={handlePriceRangeChange} className="select select-bordered w-full max-w-xs input-shadow" style={{ color: 'gray' }}>
                     <option disabled selected style={{ color: 'gray' }}>ช่วงราคา</option>
-                    <option style={{ color: 'black' }}>500-2000 บาท</option>
-                    <option style={{ color: 'black' }}>2000-5000 บาท</option>
+                    <option value="500-2000" style={{ color: 'black' }}>500-2000 บาท</option>
+                    <option value="2000-5000" style={{ color: 'black' }}>2000-5000 บาท</option>
                 </select>
             </div>
             <div className="hidden md:block col-span-1"></div>
@@ -144,7 +237,7 @@ function Home() {
             </div>
             <div className="max-md:row-start-2 col-span-12 md:col-span-4">
                 <label className="input input-bordered flex items-center gap-2 h-[10vw] max-h-12 max-w-full input-shadow  text-[3vw] sm:text-xs lg:text-base">
-                    <input type="text" className="grow" placeholder="ค้นหาจากชื่อโรงแรม" />
+                    <input type="text" name="hotelName" value={filter.hotelName} onChange={handleInputChange} className="grow" placeholder="ค้นหาจากชื่อโรงแรม" />
                     <a href="">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +253,7 @@ function Home() {
                 </label>
             </div>
             <div className="col-span-2">
-                <a href="/" className="btn bg-pethub-color1 border-pethub-color1 font-medium max-md:hidden text-white relative z-20">ค้นหา</a>
+                <button onClick={handleSearchClick} className="btn bg-pethub-color1 border-pethub-color1 font-medium max-md:hidden text-white relative z-20">ค้นหา</button>
             </div>
         </div>  
         <div className="absolute bottom-0 right-0 left-0 h-12 md:h-16 bg-white z-10"></div>
@@ -169,17 +262,18 @@ function Home() {
       <div className="mx-auto my-5 grid grid-cols-12 w-11/12 md:w-[750px] h-full lg:w-full gap-5 lg:gap-10">
         <div className="md:hidden col-span-12 flex justify-between">
             <div className="w-[27vw] h-[10vw] max-h-10 text-[3vw] sm:text-lg">
-                <select className="h-full w-full border-2 rounded-lg px-3" style={{ color: 'gray' }}>
+                <select name = "petType" value={filter.petType} onChange={handleInputChange} className="select select-bordered w-full max-w-xs shadow-xl" style={{ color: 'gray' }}>
                     <option disabled selected style={{ color: 'gray' }}>ประเภทสัตว์</option>
-                    <option style={{ color: 'black' }}>สุนัข</option>
-                    <option style={{ color: 'black' }}>แมว</option>
+                    <option value = "สุนัข" style={{ color: 'black' }}>สุนัข</option>
+                    <option value = "แมว" style={{ color: 'black' }}>แมว</option>
+                    <option value = "สัตว์ประเภทอื่นๆ" style={{ color: 'black' }}>สัตว์ประเภทอื่นๆ</option>
                 </select>
             </div>
             <div className="w-[27vw] h-[10vw] max-h-10  text-[3vw] sm:text-lg">
-                <select className="h-full w-full border-2 rounded-lg px-3" style={{ color: 'gray' }}>
+                <select name="district" value={filter.district} onChange={handleInputChange} className="select select-bordered w-full max-w-xs input-shadow" style={{ color: 'gray' }}>
                     <option disabled selected style={{ color: 'gray' }}>สถานที่ตั้ง</option>
                     {districts.map((district, index) => (
-                        <option key={index} style={{ color: 'black' }}>
+                        <option value = {district} key={index} style={{ color: 'black' }}>
                             {district}
                         </option>
                     ))}

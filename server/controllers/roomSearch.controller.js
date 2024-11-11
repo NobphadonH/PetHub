@@ -12,7 +12,12 @@ export const getHotelAndRoomByFilter = async (req, res) => {
       hotelName,
       priceRangeLower,
       priceRangeUpper,
-    } = req.body;
+    } = req.query;
+
+    console.log(req.query);
+    // res.status(200);
+    // return;
+
     const { dbpool, sshClient } = await connectToDatabase();
     dbpool.getConnection(async (err, connection) => {
       if (err) {
@@ -25,6 +30,7 @@ export const getHotelAndRoomByFilter = async (req, res) => {
       const filter = [];
 
       if (district) {
+        // console.log(district)
         filter.push("h.district = ?");
         values.push(district);
       }
@@ -59,9 +65,11 @@ export const getHotelAndRoomByFilter = async (req, res) => {
           sshClient.end();
           return;
         }
-
         const allRooms = rows;
         let roomResult = [];
+        
+        console.log(rows);
+        return;
 
         allRooms.forEach((room) => {
           const roomID = room.roomTypeID;
