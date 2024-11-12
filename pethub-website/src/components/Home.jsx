@@ -262,7 +262,7 @@ function Home() {
       <div className="mx-auto my-5 grid grid-cols-12 w-11/12 md:w-[750px] h-full lg:w-full gap-5 lg:gap-10">
         <div className="md:hidden col-span-12 flex justify-between">
             <div className="w-[27vw] h-[10vw] max-h-10 text-[3vw] sm:text-lg">
-                <select name = "petType" value={filter.petType} onChange={handleInputChange} className="select select-bordered w-full max-w-xs shadow-xl" style={{ color: 'gray' }}>
+                <select name = "petType" value={filter.petType} onChange={handleInputChange} className="h-full w-full border-2 rounded-lg px-3" style={{ color: 'gray' }}>
                     <option disabled selected style={{ color: 'gray' }}>ประเภทสัตว์</option>
                     <option value = "สุนัข" style={{ color: 'black' }}>สุนัข</option>
                     <option value = "แมว" style={{ color: 'black' }}>แมว</option>
@@ -270,7 +270,7 @@ function Home() {
                 </select>
             </div>
             <div className="w-[27vw] h-[10vw] max-h-10  text-[3vw] sm:text-lg">
-                <select name="district" value={filter.district} onChange={handleInputChange} className="select select-bordered w-full max-w-xs input-shadow" style={{ color: 'gray' }}>
+                <select name="district" value={filter.district} onChange={handleInputChange} className="h-full w-full border-2 rounded-lg px-3" style={{ color: 'gray' }}>
                     <option disabled selected style={{ color: 'gray' }}>สถานที่ตั้ง</option>
                     {districts.map((district, index) => (
                         <option value = {district} key={index} style={{ color: 'black' }}>

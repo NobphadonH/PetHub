@@ -332,24 +332,23 @@ function HotelDetail() {
             </div>
             <div ref={parentRef} className="md:mt-4 lg:mt-8 xl:mt-10 w-full overflow-hidden mx-auto relative h-[70vw] md:h-[550px]  lg:h-[650px]">
             <motion.div ref={containerRef} className="absolute h-[60vw] md:h-[500px] lg:h-[600px] rounded-md mx-auto md:py-5 flex gap-3 lg:gap-5" drag="x" dragConstraints={{ left: -totalWidth, right: 0 }} transition={{ type: "spring", stiffness: 300, damping: 30 }}>
-                <div className='w-[45vw] md:w-[350px] xl:w-[400px] bg-white rounded-lg overflow-hidden'>
-                    <div className='w-full h-[50%] bg-slate-200'></div>
-                    <div className='w-full h-[50%] p-[2vw] md:p-6 text-start'>
-                        <div className='flex justify-between items-end'>
-                            <div className='text-[2.5vw] md:text-lg lg:text-xl xl:text-2xl'>ห้องขนาดทั่วไป (แมว)</div>
-                            <div className='text-[2vw] md:text-sm lg:text-base xl:text-lg'>25x25 ตรม</div>
+                {Array.from({length : 5}).map((_, index) => (
+                    <div key={index} className='w-[45vw] md:w-[350px] xl:w-[400px] bg-white rounded-lg overflow-hidden'>
+                        <div className='w-full h-[50%] bg-slate-200'></div>
+                        <div className='w-full h-[50%] p-[2vw] md:p-6 text-start'>
+                            <div className='flex justify-between items-end'>
+                                <div className='text-[2.5vw] md:text-lg lg:text-xl xl:text-2xl'>ห้องขนาดทั่วไป (แมว)</div>
+                                <div className='text-[2vw] md:text-sm lg:text-base xl:text-lg'>25x25 ตรม</div>
+                            </div>
+                            <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-lg md:my-1 lg:my-3'>ของเล่นแมว, อาหาร, อาบน้ำ, ดูแล 24 ชั่วโมง</div>
+                            <div className='text-[1.5vw] md:text-xs lg:text-sm xl:text-base transition-all duration-300 ease-in-out line-clamp-2 overflow-hidden text-gray-400'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque voluptatum dolor, ipsam natus similique aperiam eveniet quos, magni voluptatem deserunt odio aspernatur reprehenderit laborum molestias illum unde ipsum libero pariatur?</div>
+                            <div className='text-[2vw] md:text-base my-[1vw] md:my-2 lg:my-5'>400 บาท/คืน</div>
+                            <a href={`/pethub-website/home/${param.hotelname}/room001`} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium">
+                                <a >จองห้อง</a>
+                            </a>
                         </div>
-                        <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-lg md:my-1 lg:my-3'>ของเล่นแมว, อาหาร, อาบน้ำ, ดูแล 24 ชั่วโมง</div>
-                        <div className='text-[1.5vw] md:text-xs lg:text-sm xl:text-base transition-all duration-300 ease-in-out line-clamp-2 overflow-hidden text-gray-400'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque voluptatum dolor, ipsam natus similique aperiam eveniet quos, magni voluptatem deserunt odio aspernatur reprehenderit laborum molestias illum unde ipsum libero pariatur?</div>
-                        <div className='text-[2vw] md:text-base my-[1vw] md:my-2 lg:my-5'>400 บาท/คืน</div>
-                        <a href={`/pethub-website/home/${param.hotelname}/room001`} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium">
-                            <a >จองห้อง</a>
-                        </a>
                     </div>
-                </div>
-                <div className='w-[450px] bg-white rounded-lg'></div>
-                <div className='w-[450px] bg-white rounded-lg'></div>
-                <div className='w-[450px] bg-white rounded-lg'></div>
+                ))}
             </motion.div>
         </div>
         </div>

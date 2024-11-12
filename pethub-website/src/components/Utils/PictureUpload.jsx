@@ -37,7 +37,7 @@ function PictureUpload({ onImageSelected }) {
           </button>
         </div>
       ) : (
-        <div className="relative flex flex-col items-center justify-center h-64">
+        <div className="relative flex flex-col items-center justify-center h-48 lg:h-52 xl:h-64">
           <input
             name="selectedImage"
             type="file"
@@ -48,7 +48,7 @@ function PictureUpload({ onImageSelected }) {
           />
           <label
             htmlFor="file-upload"
-            className="bg-orange-500 text-white py-2 px-4 rounded cursor-pointer"
+            className="bg-orange-500 text-white text-xs lg:text-sm py-2 px-4 rounded cursor-pointer"
           >
             เลือกไฟล์
           </label>
