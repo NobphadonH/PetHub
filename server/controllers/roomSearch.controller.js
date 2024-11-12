@@ -68,8 +68,8 @@ export const getHotelAndRoomByFilter = async (req, res) => {
         const allRooms = rows;
         let roomResult = [];
         
-        console.log(rows);
-        return;
+        // console.log(rows);
+        // return;
 
         allRooms.forEach((room) => {
           const roomID = room.roomTypeID;
@@ -87,6 +87,9 @@ export const getHotelAndRoomByFilter = async (req, res) => {
               }
 
               const bookings = rows;
+              console.log(bookings);
+              // return;
+
               let checkOutDateQueue = [];
               bookings.forEach((record) => {
                 const recordCheckOut = new Date(record.checkOutDate);
