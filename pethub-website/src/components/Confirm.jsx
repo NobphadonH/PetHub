@@ -1,6 +1,64 @@
 import Navbar from "./Utils/Navbar";
+import { useLocation } from "react-router-dom";
 
 function Confirm() {
+    const location = useLocation();
+    const hotelAndRoomFormData = location.state?.hotelAndRoomFormData || {};
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const hotelData = new FormData()
+        const hotelFormData = hotelAndRoomFormData.hotelFormData;
+        let hotelID;
+
+        hotelData.append('hotelName', hotelFormData.hotelName);
+        hotelData.append('hotelDescription', hotelFormData.hotelDescription);
+        hotelData.append('hotelPolicy', hotelFormData.hotelPolicy);
+        hotelData.append('hotelAddress', hotelFormData.hotelAddress);
+        hotelData.append('district', hotelFormData.district);
+        hotelData.append('hotelType', hotelFormData.hotelType);
+        hotelData.append('checkInFrom', hotelFormData.checkInFrom);
+        hotelData.append('checkOutUntil', hotelFormData.checkOutUntil);
+        hotelData.append('mapLat', hotelFormData.mapLat);
+        hotelData.append('mapLong', hotelFormData.mapLong);
+        if (hotelFormData.selectedImage) {
+            hotelData.append('selectedImage', hotelFormData.selectedImage, hotelFormData.selectedImage.name);
+        }
+
+        try {
+            const res = await axios.post('http://localhost:5000/api/hotel/createHotel/', hotelData, {headers:{"Content-Type":"multipart/form-data" }})
+            console.log(res.data)
+            hotelID = res.data
+            console.log(res.status)
+        } catch(error) {
+            console.error(error);
+        }
+
+        const roomArrayData = new FormData()
+        const roomFormArray = hotelAndRoomFormData.roomFormArray;
+        roomArrayData.append('hotelID', hotelID)
+
+        roomFormArray.forEach((room, index) => {
+            roomArrayData.append(`rooms[${index}][roomTypeName]`, room.roomTypeName)
+            roomArrayData.append(`rooms[${index}][roomCapacity]`, room.roomCapacity)
+            roomArrayData.append(`rooms[${index}][numberOfRoom]`, room.numberOfRoom)
+            roomArrayData.append(`rooms[${index}][roomSize]`, room.roomSize)
+            roomArrayData.append(`rooms[${index}][roomDetail]`, room.roomDetail)
+            roomArrayData.append(`rooms[${index}][petAllowedType]`, room.petAllowedType)
+            roomArrayData.append(`rooms[${index}][pricePerNight]`, room.pricePerNight)
+            roomArrayData.append(`rooms[${index}][selectedImage]`, room.selectedImage, room.selectedImage.name)
+        })
+
+
+        try {
+            const res = await axios.post('http://localhost:5000/api/room/createRooms/', roomArrayData, {headers:{"Content-Type":"multipart/form-data" }})
+            console.log(res.data)
+            console.log(res.status)
+        } catch(error) {
+            console.error(error);
+        }
+
+    }
 
     return (
         <div>

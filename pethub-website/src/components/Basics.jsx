@@ -163,16 +163,16 @@ function Basics() {
 
     const goAddRoomsPage = () => {
         // You can pass the formData as state when navigating
-        const data = {
+        const hotelFormData = {
             ...formData,
             mapLat: pointerLocation.lat,
             mapLong: pointerLocation.lon,
             selectedImage: formData.selectedImage ? formData.selectedImage.name : null
         };
 
-        console.log(data);
+        console.log(hotelFormData);
 
-       //navigate("/pethub-website/rooms", { state: data });
+       //navigate("/pethub-website/rooms", { state: hotelFormData });
     };
 
     const testAddHotel = async () => {
@@ -193,7 +193,7 @@ function Basics() {
 
         console.log(formData)
         try{
-            const res = axios.post('http://localhost:5000/api/hotel/createHotel/', data, {headers:{"Contetnt-Type":"multipart/form-data" }})
+            const res = axios.post('http://localhost:5000/api/hotel/createHotel/', data, {headers:{"Content-Type":"multipart/form-data" }})
             console.log(res.data)
             console.log(res.status)
             // console.log(formData)

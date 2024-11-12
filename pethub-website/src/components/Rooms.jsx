@@ -1,23 +1,52 @@
 import Navbar from "./Utils/Navbar";
 import AddRoomsForm from "./Utils/AddRoomsForm";
 import { useState } from 'react';
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Rooms() {
+    const navigate = useNavigate()
+    const location = useLocation()
+
+    const hotelFormData = location.state?.hotelFormData || {};
+
     const [forms, setForms] = useState([{ id: 1, image: null }]);
+    const [formData, setFormData] = useState({})
+    const [roomFormArray, setRoomFormArray] = useState([{}])
 
     const addForm = () => {
         setForms([...forms, { id: forms.length + 1, image: null }]);
+        setRoomFormArray((prevData) => [...prevData, {}]);
     };
 
     const removeForm = (index) => {
         setForms(forms.filter((_, i) => i !== index));
+        setRoomFormArray((prevData) => prevData.filter((_, i) => i !== index));
+        
     };
 
     const updateImage = (index, newImage) => {
         setForms(forms.map((form, i) => 
             i === index ? { ...form, image: newImage } : form
         ));
+        setRoomFormArray((prevForms) =>
+            prevForms.map((form, i) => (i === index ? { ...form, images: [...form.images, newImage] } : form))
+        );
     };
+    const handleChange = (index, updatedData) => {
+        setRoomFormArray((prevData) => {
+            const newData = [...prevData];
+            newData[index] = { ...newData[index], ...updatedData };
+            return newData;
+        });
+    };
+
+    const goConfirmPage = () => {
+        const hotelAndRoomFormData = {
+            hotelFormData,
+            roomFormArray,
+        };
+        navigate('/pethub-website/comfirm', {state: hotelAndRoomFormData})
+    }
 
     return (
         <div>
@@ -49,7 +78,8 @@ function Rooms() {
                     {forms.map((form, index) => (
                         <div key={form.id}>
                             <AddRoomsForm
-                                image={form.image}
+                                onDataChange={(data) => handleChange(index, data)}
+                                image={roomFormArray[index]?.image || null}
                                 onImageChange={(newImage) => updateImage(index, newImage)}
                             />
                             <button

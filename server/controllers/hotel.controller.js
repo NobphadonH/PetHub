@@ -170,6 +170,9 @@ export const createHotel = async (req, res) => {
                     (err, results) => {
                         if (err) throw err
                         console.log(results)
+                        res.status(200).send(results.insertId)
+                        connection.release()
+                        sshClient.end()
                     }
                 )
 
