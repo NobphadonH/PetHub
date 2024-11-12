@@ -355,7 +355,7 @@ function RoomsBooking() {
 
         </div>
      </div>
-     <Footer />
+     {/* <Footer /> */}
     
     </>
   );
