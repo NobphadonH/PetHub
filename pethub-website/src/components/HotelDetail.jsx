@@ -1,4 +1,4 @@
-import Navbar from './Utils/Navbar'
+ import Navbar from './Utils/Navbar'
 import Footer from './Utils/Footer'
 import { useParams } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
