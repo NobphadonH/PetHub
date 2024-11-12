@@ -17,6 +17,7 @@ function Home() {
     const parentRef = useRef(null);
     const [totalWidth, setTotalWidth] = useState(0);
 
+
         
     const navigate = useNavigate();
     const location = useLocation()
@@ -136,7 +137,7 @@ function Home() {
                 console.log(queryParams);
                 const res = await axios.get(`http://localhost:5000/api/roomSearch/getHotelAndRoomByFilter/?${queryParams}`);
                 setHotelResult(res.data)
-                console.log(res);
+                console.log(res.data);
             } catch (err){
                 console.log(err)
             }
@@ -181,7 +182,6 @@ function Home() {
     ];
 
     
-
 
   return (
     <div>

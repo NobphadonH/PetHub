@@ -8,6 +8,15 @@ const s3 = new S3Client({region: 'ap-southeast-2'});
 dotenv.config(); // Load variables from .env
 
 
+// Helper function to convert ReadableStream to Buffer
+const streamToBuffer = async (readableStream) => {
+  const chunks = [];
+  for await (const chunk of readableStream) {
+    chunks.push(chunk);
+  }
+  return Buffer.concat(chunks);
+};
+
 export const uploadFileToS3 = async (fileName, fileContent, mimeType) => {
 
     const s3Params = {
@@ -33,22 +42,28 @@ export const uploadFileToS3 = async (fileName, fileContent, mimeType) => {
 }
 
 export const downloadFileFromS3 = async (fileName) => {
+  const s3Params = {
+    Bucket: process.env.S3_BUCKET_NAME,
+    Key: fileName,
+  };
 
-    const s3Params = {
-        Bucket: process.env.S3_BUCKET_NAME,
-        Key: fileName,
-    }
+  try {
+    const command = new GetObjectCommand(s3Params);
+    const data = await s3.send(command); // send the command using the `send` method
+    
+    // Convert the ReadableStream to a buffer
+    const buffer = await streamToBuffer(data.Body);
+    return {
+      ContentType: data.ContentType,
+      Body: buffer,
+    };
+  } catch (error) {
+    console.error('Error downloading file:', error);
+    throw error;
+  }
+};
 
-      try {
-        const command = new GetObjectCommand(s3Params);
-        const data = await s3.send(command); // send the command using the `send` method
-        console.log('File uploaded successfully:', data);
-        return data;
-      } catch (error) {
-        console.error('Error downloading file:', error);
-        throw error;
-      }
-}
+
 
 export const deleteFileFromS3 = async (fileName) => {
   const s3Params = {
