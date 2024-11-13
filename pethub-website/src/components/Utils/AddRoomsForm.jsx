@@ -1,17 +1,22 @@
 import { useState } from 'react';
 
-function PictureUpload() {
+function PictureUpload({onImageSelected}) {
     const [selectedImage, setSelectedImage] = useState(null);
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            setSelectedImage(URL.createObjectURL(file));
+            const imgURL = URL.createObjectURL(file)
+            setSelectedImage(imgURL);
+            onImageSelected(file)
         }
     };
 
+
     const handleDeleteImage = () => {
         setSelectedImage(null);
+        onImageSelected(null)
+
     };
 
     return (
@@ -51,10 +56,25 @@ function PictureUpload() {
     );
 }
 
-export default function AddRoomsForm() {
+export default function AddRoomsForm({onDataChange, image, onImageChange}) {
 
+    const [formData, setFormData] = useState();
+
+    const handleImageChange = (img) => {
+        const updatedImgFormData = {...formData, selectedImage: img}
+        setFormData(updatedImgFormData);
+        onDataChange(updatedImgFormData);
+
+    };
+
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        const updatedFormData = { ...formData, [name]: value };
+        setFormData(updatedFormData);
+        onDataChange(updatedFormData); 
+    }
     return (
-        <div>
+        <div >
             <div className="flex flex-col w-full max-w-xl mx-auto mb-8">
                 <div className="flex-grow border-t border-gray-300"></div>
                 <div className="grid grid-cols-2 gap-4 mt-6">
@@ -117,8 +137,9 @@ export default function AddRoomsForm() {
                 <textarea placeholder="อธิบายห้องพักของคุณ" className="textarea textarea-bordered textarea-md drop-shadow-sm w-full max-w-xl mt-4 focus:outline-none focus:border-pethub-color4"></textarea>
                 <div className="text-left text-black font-bold text-xl mt-12">ใส่รูปของห้องพัก</div>
                 <div className="text-left text-gray-600 text-sm mt-2 mb-4">ใส่รูปห้องพักเพื่อให้ลูกค้าเห็นภาพรายละเอียดของห้องพัก</div>
-                <PictureUpload />
+                <PictureUpload onImageSelected={handleImageChange}/>
             </div>
         </div>
-    )
+    );
 }
+

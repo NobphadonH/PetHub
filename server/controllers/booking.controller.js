@@ -46,14 +46,23 @@ export const createBooking = async (req, res) => {
         let bookingStatus = "pending";
         let paymentDate = null;
         let paymentStatus = "unpaid";
+
         if (
           petResult &&
           roomTypeResult &&
           petResult.petType === roomTypeResult.petAllowedType
         ) {
-          bookingStatus = "confirmed";
-          paymentDate = new Date(); // Set paymentDate to current date and time
-          paymentStatus = "paid";
+          // Additional check: If petType is "อื่นๆ", set status to "pending"
+          if (
+            petResult.petType === "อื่นๆ" &&
+            roomTypeResult.petAllowedType === "อื่นๆ"
+          ) {
+            bookingStatus = "pending";
+          } else {
+            bookingStatus = "confirmed";
+            paymentDate = new Date(); // Set paymentDate to current date and time
+            paymentStatus = "paid";
+          }
         }
 
         // Step 2: Insert booking details into the Bookings table
@@ -86,7 +95,7 @@ export const createBooking = async (req, res) => {
             message: "Booking created successfully",
             bookingID: result.insertId,
             bookingStatus,
-            paymentStatus: "unpaid",
+            paymentStatus,
             amounts,
           });
         });

@@ -10,6 +10,18 @@ function AddPetProfile() {
     setImageFile(URL.createObjectURL(event.target.files[0]));
   };
 
+  const handleDrop = (event) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    if (file) {
+      setPetImage(URL.createObjectURL(file));
+    }
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
   return (
     <>
     <Navbar />

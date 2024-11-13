@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import PointerLocation from "./Utils/PointerLocation";
 import axios from 'axios'
+import Cookies from "js-cookie";
+
 
 function PictureUpload({onImageSelected}) {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -123,6 +125,7 @@ function Basics() {
     const navigate = useNavigate();
     const [pointerLocation, setPointerLocation] = useState({ lon: 100.56, lat: 13.74 });
    
+
     const [formData, setFormData] = useState({
         hotelName: "",
         hotelDescription: "",
@@ -131,8 +134,7 @@ function Basics() {
         district: "",
         hotelType: null,
         selectedImage: null, // For the image
-        checkInFrom: "15:00",     //temporary for test
-        checkOutUntil: "11:00"
+        cookies: Cookies.get("user-auth")
     })
 
     const handleChange = (event) => {
@@ -163,16 +165,16 @@ function Basics() {
 
     const goAddRoomsPage = () => {
         // You can pass the formData as state when navigating
-        const data = {
+        const hotelFormData = {
             ...formData,
             mapLat: pointerLocation.lat,
             mapLong: pointerLocation.lon,
             selectedImage: formData.selectedImage ? formData.selectedImage.name : null
         };
 
-        console.log(data);
+        console.log(hotelFormData);
 
-       //navigate("/pethub-website/rooms", { state: data });
+       //navigate("/pethub-website/rooms", { state: hotelFormData });
     };
 
     const testAddHotel = async () => {
@@ -193,7 +195,7 @@ function Basics() {
 
         console.log(formData)
         try{
-            const res = axios.post('http://localhost:5000/api/hotel/createHotel/', data, {headers:{"Contetnt-Type":"multipart/form-data" }})
+            const res = axios.post('http://localhost:5000/api/hotel/createHotel/', data, {headers:{"Content-Type":"multipart/form-data" }})
             console.log(res.data)
             console.log(res.status)
             // console.log(formData)
