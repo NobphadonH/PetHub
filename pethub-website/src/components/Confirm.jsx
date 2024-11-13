@@ -21,6 +21,7 @@ function Confirm() {
         hotelData.append('checkOutUntil', hotelFormData.checkOutUntil);
         hotelData.append('mapLat', hotelFormData.mapLat);
         hotelData.append('mapLong', hotelFormData.mapLong);
+        hotelData.append('cookies', hotelFormData.cookies);
         if (hotelFormData.selectedImage) {
             hotelData.append('selectedImage', hotelFormData.selectedImage, hotelFormData.selectedImage.name);
         }

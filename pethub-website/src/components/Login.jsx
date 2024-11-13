@@ -5,6 +5,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import Cookies from "js-cookie";
+
 
 function Login() {
   const navigate = useNavigate();
@@ -39,7 +41,10 @@ function Login() {
       const response = await axios.post('http://localhost:5000/api/auth/signin', formData, { withCredentials: true });
       toast.success("Signin successful");
       console.log("Response:", response.data);
-      navigate('/pethub-website/Home');
+      if (response.status == 200) {
+        Cookies.set("user-auth", res.data['token'])
+        navigate('/pethub-website/Home');
+      }
     }
     catch (error) {
       if (error.response && error.response.data) {

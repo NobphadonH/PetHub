@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import PointerLocation from "./Utils/PointerLocation";
 import axios from 'axios'
+import Cookies from "js-cookie";
+
 
 function PictureUpload({onImageSelected}) {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -123,6 +125,7 @@ function Basics() {
     const navigate = useNavigate();
     const [pointerLocation, setPointerLocation] = useState({ lon: 100.56, lat: 13.74 });
    
+
     const [formData, setFormData] = useState({
         hotelName: "",
         hotelDescription: "",
@@ -131,8 +134,7 @@ function Basics() {
         district: "",
         hotelType: null,
         selectedImage: null, // For the image
-        checkInFrom: "15:00",     //temporary for test
-        checkOutUntil: "11:00"
+        cookies: Cookies.get("user-auth")
     })
 
     const handleChange = (event) => {

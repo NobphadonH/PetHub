@@ -1,5 +1,6 @@
 import { connectToDatabase } from "../utils/dbConnection.js";
 import { uploadFileToS3, downloadFileFromS3 } from "../utils/s3FileTransfer.js";
+import jwt from "jsonwebtoken";
 import fs from 'fs'
 
 export const getHotelByID = async (req, res) => {
@@ -138,10 +139,13 @@ export const verifyHotel = async (req, res) => {
 
 export const createHotel = async (req, res) => {
     try {
-        const {hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, selectedImage} = req.body
+        const {hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, selectedImage, cookies} = req.body
         const filePath = req.file.path
         const fileName = req.file.filename
         const fileContent = fs.readFileSync(filePath)
+
+        const payload = jwt.verify(cookies, "Bhun-er");
+        const userID = payload["userID"];
 
         // res.status(200);
         console.log(req.body)
@@ -160,13 +164,13 @@ export const createHotel = async (req, res) => {
                 }
                 const mapLat = "20"
                 const mapLong = "30"
-                const query = `INSERT INTO Hotels (hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, mapLat, mapLong,
+                const query = `INSERT INTO Hotels (hotelName, userID, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, mapLat, mapLong,
                  hotelPhoto, verification) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
                 connection.query(
                     query,
-                    [hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, mapLat, mapLong,  url, "unverified"],
+                    [hotelName, hotelType, userID, hotelDescription, hotelPolicy, hotelAddress, district, mapLat, mapLong,  url, "unverified"],
                     (err, results) => {
                         if (err) throw err
                         console.log(results)
