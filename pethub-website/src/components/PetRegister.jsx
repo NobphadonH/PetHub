@@ -1,11 +1,13 @@
-import Navbar from "./Utils/Navbar";
-import React, { useState } from 'react';
+import Navbar from "./Utils/Navbar"
+import PictureUpload from "./Utils/PictureUpload";
+
+import { useState } from 'react';
 
 function AddPetProfile() {
-  const [petImage, setPetImage] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
 
-  const handleImageUpload = (event) => {
-    setPetImage(URL.createObjectURL(event.target.files[0]));
+  const handleImageSelected = (event) => {
+    setImageFile(URL.createObjectURL(event.target.files[0]));
   };
 
   const handleDrop = (event) => {
@@ -22,56 +24,61 @@ function AddPetProfile() {
 
   return (
     <>
-      <Navbar />
-      <div className="flex flex-col items-center p-8">
-        <h2 className="text-center text-lg text-red-600 mb-4">
-          เพื่อความปลอดภัยของสัตว์เลี้ยงของคุณ เราแนะนำให้ใส่ข้อมูลพื้นฐานเพื่อป้องกันในกรณีฉุกเฉิน
-        </h2>
-
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 w-full max-w-lg mb-6">
-          <h3 className="text-center mb-4">Upload รูปของสัตว์เลี้ยงของคุณ</h3>
-          
-          <div
-            className="flex flex-col items-center w-full h-32 bg-gray-50 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100"
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-          >
-            {petImage ? (
-              <img src={petImage} alt="Pet Preview" className="w-40 h-40 object-cover rounded-lg mb-4" />
-            ) : (
-              <label className="flex flex-col items-center justify-center w-full h-full">
-                <span className="text-gray-500">Drag and Drop here</span>
-                <span className="text-gray-500">or</span>
-                <input type="file" onChange={handleImageUpload} className="hidden" />
-                <button className="btn btn-outline mt-2" onClick={() => document.querySelector('input[type="file"]').click()}>
-                  Select file
-                </button>
-              </label>
-            )}
-          </div>
+    <Navbar />
+    <div className="my-32 w-[800px] h-full mx-auto px-10 py-12">
+      <div className="text-3xl font-semibold text-pethub-color6">ข้อมูล<span className="text-pethub-color1">สัตว์เลี้ยง</span></div>
+      <div className="text-base my-8">เพื่อความปลอดภัยของสัตว์เลี้ยงของคุณ เราจึงแนะนำให้ใส่ข้อมูลพื้นฐานเพื่อป้องกันในกรณีฉุกเฉิน</div>
+      <div className="w-full text-start">
+        <div className="w-10/12 mx-auto">Upload รูปสัตว์เลี้ยงของคุณ</div>
+        <div className="w-9/12 mx-auto my-5">
+          <PictureUpload onImageSelected={handleImageSelected} />
+          {imageFile && <p>Selected Image: {imageFile.name}</p>}
         </div>
-
-        <form className="w-full max-w-lg space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <input type="text" placeholder="ชื่อสัตว์เลี้ยง" className="input input-bordered w-full" />
-            <input type="text" placeholder="อายุ" className="input input-bordered w-full" />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <input type="text" placeholder="ประเภทของสัตว์เลี้ยง" className="input input-bordered w-full" />
-            <input type="text" placeholder="เพศ" className="input input-bordered w-full" />
-          </div>
-
-          <textarea
-            placeholder="คำอธิบายรายละเอียดของสัตว์เลี้ยง เช่น สายพันธุ์, ลักษณะพิเศษโดดเด่น และอื่นๆ"
-            className="textarea textarea-bordered w-full"
-          ></textarea>
-
-          <button type="submit" className="btn focus:outline-none text-white bg-pethub-color2 hover:bg-pethub-color1 w-full">
-            บันทึกข้อมูลสัตว์เลี้ยง
-          </button>
-        </form>
       </div>
+      <div className="w-full px-16">
+        <div className="flex w-full justify-start lg:justify-between flex-wrap gap-[3vw] md:gap-5">
+          <div className="grow">
+              <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-3">ชื่อสัตว์เลี้ยง</p>
+              <input
+                  type="text"
+                  name="email"
+                  placeholder="ชื่อสัตว์เลี้ยง"
+                  className="input input-bordered w-full h-[8vw] max-h-10  text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm bg-gray-100 md:mb-3"
+              />
+          </div>
+          <div className="grow">
+              <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-3">วันเกิดสัตว์เลี้ยง</p>
+              <input
+                  type="date"
+                  name="email"
+                  placeholder=""
+                  className="input input-bordered w-full h-[8vw] max-h-10  text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm bg-gray-100 md:mb-3"
+              />
+          </div>
+          <div className="grow">
+              <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-3">ประเภทสัตว์</p>
+              <select className="select min-h-0 h-[8vw] w-full max-h-10  text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm bg-gray-100 md:mb-3">
+                  <option disabled selected>ประเภทสัตว์</option>
+                  <option>สุนัข</option>
+                  <option>แมว</option>
+              </select>
+          </div>
+          <div className="grow">
+              <p className=" text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-3">เพศ</p>
+              <select className="select min-h-0 h-[8vw] w-full max-h-10  text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm bg-gray-100 md:mb-3">
+                  <option disabled selected>เพศ</option>
+                  <option>เพศผู้</option>
+                  <option>เพศเมีย</option>
+              </select>
+          </div>
+      </div>
+      <div>
+        <p className=" text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-5">คำอธิบายรายระเอียดของสัตว์เลี้ยง เช่น สายพันธุ์, ลักษณะที่โดดเด่น และอื่นๆ </p>
+        <textarea className="textarea w-full min-h-48 lg:max-h-64 textarea-bordered text-[2.5vw] md:text-xs lg:text-sm xl:text-sm" placeholder="ex. สายพันธุ์, ลักษณะเฉพาะ, สีขน หรือ นิสัย"></textarea>
+      </div>
+      <div className="my-8 flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-40 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">บันทึกข้อมูล</div>
+      </div>
+    </div>
     </>
   );
 }

@@ -37,7 +37,7 @@ function PictureUpload({ onImageSelected }) {
           </button>
         </div>
       ) : (
-        <div className="relative flex flex-col items-center justify-center h-48 lg:h-52 xl:h-64">
+        <div className="relative flex flex-col items-center justify-center h-48 lg:h-64 xl:h-80">
           <input
             name="selectedImage"
             type="file"

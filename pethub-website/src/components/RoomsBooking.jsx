@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import Navbar from "./Utils/Navbar";
 import { useState, useEffect, useRef } from 'react';
-import Footer from "./Utils/Footer";
 import PictureUpload from "./Utils/PictureUpload";
 
 function RoomsBooking() {

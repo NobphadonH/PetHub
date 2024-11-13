@@ -22,7 +22,7 @@ function Payment() {
     return (
         <div>
             <Navbar />
-            <div className="grid grid-cols-3 mt-24">
+            <div className="grid grid-cols-3 mt-24 w-10/12 mx-auto">
                 <div className="col-span-2 mx-auto w-11/12">
                     <div className="flex flex-col bg-white border border-neutral-100 drop-shadow-xl rounded-xl">
                         <div className="bg-pethub-color1 p-4 rounded-t-xl">

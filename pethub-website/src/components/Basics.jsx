@@ -222,15 +222,15 @@ function Basics() {
         <div>
             <Navbar />
             <div className="flex flex-col mt-24">
-                <div className="text-black font-bold text-3xl mt-4">ลงทะเบียนโรงแรมสัตว์เลี้ยงของคุณให้สมบูรณ์แบบบน PetHub</div>
+                <div className="text-black font-bold text-[3vw] md:text-2xl lg:text-3xl mt-4">ลงทะเบียนโรงแรมสัตว์เลี้ยงของคุณให้สมบูรณ์แบบบน PetHub</div>
                 <div className="flex justify-center">
                     <div className="max-w-xl mx-auto">
-                        <div className="text-gray-800 text-base mt-4">
+                        <div className="text-gray-800 text-xs lg:text-base mt-4">
                             กรุณากรอกแบบฟอร์มด้านล่าง ข้อมูลทุกช่องจำเป็นต้องกรอก
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col w-1/2 bg-white border border-neutral-100 drop-shadow-xl p-8 rounded-3xl mt-8 mx-auto">
+                <div className="flex flex-col w-4/5 lg:w-1/2 bg-white border border-neutral-100 drop-shadow-xl p-8 rounded-3xl mt-8 mx-auto">
                     <div className="flex justify-center items-center">
                         <ul className="steps w-full max-w-2xl mt-2">
                             <li className="step step-accent text-gray-800 text-sm">ข้อมูลทั่วไป</li>

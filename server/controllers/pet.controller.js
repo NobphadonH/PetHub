@@ -1,12 +1,19 @@
 import { connectToDatabase } from "../utils/dbConnection.js";
-import { uploadFileToS3, downloadFileFromS3 } from "../utils/s3FileTransfer.js";
+import {
+  uploadFileToS3,
+  downloadFileFromS3,
+  deleteFileFromS3,
+} from "../utils/s3FileTransfer.js";
+import jwt from "jsonwebtoken";
 import fs from "fs";
 
 // *** Waiting for test this function ***
 export const createPet = async (req, res) => {
   try {
-    const { petName, petDOB, petType, petDetail, userID } = req.body;
+    const { petName, petDOB, petType, petDetail, cookies } = req.body;
     const { dbpool, sshClient } = await connectToDatabase();
+    const payload = jwt.verify(cookies, "Bhun-er");
+    const userID = payload["userID"];
 
     // Check if all required fields are provided
     if (!petName || !petDOB || !petType || !userID) {
@@ -77,8 +84,10 @@ export const createPet = async (req, res) => {
 //*** This function doesn't test yet. ***
 export const getAllPetsByUserID = async (req, res) => {
   try {
-    const { userID } = req.body; // Assuming userID is passed in the request body
+    const { cookies } = req.body; // Assuming userID is passed in the request body
     const { dbpool, sshClient } = await connectToDatabase();
+    const payload = jwt.verify(cookies, "Bhun-er");
+    const userID = payload["userID"];
 
     dbpool.getConnection(async (err, connection) => {
       if (err) {
@@ -141,8 +150,10 @@ export const getAllPetsByUserID = async (req, res) => {
 
 export const deletePetByPetID = async (req, res) => {
   try {
-    const { petID, userID } = req.body; // Extract petID and userID from request body
+    const { petID, cookies } = req.body; // Extract petID and userID from request body
     const { dbpool, sshClient } = await connectToDatabase();
+    const payload = jwt.verify(cookies, "Bhun-er");
+    const userID = payload["userID"];
 
     dbpool.getConnection((err, connection) => {
       if (err) {
@@ -180,8 +191,10 @@ export const deletePetByPetID = async (req, res) => {
 
 export const updatePetByPetID = async (req, res) => {
   try {
-    const { petID, userID, petName, petDOB, petDetail } = req.body; // Extract values from request body
+    const { petID, cookies, petName, petDOB, petDetail } = req.body;
     const { dbpool, sshClient } = await connectToDatabase();
+    const payload = jwt.verify(cookies, "Bhun-er");
+    const userID = payload["userID"];
 
     // Build query parts dynamically based on provided fields
     const updates = [];
@@ -200,18 +213,119 @@ export const updatePetByPetID = async (req, res) => {
       values.push(petDetail);
     }
 
-    // Check if at least one field is provided for update
-    if (updates.length === 0) {
-      return res.status(400).json({ error: "No fields provided for update" });
-    }
+    // Fetch existing pet photo URL if req.file is provided
+    if (req.file) {
+      dbpool.getConnection((err, connection) => {
+        if (err) {
+          console.error("Error getting connection from pool:", err);
+          sshClient.end();
+          return res.status(500).json({ error: "Database connection failed" });
+        }
 
-    // Construct the final query with the dynamic parts
-    const query = `
-      UPDATE Pets 
-      SET ${updates.join(", ")}
-      WHERE petID = ? AND userID = ?
-    `;
-    values.push(petID, userID); // Add petID and userID to the values array
+        // Fetch the current pet photo URL
+        connection.query(
+          `SELECT petPhoto FROM Pets WHERE petID = ? AND userID = ?`,
+          [petID, userID],
+          async (err, results) => {
+            if (err) {
+              console.error("Error fetching pet photo:", err);
+              connection.release();
+              sshClient.end();
+              return res
+                .status(500)
+                .json({ error: "Failed to retrieve pet photo" });
+            }
+
+            const currentPhotoUrl = results[0]?.petPhoto;
+            if (currentPhotoUrl) {
+              await deleteFileFromS3(currentPhotoUrl); // Delete the old file from S3
+            }
+
+            // Upload the new image to S3
+            const filePath = req.file.path;
+            const fileName = req.file.filename;
+            const fileContent = fs.readFileSync(filePath);
+            const fileMimeType = req.file.mimetype;
+            const newPhotoUrl = await uploadFileToS3(
+              fileName,
+              fileContent,
+              fileMimeType
+            );
+
+            // Add new photo URL to the update query
+            updates.push("petPhoto = ?");
+            values.push(newPhotoUrl);
+
+            // Add petID and userID to the query
+            values.push(petID, userID);
+
+            // Update the pet details in the database
+            const query = `UPDATE Pets SET ${updates.join(
+              ", "
+            )} WHERE petID = ? AND userID = ?`;
+            connection.query(query, values, (err, result) => {
+              if (err) {
+                console.error("Error updating pet:", err);
+                connection.release();
+                sshClient.end();
+                return res
+                  .status(500)
+                  .json({ error: "Failed to update pet information" });
+              }
+
+              res
+                .status(200)
+                .json({ message: "Pet information updated successfully" });
+              connection.release();
+              sshClient.end();
+            });
+          }
+        );
+      });
+    } else {
+      // If no file is provided, simply update other fields
+      values.push(petID, userID);
+      const query = `UPDATE Pets SET ${updates.join(
+        ", "
+      )} WHERE petID = ? AND userID = ?`;
+
+      dbpool.getConnection((err, connection) => {
+        if (err) {
+          console.error("Error getting connection from pool:", err);
+          sshClient.end();
+          return res.status(500).json({ error: "Database connection failed" });
+        }
+
+        connection.query(query, values, (err, result) => {
+          if (err) {
+            console.error("Error updating pet:", err);
+            connection.release();
+            sshClient.end();
+            return res
+              .status(500)
+              .json({ error: "Failed to update pet information" });
+          }
+
+          res
+            .status(200)
+            .json({ message: "Pet information updated successfully" });
+          connection.release();
+          sshClient.end();
+        });
+      });
+    }
+  } catch (error) {
+    console.log("Error in updatePetByPetID controller:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+export const getMatchingPets = async (req, res) => {
+  try {
+    const { cookies, petAllowedType } = req.body;
+    const { dbpool, sshClient } = await connectToDatabase();
+    const payload = jwt.verify(cookies, "Bhun-er");
+    const userID = payload["userID"];
 
     dbpool.getConnection((err, connection) => {
       if (err) {
@@ -220,27 +334,52 @@ export const updatePetByPetID = async (req, res) => {
         return res.status(500).json({ error: "Database connection failed" });
       }
 
-      connection.query(query, values, (err, result) => {
-        if (err) {
-          console.error("Error executing query:", err);
-          return res.status(500).json({ error: "Query execution failed" });
-        }
+      const query = `
+        SELECT * 
+        FROM Pets 
+        WHERE userID = ? AND petType = ?
+      `;
 
-        // Check if any row was affected
-        if (result.affectedRows === 0) {
-          return res
-            .status(404)
-            .json({ error: "Pet not found or does not belong to this user" });
-        }
+      connection.query(
+        query,
+        [userID, petAllowedType],
+        async (err, results) => {
+          if (err) {
+            console.error("Error executing query:", err);
+            return res.status(500).json({ error: "Query execution failed" });
+          }
+          // Fetch photo data for each pet from S3
+          const petsWithPhotos = await Promise.all(
+            results.map(async (pet) => {
+              try {
+                const photoData = await downloadFileFromS3(pet.petPhoto);
+                const petPhotoBuffer = photoData.Body;
+                return {
+                  ...pet,
+                  petPhoto: `data:${
+                    photoData.ContentType
+                  };base64,${petPhotoBuffer.toString("base64")}`,
+                };
+              } catch (error) {
+                console.error(
+                  `Failed to download photo for petID ${pet.petID}:`,
+                  error
+                );
+                // If download fails, include the pet data without the photo
+                return { ...pet, petPhoto: null };
+              }
+            })
+          );
 
-        res.status(200).json({ message: "Pet updated successfully" });
-        connection.release(); // Release the connection back to the pool
-        sshClient.end();
-        console.log("Connections closed.");
-      });
+          res.status(200).json(petsWithPhotos);
+          connection.release();
+          sshClient.end();
+          console.log("Connections closed.");
+        }
+      );
     });
   } catch (error) {
-    console.error("Error in updatePetByPetID controller:", error.message);
+    console.error("Error in getMatchingPets controller:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
