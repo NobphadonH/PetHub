@@ -6,7 +6,7 @@ function Profile() {
     <>
       <Navbar />
      
-        <div className="absolute mt-32 top-0 right-20 left-20 bottom-2/3 -z-10">
+        <div className="absolute mt-20 lg:mt-32 top-0 right-5 lg:right-80 left-5 lg:left-80 bottom-2/3 -z-10">
             <img
                 src="https://tidypets.store/cdn/shop/files/view-cats-dogs-being-friends.jpg?v=1726648599&width=2000"
                 alt=""
