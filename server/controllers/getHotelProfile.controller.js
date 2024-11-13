@@ -1,5 +1,6 @@
 import { connectToDatabase } from "../utils/dbConnection.js";
 
+// Get Hotel Profile
 export const getHotelProfile = async (req, res) => {
     const hotelID = req.params.hotelID;
     
@@ -8,8 +9,7 @@ export const getHotelProfile = async (req, res) => {
         if (err) {
             console.log(err);
             sshClient.end();
-            res.status(500).json({ message: "Database connection failed" });
-            return;
+            return res.status(500).json({ message: "Database connection failed" });
         }
 
         const hotelQuery = `SELECT hotelID, hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress FROM Hotels WHERE hotelID = ?`;
@@ -67,6 +67,46 @@ export const getHotelProfile = async (req, res) => {
                 });
             });
 
+            connection.release();
+        });
+    });
+};
+
+// Update Hotel Profile
+export const updateHotelProfile = async (req, res) => {
+    const hotelID = req.params.hotelID;
+    const { hotelDescription, hotelPolicy } = req.body; // Get the new description and policy from the request body
+    
+    const { dbpool, sshClient } = await connectToDatabase();
+    dbpool.getConnection((err, connection) => {
+        if (err) {
+            console.log(err);
+            sshClient.end();
+            return res.status(500).json({ message: "Database connection failed" });
+        }
+
+        // Query to update hotel description and policy
+        const updateQuery = `
+            UPDATE Hotels 
+            SET hotelDescription = ?, hotelPolicy = ?
+            WHERE hotelID = ?
+        `;
+
+        connection.query(updateQuery, [hotelDescription, hotelPolicy, hotelID], (queryErr, result) => {
+            if (queryErr) {
+                console.log(queryErr);
+                res.status(500).json({ message: "Failed to update hotel profile" });
+                sshClient.end();
+                return;
+            }
+
+            if (result.affectedRows === 0) {
+                res.status(404).json({ message: "Hotel not found" });
+            } else {
+                res.status(200).json({ message: "Hotel profile updated successfully" });
+            }
+
+            sshClient.end();
             connection.release();
         });
     });
