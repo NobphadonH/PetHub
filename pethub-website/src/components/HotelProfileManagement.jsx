@@ -1,154 +1,227 @@
 import React from "react";
+import Navbar from "./Utils/Navbar";
 
 const HotelProfileManagement = () => {
   return (
-    <div className="bg-gray-100 min-h-screen text-gray-800">
-      {/* Header */}
-      <header className="bg-white shadow-md">
-        <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-orange-500">Pethub Hotel Management</h1>
-          <nav>
-            <ul className="flex space-x-4">
-              <li><a href="/" className="text-gray-700 hover:text-orange-500">Home</a></li>
-              <li><a href="/profile" className="text-gray-700 hover:text-orange-500">Profile</a></li>
-              <li><a href="/about" className="text-gray-700 hover:text-orange-500">About</a></li>
-              <li><a href="/contact" className="text-gray-700 hover:text-orange-500">Contact</a></li>
-            </ul>
-          </nav>
-        </div>
-      </header>
+    <div className="bg-gray-100 min-h-screen text-gray-800 text-left">
+      {/* Navbar */}
+      <Navbar />
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-8">
-        {/* Hotel Overview */}
-        <section className="bg-white shadow-md rounded-lg p-6 mb-6">
-          <div className="flex">
-            {/* Image */}
-            <img
-              src="https://via.placeholder.com/400x300"
-              alt="Hotel"
-              className="w-1/3 rounded-lg shadow-md"
-            />
-            {/* Details */}
-            <div className="ml-6 w-2/3">
-              <h2 className="text-xl font-semibold text-orange-500">Bangmod Pet Hotel</h2>
-              <p className="mt-2"><strong>สถานที่ตั้ง:</strong> 123 ถนนสุขุมวิท, วัฒนา, กรุงเทพมหานคร 10110, (ใกล้ BTS อโศก)</p>
-              <p className="mt-1"><strong>ประเภทที่พัก:</strong> Professional Pet Hotel</p>
-              <p className="mt-1"><strong>Cancellation Policy:</strong> Flexible cancellation</p>
-              <p className="mt-4"><strong>ผู้ดูแล:</strong> นายกฤษณ์ สมบูรณ์สุข</p>
-              <p className="mt-1"><strong>โทรศัพท์:</strong> +66 2 123 4567</p>
-            </div>
+      <main className="container mx-auto px-6 py-8 pt-36">
+        {/* Header */}
+        <div className="mb-4">
+            <h1 className="text-black text-3xl font-bold">
+              <span className="text-pethub-color1">Pethub</span> Hotel Management
+            </h1>
+            <hr className="border-t-2 border-pethub-color1 w-[11.5rem]" />
           </div>
-        </section>
 
-        {/* Hotel Details */}
-        <section className="bg-white shadow-md rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">รายละเอียดโรงแรม</h2>
+        {/* Hotel Overview */}
+          <section className="bg-white shadow-lg rounded-lg p-6 mb-6 flex items-center relative overflow-hidden">
+            {/* Blue Accent Bar */}
+            <div className="absolute top-1.5 left-0 w-2 h-[21.3rem] bg-pethub-color6"></div>
+          
+            {/* Image */}
+            <div className="flex-shrink-0">
+              <img
+                src="https://via.placeholder.com/400x300"
+                alt="Hotel"
+                className="rounded-md shadow-md border-4 border-pethub-color6"
+              />
+            </div>
 
-          {/* Overview */}
-          <div className="mb-6">
-            <h3 className="text-lg font-medium mb-2">คำอธิบายโรงแรม (Overview)</h3>
-            <div className="bg-gray-50 p-4 rounded-md border">
-              <p>
-                Bangmod Pet Hotel เป็นโรงแรมสัตว์เลี้ยงระดับพรีเมียม ตั้งอยู่ในย่านบางนา กรุงเทพมหานคร
-                ที่ออกแบบมาเพื่อความต้องการของเจ้าของสัตว์เลี้ยง...
+        {/* Details */}
+        <div className="ml-6 flex-grow relative">
+          <p className="text-black mb-4">
+            <strong>ชื่อจดทะเบียน: <span className="text-pethub-color1 text-lg">Bangmod pet hotel</span></strong>
+          </p>
+          <p className="mb-4">
+            <strong className="text-black">สถานที่ตั้ง:</strong>
+            <span className="text-pethub-color6"> 123 ถนนสุขุมวิท, วัฒนา, กรุงเทพมหานคร 10110, (ใกล้ BTS อโศก)</span>
+          </p>
+          <p className="mb-4">
+            <strong className="text-black">ประเภทที่พัก:</strong>
+            <span className="text-pethub-color6"> Professional Pet Hotel</span>
+          </p>
+          <p className="mb-4">
+            <strong className="text-black">Cancelation Policy:</strong>
+            <span className="text-pethub-color6"> Flexible cancelation</span>
+          </p>
+          <div className="flex items-center justify-between mt-32">
+            <div className="flex space-x-4">
+              <p className="text-black">
+                <strong>ผู้ดูแล:</strong>
+                <span className="text-pethub-color6"> นายกฤษณ์ สมบูรณ์สุข</span>
+              </p>
+              <p className="text-black">
+                <strong>โทรศัพท์:</strong>
+                <span className="text-pethub-color6"> +66 2 123 4567</span>
               </p>
             </div>
-          </div>
-
-          {/* Rules */}
-          <div>
-            <h3 className="text-lg font-medium mb-2">ข้อกำหนด</h3>
-            <div className="bg-gray-50 p-4 rounded-md border">
-              <ul className="list-decimal pl-5 space-y-2">
-                <li>
-                  <strong>ประกาศเกี่ยวกับบริการ:</strong>
-                  รับเฉพาะสัตว์เลี้ยงและแมวที่น้ำหนักไม่เกิน 30 กิโลกรัม...
-                </li>
-                <li>
-                  <strong>ข้อกำหนดสุขภาพ:</strong>
-                  สัตว์เลี้ยงต้องได้รับวัคซีนครบตามที่กำหนด...
-                </li>
-                <li>
-                  <strong>พฤติกรรมของสัตว์เลี้ยง:</strong>
-                  ต้องไม่มีพฤติกรรมก้าวร้าว...
-                </li>
-                <li>
-                  <strong>การเช็คอินและเช็คเอาท์:</strong>
-                  เวลาเช็คอิน: 09:00-18:00 น.
-                </li>
-                <li>
-                  <strong>การยกเลิกการจอง:</strong>
-                  แจ้งยกเลิกล่วงหน้า 24 ชั่วโมง...
-                </li>
-              </ul>
-            </div>
-          </div>
+        
+          <button className="text-gray-400 hover:text-gray-600 flex items-center text-xs">
+            <i className="fas fa-cog mr-2"></i> ส่งคำร้องแก้ไขข้อมูล
+          </button>
+        </div>
+        
+          <p className="absolute top-2 right-2 text-gray-300 text-sm font-semibold">
+            C-349-342350
+          </p>
+        </div>
+      
+        {/* Orange Accent Bar */}
+        <div className="absolute top-1.5 right-0 w-2 h-[21.3rem] bg-pethub-color1"></div>
         </section>
+        
+        {/* Hotel Details */}
+        <section className="bg-white shadow-md rounded-lg p-6 mb-6">
+          <h2 className="text-3xl font-semibold text-black mb-6 border-b pb-3">รายละเอียดโรงแรม</h2>
+        
+          {/* Overview */}
+          <div className="mb-6">
+            <h3 className="text-xl font-semibold mb-3 text-black">คำอธิบายโรงแรม (Overview)</h3>
+            <div className="bg-gray-50 p-4 rounded-md border text-pethub-color6">
+              <p className="mb-4">
+                Bangmod Pet Hotel เป็นโรงแรมสัตว์เลี้ยงระดับพรีเมียม ตั้งอยู่ในย่านบางมด กรุงเทพมหานคร ที่ออกแบบมาเพื่อตอบโจทย์ความต้องการของเจ้าของสัตว์เลี้ยงที่มองหาที่พักอันปลอดภัย สะดวกสบาย และทันสมัยสำหรับเพื่อนขนฟูของพวกเขา เราให้บริการที่พักทั้งระยะสั้นและระยะยาว พร้อมสิ่งอำนวยความสะดวกครบครันและการดูแลอย่างใกล้ชิดจากผู้เชี่ยวชาญด้านสัตว์เลี้ยง
+              </p>
+              <p className="mb-4">
+                โรงแรมของเรามีพื้นที่กว้างขวาง รวมถึงห้องพักที่สะอาดและมีระบบควบคุมอุณหภูมิที่เหมาะสม พร้อมสนามวิ่งเล่นสำหรับสัตว์เลี้ยง และโซนกิจกรรมที่ออกแบบมาเพื่อความสนุกสนานและการออกกำลังกายของสัตว์เลี้ยง นอกจากนี้ เรายังมีบริการดูแลพิเศษ เช่น การอาบน้ำ ตัดขน และตรวจสุขภาพเบื้องต้น โดยทีมงานที่มีความรักและประสบการณ์ในการดูแลสัตว์เลี้ยง
+              </p>
+              <p>
+                ไม่ว่าคุณจะมีสุนัข แมว หรือสัตว์เลี้ยงชนิดอื่น ๆ เราพร้อมให้บริการและดูแลพวกเขาด้วยความรักและความใส่ใจ เพื่อให้คุณมั่นใจได้ว่าสัตว์เลี้ยงของคุณจะได้รับการดูแลเป็นอย่างดีระหว่างการเข้าพักที่ Bangmod Pet Hotel.
+              </p>
+            </div>
+        </div>
+                    
+        {/* Rules */}
+        <div>
+          <h3 className="text-xl font-semibold mb-3 text-black">ข้อกำหนด</h3>
+          <div className="bg-gray-50 p-4 rounded-md border text-pethub-color6">
+          <strong>ข้อกำหนดในการเข้าพักที่ Bangmod Pet Hotel</strong><br />
+            <ul className="list-decimal pl-5 space-y-4 text-sm text-pethub-color6">
+                <li>
+                <strong>ประเภทสัตว์เลี้ยงที่รับบริการ:</strong>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li>รับเฉพาะสุนัขและแมวเท่านั้น (น้ำหนักไม่เกิน 30 กิโลกรัม)</li>
+                  <li>สัตว์เลี้ยงต้องมีสุขภาพดี ไม่มีโรคติดต่อหรือปัญหาสุขภาพร้ายแรง</li>
+                </ul>
+              </li>
+              <li>
+                <strong>วัคซีนและสุขภาพ:</strong>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li>สัตว์เลี้ยงต้องได้รับการฉีดวัคซีนครบถ้วนตามกำหนด (เช่น วัคซีนป้องกันโรคพิษสุนัขบ้า หัด หลอดลมอักเสบ และอื่น ๆ ตามประเภทสัตว์)</li>
+                  <li>เจ้าของต้องแสดงหลักฐานการฉีดวัคซีนในวันที่เช็คอิน</li>
+                  <li>ไม่รับสัตว์เลี้ยงที่มีอาการป่วยหรือแสดงอาการของโรคติดต่อ</li>
+                </ul>
+              </li>
+              <li>
+                <strong>พฤติกรรมของสัตว์เลี้ยง:</strong>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li>สัตว์เลี้ยงต้องไม่มีพฤติกรรมก้าวร้าวหรือเป็นอันตรายต่อสัตว์เลี้ยงตัวอื่น ๆ หรือผู้ดูแล</li>
+                  <li>หากสัตว์เลี้ยงมีประวัติการกัดหรือทำร้ายผู้อื่น กรุณาแจ้งให้ทราบล่วงหน้า</li>
+                </ul>
+              </li>
+              <li>
+                <strong>การเช็คอินและเช็คเอาท์:</strong>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li>เวลาเช็คอิน: 09:00 - 18:00 น.</li>
+                  <li>เวลาเช็คเอาท์: 09:00 - 12:00 น. หากเช็คเอาท์เกินเวลาอาจมีค่าธรรมเนียมเพิ่มเติม</li>
+                  <li>เจ้าของต้องเตรียมอาหารและของใช้ส่วนตัว เช่น ชามอาหาร หรือของเล่นที่สัตว์เลี้ยงชอบมาด้วย</li>
+                </ul>
+              </li>
+              <li>
+                <strong>การยกเลิกและคืนเงิน:</strong>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li>การยกเลิกการเข้าพักต้องแจ้งล่วงหน้าอย่างน้อย 48 ชั่วโมงก่อนวันเช็คอิน</li>
+                  <li>หากยกเลิกภายใน 24 ชั่วโมงก่อนการเข้าพัก จะมีค่าธรรมเนียม 50% ของราคาการเข้าพักทั้งหมด</li>
+                </ul>
+              </li>
+              <li>
+                <strong>การดูแลพิเศษ:</strong>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li>หากสัตว์เลี้ยงต้องการการดูแลพิเศษ (เช่น การให้ยาตามเวลา) กรุณาแจ้งให้ทราบล่วงหน้าพร้อมรายละเอียดที่ชัดเจน</li>
+                </ul>
+              </li>
+              <li>
+                <strong>ความรับผิดชอบ:</strong>
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li>ทางโรงแรมไม่รับผิดชอบความเสียหายที่เกิดจากพฤติกรรมของสัตว์เลี้ยงในระหว่างการเข้าพัก เช่น การทำลายทรัพย์สินหรือการทำร้ายสัตว์ตัวอื่น</li>
+                  <li>
+                    ในกรณีฉุกเฉินที่สัตว์เลี้ยงมีอาการป่วย ทางโรงแรมจะติดต่อเจ้าของทันที และจะดำเนินการพาไปพบสัตวแพทย์ตามความจำเป็น ค่าใช้จ่ายต่าง ๆ จะเป็นความรับผิดชอบของเจ้าของสัตว์เลี้ยง
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <strong>หมายเหตุ:</strong> โปรดทำความเข้าใจและยอมรับข้อกำหนดเหล่านี้ก่อนทำการจองเพื่อประสบการณ์ที่ราบรื่นและปลอดภัยสำหรับสัตว์เลี้ยงของท่าน
+              </li>
+            </ul>
+          </div>
+        </div>
+        </section>
+
 
         {/* Edit Button */}
         <div className="text-right">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600">
+          <button className="bg-pethub-color6 text-white px-4 py-2 rounded shadow hover:bg-blue-900">
             แก้ไขข้อมูล
           </button>
         </div>
         
-          {/* Room Management */}
-                <section className="bg-white shadow-md rounded-lg p-6 mt-6">
-          <h2 className="text-xl font-semibold mb-4">จัดการห้องพัก</h2>
+        {/* Room Management */}
+            <section className="bg-white shadow-md rounded-lg p-6 mt-6 text-left">
+        <h2 className="text-xl font-semibold mb-4">จัดการห้องพัก</h2>
 
-          {/* Room Summary */}
-          <div className="flex justify-between items-center mb-6">
-            <p><strong>จำนวนห้องพัก:</strong> <span className="text-red-500">10 ห้อง</span></p>
-            <p><strong>Available:</strong> <span className="text-green-500">3 ห้อง</span></p>
-            <p><strong>Booked:</strong> <span className="text-blue-500">2 ห้อง</span></p>
-            <p><strong>Not Available:</strong> <span className="text-red-500">5 ห้อง</span></p>
+        {/* Room Summary */}
+        <div className="flex justify-between items-center mb-6 text-left">
+          <p><strong>จำนวนห้องพัก:</strong> <span className="text-red-500">10 ห้อง</span></p>
+          <p><strong>Available:</strong> <span className="text-green-500">3 ห้อง</span></p>
+          <p><strong>Booked:</strong> <span className="text-blue-500">2 ห้อง</span></p>
+          <p><strong>Not Available:</strong> <span className="text-red-500">5 ห้อง</span></p>
+        </div>
+
+        {/* Room Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+          {/* Room Card 1 */}
+          <div className="bg-gray-50 shadow rounded-md p-4">
+            <img
+              src="https://via.placeholder.com/300x200"
+              alt="Room"
+              className="rounded-md mb-4"
+            />
+            <p><strong>ประเภทห้อง:</strong> ห้องทั่วไป A2</p>
+            <p><strong>สถานะ:</strong> <span className="text-red-500">Not available</span></p>
+            <button className="mt-4 w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600">
+              จัดการ
+            </button>
           </div>
-
-          {/* Room Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Room Card 1 */}
-            <div className="bg-gray-50 shadow rounded-md p-4">
-              <img
-                src="https://via.placeholder.com/300x200"
-                alt="Room"
-                className="rounded-md mb-4"
-              />
-              <p><strong>ประเภทห้อง:</strong> ห้องทั่วไป A2</p>
-              <p><strong>สถานะ:</strong> <span className="text-red-500">Not available</span></p>
-              <button className="mt-4 w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600">
-                จัดการ
-              </button>
-            </div>
-
-            {/* Room Card 2 */}
-            <div className="bg-gray-50 shadow rounded-md p-4">
-              <img
-                src="https://via.placeholder.com/300x200"
-                alt="Room"
-                className="rounded-md mb-4"
-              />
-              <p><strong>ประเภทห้อง:</strong> ห้องทั่วไป A3</p>
-              <p><strong>สถานะ:</strong> <span className="text-green-500">Available</span></p>
-              <button className="mt-4 w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600">
-                จัดการ
-              </button>
-            </div>
-
-            {/* Room Card 3 */}
-            <div className="bg-gray-50 shadow rounded-md p-4">
-              <img
-                src="https://via.placeholder.com/300x200"
-                alt="Room"
-                className="rounded-md mb-4"
-              />
-              <p><strong>ประเภทห้อง:</strong> ห้อง VIP A5</p>
-              <p><strong>สถานะ:</strong> <span className="text-green-500">Available</span></p>
-              <button className="mt-4 w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600">
-                จัดการ
-              </button>
-            </div>
+          {/* Room Card 2 */}
+          <div className="bg-gray-50 shadow rounded-md p-4">
+            <img
+              src="https://via.placeholder.com/300x200"
+              alt="Room"
+              className="rounded-md mb-4"
+            />
+            <p><strong>ประเภทห้อง:</strong> ห้องทั่วไป A3</p>
+            <p><strong>สถานะ:</strong> <span className="text-green-500">Available</span></p>
+            <button className="mt-4 w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600">
+              จัดการ
+            </button>
+          </div>  
+          {/* Room Card 3 */}
+          <div className="bg-gray-50 shadow rounded-md p-4">
+            <img
+              src="https://via.placeholder.com/300x200"
+              alt="Room"
+              className="rounded-md mb-4"
+            />
+            <p><strong>ประเภทห้อง:</strong> ห้อง VIP A5</p>
+            <p><strong>สถานะ:</strong> <span className="text-green-500">Available</span></p>
+            <button className="mt-4 w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600">
+              จัดการ
+            </button>
           </div>
+        </div>
 
           {/* Add Room Button */}
           <div className="text-right mt-6">
@@ -158,19 +231,19 @@ const HotelProfileManagement = () => {
           </div>
         </section>
 
-                {/* Booking Management */}
-                <section className="bg-white shadow-md rounded-lg p-6 mt-6">
+        {/* Booking Management */}
+                <section className="bg-white shadow-md rounded-lg p-6 mt-6 text-left">
           <h2 className="text-xl font-semibold mb-4">จัดการการจอง</h2>
 
           {/* Booking Summary */}
-          <div className="mb-6">
+          <div className="mb-6 ">
             <p className="text-gray-700">
               การจองวันนี้: <span className="text-orange-500">2 รายการ</span>
             </p>
           </div>
 
           {/* Booking Table */}
-          <table className="w-full border-collapse border border-gray-300">
+          <table className="w-full border-collapse border border-gray-300 ">
             <thead>
               <tr className="bg-gray-200 text-left">
                 <th className="p-3 border border-gray-300">หมายเลขการจอง</th>
@@ -195,7 +268,7 @@ const HotelProfileManagement = () => {
               </tr>
 
               {/* Row 2: ชำระเงินแล้ว */}
-              <tr className="bg-gray-50 text-gray-700">
+              <tr className="bg-gray-50 text-gray-700 ">
                 <td className="p-3 border border-gray-300">B-233-2308275</td>
                 <td className="p-3 border border-gray-300">10/10/2567</td>
                 <td className="p-3 border border-gray-300">12/11/2567</td>
@@ -223,7 +296,7 @@ const HotelProfileManagement = () => {
 
 
         {/* Booking History */}
-        <section className="bg-white shadow-md rounded-lg p-6 mt-6">
+        <section className="bg-white shadow-md rounded-lg p-6 mt-6 text-left">
           <h2 className="text-xl font-semibold mb-4">ประวัติการจอง</h2>
 
           {/* Booking History Table */}
@@ -268,7 +341,7 @@ const HotelProfileManagement = () => {
         </section>
 
         {/* Footer */}
-        <footer className="bg-gray-100 border-t border-gray-300 mt-8">
+        <footer className="bg-gray-100 border-t border-gray-300 mt-8 text-left">
           <div className="container mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 text-gray-700">
             {/* Logo and Tagline */}
             <div>
