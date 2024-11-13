@@ -3,8 +3,11 @@ import logo from "../../public/logo.svg";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
 function Login() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,7 +21,7 @@ function Login() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
@@ -31,8 +34,23 @@ function Login() {
       toast.error("Please enter a valid email address.");
       return;
     }
+    try {
+      // Send POST request to the Node.js API endpoint
+      const response = await axios.post('http://localhost:5000/api/auth/signin', formData, { withCredentials: true });
+      toast.success("Signin successful");
+      console.log("Response:", response.data);
+      navigate('/pethub-website/Home');
+    }
+    catch (error) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.error || "Login failed");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    }
+  }
 
-  };
+ 
   console.log(formData);
   return (
     <>
