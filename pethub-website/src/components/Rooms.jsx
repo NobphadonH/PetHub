@@ -1,13 +1,13 @@
 import Navbar from "./Utils/Navbar";
 import AddRoomsForm from "./Utils/AddRoomsForm";
-import { useState } from 'react';
+import { useState} from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 
 function Rooms() {
     const navigate = useNavigate()
     const location = useLocation()
 
-    const hotelFormData = location.state?.hotelFormData || {};
+    const [hotelFormData]= useState(location.state);
 
     const [forms, setForms] = useState([{ id: 1, image: null }]);
     const [formData, setFormData] = useState({})
@@ -24,28 +24,72 @@ function Rooms() {
         
     };
 
-    const updateImage = (index, newImage) => {
-        setForms(forms.map((form, i) => 
-            i === index ? { ...form, image: newImage } : form
-        ));
-        setRoomFormArray((prevForms) =>
-            prevForms.map((form, i) => (i === index ? { ...form, images: [...form.images, newImage] } : form))
-        );
+    const convertFileToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
     };
-    const handleChange = (index, updatedData) => {
-        setRoomFormArray((prevData) => {
-            const newData = [...prevData];
-            newData[index] = { ...newData[index], ...updatedData };
-            return newData;
+    
+    // Convert each image in roomFormArray before navigating
+    const prepareRoomFormArrayForNavigation = async () => {
+        const updatedRoomFormArray = await Promise.all(
+            roomFormArray.map(async (room) => {
+                if (room.selectedImage instanceof File) {
+                    const base64Image = await convertFileToBase64(room.selectedImage);
+                    return { ...room, selectedImage: base64Image };
+                }
+                return room;
+            })
+        );
+        return updatedRoomFormArray;
+    };
+    
+
+
+    const updateImage = (index, newImage) => {
+        setRoomFormArray(prevArray => {
+            const updatedArray = [...prevArray];
+            updatedArray[index] = {
+                ...updatedArray[index],
+                image: newImage
+            };
+            return updatedArray;
         });
     };
 
-    const goConfirmPage = () => {
+    const handleChange = (index, data) => {
+        setForms(prevForms => {
+            const updatedForms = [...prevForms];
+            updatedForms[index] = {
+                ...updatedForms[index],
+                ...data
+            };
+            return updatedForms;
+        });
+
+        setRoomFormArray(prevForms => {
+            const updatedForms = [...prevForms];
+            updatedForms[index] = {
+                ...updatedForms[index],
+                ...data
+            };
+            return updatedForms;
+        });
+    };
+    
+
+    const goConfirmPage = async () => {
+        const readyRoomFormArray = await prepareRoomFormArrayForNavigation();
+
         const hotelAndRoomFormData = {
             hotelFormData,
-            roomFormArray,
+            readyRoomFormArray,
         };
-        navigate('/pethub-website/comfirm', {state: hotelAndRoomFormData})
+        console.log(hotelAndRoomFormData)
+        navigate('/pethub-website/confirm', {state: hotelAndRoomFormData})
     }
 
     return (
@@ -101,7 +145,7 @@ function Rooms() {
                     <button className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
                         ขั้นตอนก่อนหน้า
                     </button>
-                    <button className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
+                    <button onClick={goConfirmPage}className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
                         ขั้นตอนต่อไป
                     </button>
                 </div>
