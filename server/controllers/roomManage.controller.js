@@ -19,18 +19,16 @@ export const getRoomDetails = async (req, res) => {
             WHERE roomTypeID = ? AND hotelID = ?
         `;
 
-        // Query to get bookings associated with this room and include pet details
+        // Query to get bookings associated with this room (with pet details from the booking)
         const bookingQuery = `
             SELECT 
                 B.bookingID, B.checkInDate, B.checkOutDate, B.paymentStatus, B.paymentDate,
                 U.fName AS bookerFirstName, U.lName AS bookerLastName, U.phone AS bookerPhone,
-                P.petID, P.petName, P.petDOB, P.petType, P.petDetail, P.petPhoto
+                B.petID
             FROM 
                 Bookings B
             JOIN 
                 Users U ON B.userID = U.userID
-            LEFT JOIN
-                Pets P ON P.userID = U.userID
             WHERE 
                 B.roomTypeID = ?
             ORDER BY 
@@ -52,8 +50,8 @@ export const getRoomDetails = async (req, res) => {
                 return;
             }
 
-            // Fetch associated bookings for the room with pet details
-            connection.query(bookingQuery, [roomTypeID], (bookingErr, bookingResults) => {
+            // Fetch bookings associated with the room
+            connection.query(bookingQuery, [roomTypeID], async (bookingErr, bookingResults) => {
                 if (bookingErr) {
                     console.log(bookingErr);
                     res.status(500).json({ message: "Failed to fetch bookings" });
@@ -61,9 +59,32 @@ export const getRoomDetails = async (req, res) => {
                     return;
                 }
 
+                // For each booking, fetch the associated pet (one pet per booking)
+                const bookingsWithPets = [];
+
+                for (let booking of bookingResults) {
+                    const petQuery = `
+                        SELECT 
+                            P.petID, P.petName, P.petDOB, P.petType, P.petDetail, P.petPhoto
+                        FROM 
+                            Pets P
+                        WHERE 
+                            P.petID = ?  -- Match the petID from the booking
+                    `;
+
+                    // Fetch the pet associated with this booking
+                    const [petResults] = await connection.promise().query(petQuery, [booking.petID]);
+
+                    // Add pet to the booking
+                    bookingsWithPets.push({
+                        ...booking,
+                        pets: petResults
+                    });
+                }
+
                 const roomDetails = {
                     ...roomResults[0],
-                    bookings: bookingResults
+                    bookings: bookingsWithPets
                 };
 
                 res.status(200).json(roomDetails);
