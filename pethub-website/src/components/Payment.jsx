@@ -120,7 +120,7 @@ function Payment() {
                 </div>
 
                 {/* Booking Summary Section */}
-                <div className="col-span-1 w-full lg:w-11/12">
+                <div className="col-span-1 w-full ml-4 lg:ml-0 lg:w-11/12">
                     <div className="bg-white border border-neutral-100 drop-shadow-xl rounded-xl">
                         <div className="bg-gray-300 p-20 lg:p-28 rounded-t-xl"></div>
                         <div className="flex flex-col p-4 lg:p-6">
