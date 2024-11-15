@@ -9,8 +9,11 @@ import fs from "fs";
 
 // *** Waiting for test this function ***
 export const createPet = async (req, res) => {
+  // console.log(req.body);
+  // res.status(200);
+  // return;
   try {
-    const { petName, petDOB, petType, petDetail, petSex} = req.body;
+    const { petName, petDOB, petType, petDetail, petSex } = req.body;
     const { dbpool, sshClient } = await connectToDatabase();
     const userID = req.user.userID;
 
@@ -154,7 +157,7 @@ export const getAllPetsByUserID = async (req, res) => {
 
 export const deletePetByPetID = async (req, res) => {
   try {
-    const { petID} = req.body; // Extract petID and userID from request body
+    const { petID } = req.body; // Extract petID and userID from request body
     const { dbpool, sshClient } = await connectToDatabase();
     const userID = req.user.userID;
 

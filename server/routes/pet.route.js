@@ -7,19 +7,30 @@ import {
   getMatchingPets,
 } from "../controllers/pet.controller.js";
 import multer from "multer";
+import { verifyRole } from "../middleware/authVerify.js";
 
 const upload = multer({ dest: "uploads/" });
 
 const router = express.Router();
 
-router.post("/createPet", upload.single("filename"), createPet);
+router.post(
+  "/createPet",
+  verifyRole("Client"),
+  upload.single("selectedImage"),
+  createPet
+);
 
-router.post("/getAllPetsByUserID", getAllPetsByUserID);
+router.post("/getAllPetsByUserID", verifyRole("Client"), getAllPetsByUserID);
 
-router.post("/updatePetByPetID", upload.single("filename"), updatePetByPetID);
+router.post(
+  "/updatePetByPetID",
+  verifyRole("Client"),
+  upload.single("selectedImage"),
+  updatePetByPetID
+);
 
-router.post("/deletePetByPetID", deletePetByPetID);
+router.post("/deletePetByPetID", verifyRole("Client"), deletePetByPetID);
 
-router.post("/getMatchingPets", getMatchingPets);
+router.post("/getMatchingPets", verifyRole("Client"), getMatchingPets);
 
 export default router;
