@@ -139,18 +139,19 @@ export const verifyHotel = async (req, res) => {
 
 export const createHotel = async (req, res) => {
     try {
-        const {hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, selectedImage, cookies} = req.body
+        const {hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, selectedImage, mapLat, mapLong} = req.body
         const filePath = req.file.path
         const fileName = req.file.filename
         const fileContent = fs.readFileSync(filePath)
 
-        const payload = jwt.verify(cookies, "Bhun-er");
-        const userID = payload["userID"];
+        // const token = req.cookies.jwt
+        // const payload = jwt.verify(token, "Bhun-er");
+        // const userID = payload["userID"];
 
-        // res.status(200);
+        const userID = req.user.userID
+
+
         console.log(req.body)
-        // console.log(req.file)
-        // return;
         const { dbpool, sshClient } = await connectToDatabase();
 
         uploadFileToS3(fileName, fileContent, req.file.mimetype).then((url) => {
@@ -162,8 +163,7 @@ export const createHotel = async (req, res) => {
                     sshClient.end();
                     return;
                 }
-                const mapLat = "20"
-                const mapLong = "30"
+
                 const query = `INSERT INTO Hotels (hotelName, userID, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, mapLat, mapLong,
                  hotelPhoto, verification) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
@@ -174,7 +174,7 @@ export const createHotel = async (req, res) => {
                     (err, results) => {
                         if (err) throw err
                         console.log(results)
-                        res.status(200).send(results.insertId)
+                        res.status(200).json({hotelID: results.insertId})
                         connection.release()
                         sshClient.end()
                     }
@@ -186,6 +186,16 @@ export const createHotel = async (req, res) => {
             console.error("upload failed:", error)
         })
 
+
+        // Step 4: Delete the file from the local uploads folder after upload
+        const localFilePath = `uploads/${fileName}`;
+        fs.unlink(localFilePath, (err) => {
+            if (err) {
+                console.log('Error deleting the local file:', err);
+            } else {
+                console.log('Local file deleted successfully.');
+            }
+        });
 
 
     } catch (error) {

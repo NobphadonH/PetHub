@@ -1,6 +1,6 @@
 import { connectToDatabase } from "../utils/dbConnection.js";
 
-// Get Hotel Profile
+// Get Hotel Profile with User Details
 export const getHotelProfile = async (req, res) => {
     const hotelID = req.params.hotelID;
     
@@ -12,7 +12,20 @@ export const getHotelProfile = async (req, res) => {
             return res.status(500).json({ message: "Database connection failed" });
         }
 
-        const hotelQuery = `SELECT hotelID, hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress FROM Hotels WHERE hotelID = ?`;
+        // Updated query to include user information
+        const hotelQuery = `
+            SELECT 
+                H.hotelID, H.hotelName, H.hotelType, H.hotelDescription, 
+                H.hotelPolicy, H.hotelAddress,
+                U.fName, U.lName, U.phone
+            FROM 
+                Hotels H
+            JOIN 
+                Users U ON H.userID = U.userID
+            WHERE 
+                H.hotelID = ?;
+        `;
+
         const roomQuery = `SELECT roomTypeID, roomTypeName, roomCapacity, numberOfRoom, roomSize, roomDetail, petAllowedType, pricePerNight, roomPhoto FROM RoomTypes WHERE hotelID = ?`;
         const bookingQuery = `
             SELECT 

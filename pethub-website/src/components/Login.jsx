@@ -39,7 +39,8 @@ function Login() {
       // Send POST request to the Node.js API endpoint
       const response = await axios.post(
         "http://localhost:5000/api/auth/signin",
-        formData
+        formData,
+        {withCredentials: true}
       );
       toast.success("Signin successful");
       console.log("Response:", response.data);

@@ -125,7 +125,6 @@ function Basics() {
     const navigate = useNavigate();
     const [pointerLocation, setPointerLocation] = useState({ lon: 100.56, lat: 13.74 });
    
-
     const [formData, setFormData] = useState({
         hotelName: "",
         hotelDescription: "",
@@ -136,6 +135,16 @@ function Basics() {
         selectedImage: null, // For the image
         cookies: Cookies.get("user-auth")
     })
+
+
+    const convertFileToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
 
     const handleChange = (event) => {
         const name = event.target.name;
@@ -163,19 +172,22 @@ function Basics() {
 
 
 
-    const goAddRoomsPage = () => {
-        // You can pass the formData as state when navigating
+    const goAddRoomsPage = async () => {
+        // Prepare hotelFormData with base64 if selectedImage is present
         const hotelFormData = {
             ...formData,
             mapLat: pointerLocation.lat,
             mapLong: pointerLocation.lon,
-            selectedImage: formData.selectedImage ? formData.selectedImage.name : null
+            selectedImage: formData.selectedImage 
+                ? await convertFileToBase64(formData.selectedImage) 
+                : null,
         };
-
-        console.log(hotelFormData);
-
-       //navigate("/pethub-website/rooms", { state: hotelFormData });
+    
+        // Navigate to the next page with hotelFormData
+        navigate("/pethub-website/rooms", { state: hotelFormData });
     };
+
+
 
     const testAddHotel = async () => {
         const data = new FormData()

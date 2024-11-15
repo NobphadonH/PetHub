@@ -1,12 +1,19 @@
 import Navbar from "./Utils/Navbar";
-import { useLocation } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from 'axios'
 
 function Confirm() {
     const location = useLocation();
-    const hotelAndRoomFormData = location.state?.hotelAndRoomFormData || {};
+    const navigate = useNavigate();
 
+    const [hotelAndRoomFormData]= useState(location.state);
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log(hotelAndRoomFormData)
+
+
         const hotelData = new FormData()
         const hotelFormData = hotelAndRoomFormData.hotelFormData;
         let hotelID;
@@ -23,21 +30,25 @@ function Confirm() {
         hotelData.append('mapLong', hotelFormData.mapLong);
         hotelData.append('cookies', hotelFormData.cookies);
         if (hotelFormData.selectedImage) {
-            hotelData.append('selectedImage', hotelFormData.selectedImage, hotelFormData.selectedImage.name);
+            const base64Data = hotelFormData.selectedImage;
+            const blob = new Blob([new Uint8Array(atob(base64Data.split(',')[1]).split('').map(c => c.charCodeAt(0)))], { type: 'image/jpg' });
+            hotelData.append('selectedImage', blob, `hotel_${hotelFormData.hotelName}.jpg`);
         }
 
         try {
-            const res = await axios.post('http://localhost:5000/api/hotel/createHotel/', hotelData, {headers:{"Content-Type":"multipart/form-data" }})
+            const res = await axios.post('http://localhost:5000/api/hotel/createHotel/', hotelData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
             console.log(res.data)
-            hotelID = res.data
+            hotelID = res.data.hotelID
             console.log(res.status)
         } catch(error) {
             console.error(error);
         }
 
         const roomArrayData = new FormData()
-        const roomFormArray = hotelAndRoomFormData.roomFormArray;
+        const roomFormArray = hotelAndRoomFormData.readyRoomFormArray;
         roomArrayData.append('hotelID', hotelID)
+
+        console.log(roomFormArray)
 
         roomFormArray.forEach((room, index) => {
             roomArrayData.append(`rooms[${index}][roomTypeName]`, room.roomTypeName)
@@ -47,18 +58,27 @@ function Confirm() {
             roomArrayData.append(`rooms[${index}][roomDetail]`, room.roomDetail)
             roomArrayData.append(`rooms[${index}][petAllowedType]`, room.petAllowedType)
             roomArrayData.append(`rooms[${index}][pricePerNight]`, room.pricePerNight)
-            roomArrayData.append(`rooms[${index}][selectedImage]`, room.selectedImage, room.selectedImage.name)
+            
+            if (room.selectedImage) {
+                const base64Data = room.selectedImage;
+                const blob = new Blob([new Uint8Array(atob(base64Data.split(',')[1]).split('').map(c => c.charCodeAt(0)))], { type: 'image/jpg' });
+                roomArrayData.append(`rooms[${index}][selectedImage]`, blob, `room_photo_${index}.jpg`);
+            }
         })
 
 
         try {
-            const res = await axios.post('http://localhost:5000/api/room/createRooms/', roomArrayData, {headers:{"Content-Type":"multipart/form-data" }})
+            const res = await axios.post('http://localhost:5000/api/room/createRooms/', roomArrayData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
             console.log(res.data)
             console.log(res.status)
         } catch(error) {
             console.error(error);
         }
 
+    }
+
+    const goBack = (e) => {
+        navigate("/pethub-website/rooms", {state: hotelAndRoomFormData.hotelFormData})
     }
 
     return (
@@ -92,10 +112,10 @@ function Confirm() {
                     
                 </div>
                 <div className="flex justify-between items-center w-full max-w-3xl -mt-4 mb-4 p-6 mx-auto">
-                    <button className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
+                    <button onClick={goBack} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
                         ขั้นตอนก่อนหน้า
                     </button>
-                    <button className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
+                    <button onClick={handleSubmit} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
                         ยืนยันส่งคำขอ
                     </button>
                 </div>
