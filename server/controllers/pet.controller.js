@@ -10,10 +10,9 @@ import fs from "fs";
 // *** Waiting for test this function ***
 export const createPet = async (req, res) => {
   try {
-    const { petName, petDOB, petType, petDetail, petSex, cookies } = req.body;
+    const { petName, petDOB, petType, petDetail, petSex} = req.body;
     const { dbpool, sshClient } = await connectToDatabase();
-    const payload = jwt.verify(cookies, "Bhun-er");
-    const userID = payload["userID"];
+    const userID = req.user.userID;
 
     // Check if all required fields are provided
     if (!petName || !petDOB || !petType || !userID) {
@@ -91,10 +90,8 @@ export const createPet = async (req, res) => {
 
 export const getAllPetsByUserID = async (req, res) => {
   try {
-    const { cookies } = req.body; // Assuming userID is passed in the request body
     const { dbpool, sshClient } = await connectToDatabase();
-    const payload = jwt.verify(cookies, "Bhun-er");
-    const userID = payload["userID"];
+    const userID = req.user.userID;
 
     dbpool.getConnection(async (err, connection) => {
       if (err) {
@@ -157,10 +154,9 @@ export const getAllPetsByUserID = async (req, res) => {
 
 export const deletePetByPetID = async (req, res) => {
   try {
-    const { petID, cookies } = req.body; // Extract petID and userID from request body
+    const { petID} = req.body; // Extract petID and userID from request body
     const { dbpool, sshClient } = await connectToDatabase();
-    const payload = jwt.verify(cookies, "Bhun-er");
-    const userID = payload["userID"];
+    const userID = req.user.userID;
 
     dbpool.getConnection((err, connection) => {
       if (err) {
@@ -198,10 +194,9 @@ export const deletePetByPetID = async (req, res) => {
 
 export const updatePetByPetID = async (req, res) => {
   try {
-    const { petID, cookies, petName, petDOB, petDetail, petSex } = req.body;
+    const { petID, petName, petDOB, petDetail, petSex } = req.body;
     const { dbpool, sshClient } = await connectToDatabase();
-    const payload = jwt.verify(cookies, "Bhun-er");
-    const userID = payload["userID"];
+    const userID = req.user.userID;
 
     // Build query parts dynamically based on provided fields
     const updates = [];
@@ -333,10 +328,9 @@ export const updatePetByPetID = async (req, res) => {
 
 export const getMatchingPets = async (req, res) => {
   try {
-    const { cookies, petAllowedType } = req.body;
+    const { petAllowedType } = req.body;
     const { dbpool, sshClient } = await connectToDatabase();
-    const payload = jwt.verify(cookies, "Bhun-er");
-    const userID = payload["userID"];
+    const userID = req.user.userID;
 
     dbpool.getConnection((err, connection) => {
       if (err) {

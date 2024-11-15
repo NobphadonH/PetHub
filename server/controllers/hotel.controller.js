@@ -139,15 +139,18 @@ export const verifyHotel = async (req, res) => {
 
 export const createHotel = async (req, res) => {
     try {
-        const {hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, selectedImage, cookies, mapLat, mapLong} = req.body
+        const {hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, selectedImage, mapLat, mapLong} = req.body
         const filePath = req.file.path
         const fileName = req.file.filename
         const fileContent = fs.readFileSync(filePath)
 
-        const payload = jwt.verify(cookies, "Bhun-er");
-        const userID = payload["userID"];
+        // const token = req.cookies.jwt
+        // const payload = jwt.verify(token, "Bhun-er");
+        // const userID = payload["userID"];
 
-        // res.status(200);
+        const userID = req.user.userID
+
+
         console.log(req.body)
         const { dbpool, sshClient } = await connectToDatabase();
 

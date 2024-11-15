@@ -9,9 +9,24 @@ function Rooms() {
 
     const [hotelFormData]= useState(location.state);
 
+    // console.log(location.state)
+
+
     const [forms, setForms] = useState([{ id: 1, image: null }]);
-    const [formData, setFormData] = useState({})
-    const [roomFormArray, setRoomFormArray] = useState([{}])
+    const [formData, setFormData] = useState()
+    const [roomFormArray, setRoomFormArray] = useState([]);
+    // const [roomFormArray, setRoomFormArray] = useState(location.state.readyRoomFormArray ? location.state.readyRoomFormArray : {})
+
+    // console.log(location.state.readyRoomFormArray)
+    // const obj = location.state.readyRoomFormArray
+
+    console.log(location.state);
+    // if (location.state.readyRoomFormArray) {
+    //     setRoomFormArray(obj);
+    //     console.log("yay!")
+    // } else {
+    //     console.log("oh")
+    // }
 
     const addForm = () => {
         setForms([...forms, { id: forms.length + 1, image: null }]);

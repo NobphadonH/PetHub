@@ -1,10 +1,11 @@
 import Navbar from "./Utils/Navbar";
 import { useState } from 'react';
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from 'axios'
 
 function Confirm() {
     const location = useLocation();
+    const navigate = useNavigate();
 
     const [hotelAndRoomFormData]= useState(location.state);
     
@@ -35,7 +36,7 @@ function Confirm() {
         }
 
         try {
-            const res = await axios.post('http://localhost:5000/api/hotel/createHotel/', hotelData, {headers:{"Content-Type":"multipart/form-data" }})
+            const res = await axios.post('http://localhost:5000/api/hotel/createHotel/', hotelData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
             console.log(res.data)
             hotelID = res.data.hotelID
             console.log(res.status)
@@ -67,13 +68,17 @@ function Confirm() {
 
 
         try {
-            const res = await axios.post('http://localhost:5000/api/room/createRooms/', roomArrayData, {headers:{"Content-Type":"multipart/form-data" }})
+            const res = await axios.post('http://localhost:5000/api/room/createRooms/', roomArrayData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
             console.log(res.data)
             console.log(res.status)
         } catch(error) {
             console.error(error);
         }
 
+    }
+
+    const goBack = (e) => {
+        navigate("/pethub-website/rooms", {state: hotelAndRoomFormData.hotelFormData})
     }
 
     return (
@@ -107,7 +112,7 @@ function Confirm() {
                     
                 </div>
                 <div className="flex justify-between items-center w-full max-w-3xl -mt-4 mb-4 p-6 mx-auto">
-                    <button className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
+                    <button onClick={goBack} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
                         ขั้นตอนก่อนหน้า
                     </button>
                     <button onClick={handleSubmit} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
