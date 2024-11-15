@@ -71,7 +71,7 @@ function AddPetProfile() {
                   <option>เพศเมีย</option>
               </select>
           </div>
-      </div>
+        </div>
       <div>
         <p className=" text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-5">คำอธิบายรายระเอียดของสัตว์เลี้ยง เช่น สายพันธุ์, ลักษณะที่โดดเด่น และอื่นๆ </p>
         <textarea className="textarea w-full min-h-48 lg:max-h-64 textarea-bordered text-[2.5vw] md:text-xs lg:text-sm xl:text-sm" placeholder="ex. สายพันธุ์, ลักษณะเฉพาะ, สีขน หรือ นิสัย"></textarea>
