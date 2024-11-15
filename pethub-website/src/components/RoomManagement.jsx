@@ -1,7 +1,92 @@
 import Navbar from "./Utils/Navbar"
 import CalendarComponent from "./Utils/CalendarComponent"
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 function RoomManagement() {
+    const [roomDetails, setRoomDetails] = useState(null);
+    const [bookingDetails, setBookingDetails] = useState(null);
+    const [selectedBooking, setSelectedBooking] = useState(null);
+    const hotelID = 1; // Replace with actual hotelID
+    const roomTypeID = 1; // Replace with actual roomTypeID
+    
+    const formatDate = (date) => {
+        if (!date) return ''; // Handle null or undefined date
+        
+        const dateObj = new Date(date);
+        const day = String(dateObj.getDate()).padStart(2, '0'); // Get day and pad with leading 0 if needed
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Get month (0-indexed, so add 1)
+        const year = dateObj.getFullYear() + 543; // Add 543 for Thai Buddhist Era
+        
+        return `${day}/${month}/${year}`; // Return formatted date
+      };
+
+      const calculateNights = (checkIn, checkOut) => {
+        return Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24));
+    };
+
+    const calculateAge = (dob) => {
+        if (!dob) return 'ไม่ระบุ';
+        
+        const birthDate = new Date(dob);
+        const today = new Date();
+        
+        let years = today.getFullYear() - birthDate.getFullYear();
+        let months = today.getMonth() - birthDate.getMonth();
+        
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+        
+        if (years === 0) {
+            return `${months} เดือน`;
+        } else if (months === 0) {
+            return `${years} ปี`;
+        } else {
+            return `${years} ปี ${months} เดือน`;
+        }
+    };
+
+    const handleBookingClick = (booking) => {
+        setSelectedBooking(booking);} 
+
+    useEffect(() => {
+        console.log("hotelID:", hotelID);
+        console.log("roomTypeID:", roomTypeID);
+        // Fetch room details from the backend
+        axios.get(`http://localhost:5000/api/roomManage/${hotelID}/${roomTypeID}`)
+          .then(response => {
+            console.log("API response:", response.data);
+            // Destructure the response data correctly
+          const {roomTypeID, roomTypeName, roomCapacity, numberOfRoom, roomSize, roomDetail, roomPhoto, pricePerNight, petAllowedType, bookings } = response.data;
+    
+          // Update state based on the API response
+          setRoomDetails({
+            roomTypeID,
+            roomTypeName,
+            roomCapacity,
+            numberOfRoom,
+            roomSize,
+            roomDetail,
+            roomPhoto,
+            pricePerNight,
+            petAllowedType
+          });
+    
+          setBookingDetails(bookings || []);  // Set the bookings data
+          if (bookings && bookings.length > 0) {
+            setSelectedBooking(bookings[0]);}
+          })
+          .catch(error => {
+            console.error("There was an error fetching the data!", error);
+          });
+      }, [hotelID, roomTypeID]);
+    
+      if (!roomDetails || !bookingDetails) {
+        return <div>Loading...</div>;
+      }
+
   return (
     <>
      <Navbar /> 
@@ -13,12 +98,12 @@ function RoomManagement() {
         <div className="h-full flex flex-col justify-between grow p-[2vw] md:p-4 lg:p-7">
             <div className="flex flex-col gap-[1vw] md:gap-3">
                 <div className="flex justify-between items-center">
-                    <div className="text-[2.5vw] md:text-lg lg:text-2xl">ประเภทห้อง: <span className="text-gray-400">ห้องขนาดทั่วไป (แมว)</span></div>
-                    <div className="hidden md:block text-[1.5vw] md:text-xs lg:text-lg">R-349-342350</div>
+                    <div className="text-[2.5vw] md:text-lg lg:text-2xl">ประเภทห้อง: <span className="text-gray-400">{roomDetails.roomTypeName}</span></div>
+                    <div className="hidden md:block text-[1.5vw] md:text-xs lg:text-lg">{roomDetails.roomTypeID}</div>
                 </div>
-                <div className="text-[2vw] md:text-sm lg:text-lg">ขนาดห้อง: <span className="text-gray-400">25x25 ตรม.</span></div>
-                <div className="text-[2vw] md:text-sm lg:text-lg">ราคา: <span className="text-gray-400">400 บาท / คืน</span></div>
-                <div className="text-[2vw] md:text-sm lg:text-lg">ประเภทสัตว์: <span className="text-gray-400">แมว</span></div>
+                <div className="text-[2vw] md:text-sm lg:text-lg">ขนาดห้อง: <span className="text-gray-400">{roomDetails.roomSize} ตร.ม.</span></div>
+                <div className="text-[2vw] md:text-sm lg:text-lg">ราคา: <span className="text-gray-400">{roomDetails.pricePerNight} บาท</span></div>
+                <div className="text-[2vw] md:text-sm lg:text-lg">ประเภทสัตว์: <span className="text-gray-400">{roomDetails.petAllowedType}</span></div>
             </div>
             <div className="flex justify-between items-center">
                 <div className="text-[2.5vw] md:text-base lg:text-xl">สถานะ: <span className=" text-red-500">Not Avalaible</span></div>
@@ -27,30 +112,33 @@ function RoomManagement() {
         </div>
      </div>
      <div className="text-start my-8 lg:my-16 w-11/12 xl:w-10/12 max-w-[1200px] lg:h-full mx-auto rounded-md overflow-hidden border-[1px] p-[5vw] md:p-10 flex flex-col gap-4 ">
-        <div className="font-bold text-[3vw] md:text-lg lg:text-2xl">รายการจองของ <span className="text-gray-400 font-light">ห้องขนาดทั่วไป (แมว)</span></div>
+        <div className="font-bold text-[3vw] md:text-lg lg:text-2xl">รายการจองของ <span className="text-gray-400 font-light"> {roomDetails.roomTypeName}</span></div>
         <div className="w-full h-[350px] flex gap-5">
             <div className="w-full md:w-[50%] lg:w-[40%] flex items-center justify-center">
                 <CalendarComponent />
             </div>
             <div className="max-md:hidden border-[1px] grow rounded-md overflow-hidden">
                 <div className="w-full h-14 bg-pethub-color6 flex items-center justify-start px-6 text-white">
-                    <div className="text-[2.5vw] md:text-lg lg:text-xl">การจองทั้งหมด 2 รายการ</div>
+                    <div className="text-[2.5vw] md:text-lg lg:text-xl">การจองทั้งหมด {bookingDetails.length} รายการ</div>
                 </div>
                 <div className="w-full h-[290px] overflow-scroll hide-scrollbar bg-gray-200">
-                    <div className="text-xs lg:text-base my-[2px] w-full h-16 lg:h-20 bg-white flex flex-col justify-between px-5 p-2">
+                {bookingDetails.map((booking) => (
+                    <div className="text-xs lg:text-base my-[2px] w-full h-16 lg:h-20 bg-white flex flex-col justify-between px-5 p-2 cursor-pointer hover:bg-gray-100"
+                        onClick={() => handleBookingClick(booking)}>
                         <div className="flex justify-between">
                             <div>
-                                <span className="max-md:hidden">เลขที่การจอง :</span>
-                                <span>B-987-6543210</span>
+                                <span className="max-md:hidden">เลขที่การจอง : </span>
+                                <span>{booking.bookingID}</span>
                                  
                             </div>
-                            <div>วันที่จอง: 13/11/2567</div>
+                            <div>วันที่จอง: {formatDate(booking.paymentDate) || 'ยังไม่จ่าย'}</div>
                         </div>
                         <div className="flex justify-start gap-5">
-                            <div>สถานะ: <span className="text-yellow-500 font-normal">รอการยืนยัน</span></div>
-                            <div>การจอง: <span className="text-gray-400 font-light">2 คืน</span></div>
+                            <div>สถานะ: <span className={`font-normal ${booking.bookingStatus === 'confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{booking.bookingStatus}</span></div>
+                            <div>การจอง: <span className="text-gray-400 font-light">{calculateNights(booking.checkInDate, booking.checkOutDate)} คืน</span></div>
                         </div>
                     </div>
+                    ))}
                     <div className="my-2 w-full h-16 bg-fuchsia-100"></div>
                     <div className="my-2 w-full h-16 bg-fuchsia-100"></div>
                     <div className="my-2 w-full h-16 bg-fuchsia-100"></div>
@@ -63,11 +151,11 @@ function RoomManagement() {
         <div className="w-full h-full border-[1px] rounded-md relative max-md:py-[4vw] p-[3vw] md:p-4 lg:p-8 flex flex-col">
             <div className="absolute top-0 h-[1vw] md:h-2 w-4/12 bg-pethub-color1 left-4"></div>
             <div className="flex flex-wrap gap-[2vw] md:gap-2 lg:gap-5">
-                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">การจองเลขที่: <span className="text-gray-ุ00 font-light">B-987-6543210</span></div>
-                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">สถานะ: <span className="text-yellow-500 font-normal">รอการยืนยัน</span></div>
-                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">การจอง: <span className="text-gray-400 font-light">2 คืน</span></div>
+                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">การจองเลขที่: <span className="text-gray-ุ00 font-light">{selectedBooking.bookingID}</span></div>
+                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">สถานะ: <span className={`font-normal ${selectedBooking.bookingStatus === 'confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{selectedBooking.bookingStatus}</span></div>
+                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">การจอง: <span className="text-gray-400 font-light">{calculateNights(selectedBooking.checkInDate, selectedBooking.checkOutDate)} คืน</span></div>
             </div>
-            <div className="my-[2vw] md:my-4 text-[1.5vw] md:text-xs lg:text-sm">จองวันที่ 10 พฤศจิกายน 2567</div>
+            <div className="my-[2vw] md:my-4 text-[1.5vw] md:text-xs lg:text-sm">จองวันที่ {formatDate(selectedBooking.paymentDate)|| 'ยังไม่จ่าย'}</div>
             <div className="font-semibold text-[2vw] md:text-base lg:text-xl">ข้อมูลทั่วไป</div>
             <div className="flex w-full justify-start lg:justify-between flex-wrap gap-[3vw] md:gap-5">
                 <div className="grow">
@@ -76,7 +164,7 @@ function RoomManagement() {
                         type="text"
                         name="email"
                         placeholder=""
-                        value={"15 พฦศจิกายน 2567"}
+                        value={formatDate(selectedBooking.checkInDate)}
                         className="input input-bordered w-full h-[8vw] max-h-10  text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm bg-gray-100 md:mb-3"
                     />
                 </div>
@@ -86,7 +174,7 @@ function RoomManagement() {
                         type="text"
                         name="email"
                         placeholder=""
-                        value={"17 พฦศจิกายน 2567"}
+                        value={formatDate(selectedBooking.checkOutDate)}
                         className="input input-bordered w-full h-[8vw] max-h-10  text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm bg-gray-100 md:mb-3"
                     />
                 </div>
@@ -96,7 +184,7 @@ function RoomManagement() {
                         type="text"
                         name="email"
                         placeholder=""
-                        value={"ชัชนันท์ บุญพา"}
+                        value={`${selectedBooking?.bookerFirstName} ${selectedBooking?.bookerLastName}`}
                         className="input input-bordered w-full h-[8vw] max-h-10  text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm bg-gray-100 md:mb-3"
                     />
                 </div>
@@ -106,32 +194,40 @@ function RoomManagement() {
                         type="text"
                         name="email"
                         placeholder=""
-                        value={"094-XXXX-XXX"}
+                        value={selectedBooking.bookerPhone}
                         className="input input-bordered w-full h-[8vw] max-h-10  text-[2vw] sm:h-10 xl:h-12 max-w-64 sm:text-xs lg:text-sm bg-gray-100 md:mb-3"
                     />
                 </div>
             </div>
             <div className="font-semibold text-[2vw] md:text-base lg:text-xl my-[2vw] md:my-4">ข้อมูลสัตว์เลี้ยงที่เข้าพัก</div>
             <div>
-            {Array.from({ length: 2}).map((_, index) => (
-                <div id={index} key={index} className={` w-full relative h-28 sm:h-36 lg:h-40 xl:h-44 border-[1px] my-[2vw] md:my-3 rounded-md p-1 flex overflow-y-scroll hide-scrollbar`}>
+            {selectedBooking && selectedBooking.pets && selectedBooking.pets.map((pet, index) => (
+                <div key={pet.petID} id={index} className={` w-full relative h-28 sm:h-36 lg:h-40 xl:h-44 border-[1px] my-[2vw] md:my-3 rounded-md p-1 flex overflow-y-scroll hide-scrollbar`}>
                     <div className="absolute right-1 top-1">
                         {/* <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="text-gray-400 cursor-pointer max-lg:w-4 max-lg:h-4 bi bi-trash3-fill" viewBox="0 0 16 16">
                         <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
                         </svg> */}
                     </div>
                     <div className="w-[200px] lg:w-[230px] xl:w-[250px] h-full rounded bg-slate-300 overflow-hidden">
-                        <img src="https://s.isanook.com/ca/0/ui/285/1425207/staywithnoppo-20240522_152537-446114668_721839553257673_573084092354014144_n.jpeg" className=" object-cover" alt="" />
+                    <img 
+                        src={`http://localhost:5000/${pet.petPhoto}`} 
+                        className="object-cover w-full h-full" 
+                        alt={pet.petName} 
+                        onError={(e) => {
+                        e.target.src = "https://placehold.co/200x200?text=No+Image";
+                        }}
+                    />
                     </div>
                     <div className="w-full overflow-y-hide hide-scrollbar h-full px-2 py-[2vw] md:py-3 xl:p-5 flex flex-col justify-between">
                         <div className="flex justify-between flex-wrap text-[2vw] md:text-[1.2vw] xl:text-xs">
-                            <div>ชื่อ: นปโปะ</div>
-                            <div>อายุ:1 ปี 2 เดือน</div>
-                            <div>ประเภท: สุนัข</div>
-                            <div>เพศ: เพศผู้</div>
+                            <div>ชื่อ: {pet.petName}</div>
+                            <div>อายุ:{calculateAge(pet.petDOB)}</div>
+                            <div>ประเภท: {pet.petType}</div>
+                            <div>เพศ: {pet.petSex || 'ไม่ระบุ'}</div>
                         </div>
                         <p className="text-start text-[2vw] md:text-[1.2vw] xl:text-sm my-1 lg:my-3">คำอธิบายลักษณะเพิ่มเติม</p>
-                        <textarea className="textarea w-full max-md:p-[1vw] max-h-8 min-h-8 md:max-h-12 md:min-h-12 lg:min-h-16 lg:max-h-16 textarea-bordered hide-scrollbar text-[1.5vw] md:text-[1vw] xl:text-sm text-gray-600" value={"นปโปะหม่ำๆ หม่ำๆ กู๊ดบอย กู๊ดบอยหม่ำๆ หม่ำๆ เก่งมาก  "}></textarea>
+                        <textarea className="textarea w-full max-md:p-[1vw] max-h-8 min-h-8 md:max-h-12 md:min-h-12 lg:min-h-16 lg:max-h-16 textarea-bordered hide-scrollbar text-[1.5vw] md:text-[1vw] xl:text-sm text-gray-600" 
+                        value={pet.petDetail || ''}></textarea>
                     </div>
                 </div>
             ))}

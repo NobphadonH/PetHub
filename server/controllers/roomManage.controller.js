@@ -22,7 +22,7 @@ export const getRoomDetails = async (req, res) => {
         // Query to get bookings associated with this room (with pet details from the booking)
         const bookingQuery = `
             SELECT 
-                B.bookingID, B.checkInDate, B.checkOutDate, B.paymentStatus, B.paymentDate,
+                B.bookingID, B.checkInDate, B.checkOutDate, B.bookingStatus, B.paymentStatus, B.paymentDate,
                 U.fName AS bookerFirstName, U.lName AS bookerLastName, U.phone AS bookerPhone,
                 B.petID
             FROM 
@@ -65,7 +65,7 @@ export const getRoomDetails = async (req, res) => {
                 for (let booking of bookingResults) {
                     const petQuery = `
                         SELECT 
-                            P.petID, P.petName, P.petDOB, P.petType, P.petDetail, P.petPhoto
+                            P.petID, P.petName, P.petDOB, P.petType, P.petDetail, P.petPhoto, P.petSex
                         FROM 
                             Pets P
                         WHERE 
