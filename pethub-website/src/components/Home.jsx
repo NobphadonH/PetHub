@@ -26,12 +26,14 @@ function Home() {
     console.log(totalWidth)
 
     const pageCalculate = () => {
-        return Math.floor(hotelData.length/4 + 1)
+        return Math.floor(hotelResult.length/4 + 1)
     }
 
     const pageSelection = (number) => {
-        return hotelData.slice((4*number), (4*number)+4)
+        return hotelResult.slice((4*number), (4*number)+4)
     }
+    const [hotelResult, setHotelResult] = useState([]);
+    const [isFetch, setIsFetch] = useState(0);
 
     const [x, setX] = useState(0);
     const [pageselect, setPageselect] = useState(0)
@@ -50,7 +52,6 @@ function Home() {
     const [filter, setFilter] = useState({})
 
 
-    const [hotelResult, setHotelResult] = useState([]);
 
     const [searchCounter, setSearchCounter] = useState(0); // counter for unique searches
 
@@ -110,6 +111,20 @@ function Home() {
         }));
     }
 
+    // const petType = queryParams.get("petType") || null;
+    // const hotelName = queryParams.get("hotelName") || null;
+    // const district = queryParams.get("district") || null;
+    // const priceRangeLower = queryParams.get("priceRangeLower") || null;
+    // const priceRangeUpper = queryParams.get("priceRangeUpper") || null
+    // let checkInDate = queryParams.get("checkInDate") || null;
+    // let checkOutDate = queryParams.get("checkInDate") || null;
+    // if (checkInDate == null || checkOutDate == null) {
+    //     checkInDate = null;
+    //     checkOutDate = null;
+    // }
+
+    // setFilter({petType, hotelName, district, priceRangeLower, priceRangeUpper, checkInDate, checkOutDate})
+
 
 
     useEffect( () => {
@@ -118,25 +133,13 @@ function Home() {
             console.log('hello');
             // setLoading(true)
             const queryParams = new URLSearchParams(location.search);
-            // const petType = queryParams.get("petType") || null;
-            // const hotelName = queryParams.get("hotelName") || null;
-            // const district = queryParams.get("district") || null;
-            // const priceRangeLower = queryParams.get("priceRangeLower") || null;
-            // const priceRangeUpper = queryParams.get("priceRangeUpper") || null
-            // let checkInDate = queryParams.get("checkInDate") || null;
-            // let checkOutDate = queryParams.get("checkInDate") || null;
-            // if (checkInDate == null || checkOutDate == null) {
-            //     checkInDate = null;
-            //     checkOutDate = null;
-            // }
-
-            // setFilter({petType, hotelName, district, priceRangeLower, priceRangeUpper, checkInDate, checkOutDate})
 
             try {
                 console.log(filter);
                 console.log(queryParams);
                 const res = await axios.get(`http://localhost:5000/api/roomSearch/getHotelAndRoomByFilter/?${queryParams}`);
                 setHotelResult(res.data)
+                setIsFetch(1)
                 console.log(res.data);
             } catch (err){
                 console.log(err)
@@ -159,6 +162,7 @@ function Home() {
               setTotalWidth(containerScrollWidth - parentOffsetWidth);
             }
           };
+
           updateWidth(); // Set initial width
           window.addEventListener('resize', updateWidth);
       
@@ -167,6 +171,47 @@ function Home() {
           };
       
     }, [location.search, pageselect])
+
+
+    const addPetTypeArray = () => {
+        hotelResult.forEach( (hotel) => {
+            let petTypeArray  = []
+            hotel.roomsAvailable.forEach( (room) => {
+                if (!petTypeArray.includes(room.petAllowedType)) {
+                    petTypeArray.push(room.petAllowedType)
+                }
+            })
+            const updatedHotelResult = hotelResult.map(hotel => ({
+                ...hotel,
+                petTypeArray: petTypeArray
+            }))
+            setHotelResult(updatedHotelResult);
+        })
+    }
+
+    const addLowestRoomPrice = () => {
+        hotelResult.forEach((hotel)=> {
+            let lowestPrice = hotel.roomsAvailable[0].pricePerNight;
+            hotel.roomsAvailable.forEach((room) => {
+                if (lowestPrice > room.pricePerNight) {
+                    lowestPrice = room.pricePerNight
+                }
+            })
+
+            const updatedHotelResult = hotelResult.map(hotel => ({
+                ...hotel,
+                lowestPrice: lowestPrice
+            }))
+            setHotelResult(updatedHotelResult);
+        }) 
+        return;
+    }
+
+    useEffect(()=> {
+        addPetTypeArray()
+        addLowestRoomPrice()
+        console.log(hotelResult)
+    }, [isFetch])
 
     const districts = [
         "เขตพระนคร", "เขตดุสิต", "เขตหนองจอก", "เขตบางรัก", "เขตบางเขน",
@@ -290,19 +335,19 @@ function Home() {
         <div className="col-span-12">
             <div className="my-2 lg:my-5 text-[3vw] md:text-sm lg:text-lg text-pethub-color1">{hotelData.length} ผลการค้นหา</div>
         </div>
-        {pagedata.map((hotel, index) => (
+        {hotelResult.map((hotel, index) => (
             <div key={index} className="col-span-6 lg:col-span-12 row-span-3">
                 {loading ? <HomeHotelBoxLoading /> : 
                 <HomeHotelBox
+                hotelObj = {hotel}
+                hotelID = {hotel.hotelID}
                 hotelName={hotel.hotelName}
-                roomInfo={hotel.roomInfo}
-                reviews={hotel.reviews}
-                rating={hotel.rating}
-                description={hotel.description}
-                price={hotel.price}
-                link={hotel.link}
-                imageUrl={hotel.imageUrl}
-                petType={hotel.petType}
+                reviews={hotel.reviewCount}
+                rating={hotel.avgReviewScore}
+                description={hotel.hotelDescription}
+                price={hotel.lowestPrice}
+                imageUrl={hotel.hotelPhoto}
+                petType = {hotel.petTypeArray}
                 />
                 }
                 

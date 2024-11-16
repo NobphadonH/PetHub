@@ -1,6 +1,6 @@
 import Navbar from './Utils/Navbar'
 import Footer from './Utils/Footer'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
@@ -13,6 +13,12 @@ function HotelDetail() {
     const [barSel, setBarSel] = useState(0)
     const [currentDate, setCurrentDate] = useState('');
  
+    const navigate = useNavigate()
+    const location = useLocation()
+
+    const hotelData = location.state;
+    console.log(hotelData);
+
     useEffect(() => {
 
         const today = new Date();

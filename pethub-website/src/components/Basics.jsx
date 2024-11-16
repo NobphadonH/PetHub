@@ -174,6 +174,7 @@ function Basics() {
 
     const goAddRoomsPage = async () => {
         // Prepare hotelFormData with base64 if selectedImage is present
+        console.log(formData);
         const hotelFormData = {
             ...formData,
             mapLat: pointerLocation.lat,

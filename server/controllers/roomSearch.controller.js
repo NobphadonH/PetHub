@@ -52,11 +52,36 @@ export const getHotelAndRoomByFilter = async (req, res) => {
       }
 
       const query = `
-                SELECT * 
+                SELECT
+                    h.hotelID, 
+                    h.hotelName,
+                    h.hotelType, 
+                    h.hotelDescription,
+                    h.hotelPolicy,
+                    h.hotelAddress,
+                    h.district,
+                    h.mapLat,
+                    h.mapLong,
+                    h.hotelPhoto, 
+                    verification,
+                    userID, 
+                    AVG(rv.reviewScore) AS avgReviewScore,
+                    COUNT(rv.reviewID) AS reviewCount,
+                    r.roomTypeID,
+                    r.roomTypeName,
+                    r.roomCapacity,
+                    r.numberOfRoom,
+                    r.roomSize,
+                    r.roomDetail,
+                    r.petAllowedType,
+                    r.pricePerNight,
+                    r.roomPhoto
                 FROM Hotels h
                 JOIN RoomTypes r ON h.hotelID = r.hotelID
+                LEFT JOIN Reviews rv ON h.hotelID = rv.hotelID
                 WHERE h.verification = "verified"
                 ${filter.length > 0 ? "AND " + filter.join(" AND ") : ""}
+                GROUP BY h.hotelID, r.roomTypeID
             `;
 
       connection.query(query, values, async (err, rows) => {
@@ -67,13 +92,15 @@ export const getHotelAndRoomByFilter = async (req, res) => {
         }
         const allRooms = rows;
         let roomResult = [];
-        
-        // console.log(rows);
+
+
+        console.log(rows);
         // return;
 
         allRooms.forEach((room) => {
           const roomID = room.roomTypeID;
           const numberOfRoom = room.numberOfRoom;
+          console.log(roomID)
           let isAvailable = 1;
           const bookingQuery = `SELECT * FROM Bookings WHERE roomTypeID = ? AND checkInDate < ? AND checkOutDate > ? ORDER BY checkInDate ASC`;
           connection.query(
@@ -118,6 +145,7 @@ export const getHotelAndRoomByFilter = async (req, res) => {
             }
           );
           if (isAvailable) {
+            console.log("abc");
             roomResult.push(room);
           }
         });
@@ -146,6 +174,8 @@ export const getHotelAndRoomByFilter = async (req, res) => {
             matLong: room.mapLong,
             hotelPhoto: room.hotelPhoto,
             district: room.district,
+            avgReviewScore: room.avgReviewScore,
+            reviewCount: room.reviewCount,
             roomsAvailable: [],
           }))
           .filter(
@@ -165,6 +195,9 @@ export const getHotelAndRoomByFilter = async (req, res) => {
           hotelData.hotelPhoto = hotelPhotoFile;
         }
 
+        
+
+
         availableHotelWithRoomResult.forEach((hotel) => {
           roomResult.forEach((room) => {
             if (hotel.hotelID === room.hotelID) {
@@ -182,6 +215,7 @@ export const getHotelAndRoomByFilter = async (req, res) => {
             }
           });
         });
+        // console.log(roomResult);
 
         res.status(200).json(availableHotelWithRoomResult);
         connection.release();
