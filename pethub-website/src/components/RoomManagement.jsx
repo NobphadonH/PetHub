@@ -1,27 +1,31 @@
 import Navbar from "./Utils/Navbar"
 import CalendarComponent from "./Utils/CalendarComponent"
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function RoomManagement() {
     const [roomDetails, setRoomDetails] = useState(null);
     const [bookingDetails, setBookingDetails] = useState(null);
     const [selectedBooking, setSelectedBooking] = useState(null);
+    const [allDatesBetweenBookings, setAllDatesBetweenBookings] = useState(null)
     const hotelID = 1; // Replace with actual hotelID
     const roomTypeID = 1; // Replace with actual roomTypeID
-    
+
+    console.log(selectedBooking)
+
+
     const formatDate = (date) => {
         if (!date) return ''; // Handle null or undefined date
         
         const dateObj = new Date(date);
         const day = String(dateObj.getDate()).padStart(2, '0'); // Get day and pad with leading 0 if needed
         const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Get month (0-indexed, so add 1)
-        const year = dateObj.getFullYear() + 543; // Add 543 for Thai Buddhist Era
+        const year = dateObj.getFullYear(); // Use AD (Gregorian calendar year)
         
-        return `${day}/${month}/${year}`; // Return formatted date
+        return `${day}/${month}/${year}`; // Return formatted date in AD
       };
 
-      const calculateNights = (checkIn, checkOut) => {
+    const calculateNights = (checkIn, checkOut) => {
         return Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24));
     };
 
@@ -48,8 +52,32 @@ function RoomManagement() {
         }
     };
 
+    function getDatesBetween(start, end) {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        const dates = [];
+    
+        // Loop through each date between start and end
+        while (startDate <= endDate) {
+            // Format the date as dd/mm/yyyy
+            const day = String(startDate.getDate()).padStart(2, '0'); // Day with leading 0
+            const month = String(startDate.getMonth() + 1).padStart(2, '0'); // Month with leading 0
+            const year = startDate.getFullYear(); // Full year
+    
+            // Push the formatted date into the dates array
+            dates.push(`${day}/${month}/${year}`);
+    
+            // Move to the next date
+            startDate.setDate(startDate.getDate() + 1);
+        }
+    
+        return dates;
+    }
+      
+
     const handleBookingClick = (booking) => {
-        setSelectedBooking(booking);} 
+        setSelectedBooking(booking);
+        setAllDatesBetweenBookings(getDatesBetween(booking.checkInDate, booking.checkOutDate))} 
 
     useEffect(() => {
         console.log("hotelID:", hotelID);
@@ -76,7 +104,8 @@ function RoomManagement() {
     
           setBookingDetails(bookings || []);  // Set the bookings data
           if (bookings && bookings.length > 0) {
-            setSelectedBooking(bookings[0]);}
+            setSelectedBooking(bookings[0]);
+            }
           })
           .catch(error => {
             console.error("There was an error fetching the data!", error);
@@ -113,17 +142,17 @@ function RoomManagement() {
      </div>
      <div className="text-start my-8 lg:my-16 w-11/12 xl:w-10/12 max-w-[1200px] lg:h-full mx-auto rounded-md overflow-hidden border-[1px] p-[5vw] md:p-10 flex flex-col gap-4 ">
         <div className="font-bold text-[3vw] md:text-lg lg:text-2xl">รายการจองของ <span className="text-gray-400 font-light"> {roomDetails.roomTypeName}</span></div>
-        <div className="w-full h-[350px] flex gap-5">
+        <div className="w-full h-[300px] md:h-[350px] flex gap-5">
             <div className="w-full md:w-[50%] lg:w-[40%] flex items-center justify-center">
-                <CalendarComponent />
+                <CalendarComponent key={JSON.stringify(allDatesBetweenBookings)} bookedDates={allDatesBetweenBookings} />
             </div>
             <div className="max-md:hidden border-[1px] grow rounded-md overflow-hidden">
                 <div className="w-full h-14 bg-pethub-color6 flex items-center justify-start px-6 text-white">
                     <div className="text-[2.5vw] md:text-lg lg:text-xl">การจองทั้งหมด {bookingDetails.length} รายการ</div>
                 </div>
                 <div className="w-full h-[290px] overflow-scroll hide-scrollbar bg-gray-200">
-                {bookingDetails.map((booking) => (
-                    <div className="text-xs lg:text-base my-[2px] w-full h-16 lg:h-20 bg-white flex flex-col justify-between px-5 p-2 cursor-pointer hover:bg-gray-100"
+                    {bookingDetails.map((booking, index) => (
+                    <div key={index} className={`${selectedBooking && selectedBooking.bookingID === booking.bookingID ? ' bg-gray-200' : 'bg-white hover:bg-gray-100'} text-xs lg:text-base my-[2px] w-full h-16 lg:h-20  flex flex-col justify-between px-5 p-2 cursor-pointer `}
                         onClick={() => handleBookingClick(booking)}>
                         <div className="flex justify-between">
                             <div>
@@ -139,15 +168,33 @@ function RoomManagement() {
                         </div>
                     </div>
                     ))}
-                    <div className="my-2 w-full h-16 bg-fuchsia-100"></div>
-                    <div className="my-2 w-full h-16 bg-fuchsia-100"></div>
-                    <div className="my-2 w-full h-16 bg-fuchsia-100"></div>
-                    <div className="my-2 w-full h-16 bg-fuchsia-100"></div>
-                    <div className="my-2 w-full h-16 bg-fuchsia-100"></div>
-                    <div className="my-2 w-full h-16 bg-fuchsia-100"></div>
                 </div>
             </div>
         </div>
+        <div className="md:hidden border-[1px] grow rounded-md overflow-hidden">
+                <div className="w-full h-[12vw] md:h-14 bg-pethub-color6 flex items-center justify-start px-6 text-white">
+                    <div className="text-[3vw] md:text-lg lg:text-xl">การจองทั้งหมด {bookingDetails.length} รายการ</div>
+                </div>
+                <div className="w-full h-[200px] overflow-scroll hide-scrollbar bg-gray-200">
+                    {bookingDetails.map((booking, index) => (
+                    <div key={index} className={`${selectedBooking && selectedBooking.bookingID === booking.bookingID ? ' bg-gray-200' : 'bg-white hover:bg-gray-100'} text-[2.5vw] md:text-xs lg:text-base my-[2px] w-full h-[10vw] md:h-16 lg:h-20  flex flex-col justify-between px-5 p-2 cursor-pointer `}
+                        onClick={() => handleBookingClick(booking)}>
+                        <div className="flex justify-between">
+                            <div>
+                                <span className="max-md:hidden">เลขที่การจอง : </span>
+                                <span>{booking.bookingID}</span>
+                                 
+                            </div>
+                            <div>วันที่จอง: {formatDate(booking.paymentDate) || 'ยังไม่จ่าย'}</div>
+                        </div>
+                        <div className="flex justify-start gap-5">
+                            <div>สถานะ: <span className={`font-normal ${booking.bookingStatus === 'confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{booking.bookingStatus}</span></div>
+                            <div>การจอง: <span className="text-gray-400 font-light">{calculateNights(booking.checkInDate, booking.checkOutDate)} คืน</span></div>
+                        </div>
+                    </div>
+                    ))}
+                </div>
+            </div>
         <div className="w-full h-full border-[1px] rounded-md relative max-md:py-[4vw] p-[3vw] md:p-4 lg:p-8 flex flex-col">
             <div className="absolute top-0 h-[1vw] md:h-2 w-4/12 bg-pethub-color1 left-4"></div>
             <div className="flex flex-wrap gap-[2vw] md:gap-2 lg:gap-5">

@@ -1,34 +1,29 @@
-import React from 'react';
-import { Calendar, Badge, List } from 'rsuite';
+import {useEffect, useState} from 'react';
+import { Calendar, Badge } from 'rsuite';
 
 
-function getTodoList(date) {
-  if (!date) {
+function getTodoList(date, booked_dates) {
+  if (!date || !booked_dates) {
     return [];
   }
-  const day = date.getDate();
 
-  switch (day) {
-    case 10:
-      return [
-        { time: '10:30 am', title: 'Meeting' },
-        { time: '12:00 pm', title: 'Lunch' }
-      ];
-    case 15:
-      return [
-        { time: '09:30 pm', title: 'Products Introduction Meeting' },
-        { time: '12:30 pm', title: 'Client entertaining' },
-        { time: '02:00 pm', title: 'Product design discussion' },
-        { time: '05:00 pm', title: 'Product test and acceptance' },
-        { time: '06:30 pm', title: 'Reporting' }
-      ];
-    default:
-      return [];
+  // Format the date as a string in DD/MM/YYYY format
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  const formattedDate = `${day}/${month}/${year}`;
+
+  // Check if the formattedDate exists in the booked_dates array
+  if (booked_dates.includes(formattedDate)) {
+    return [{ title: 'booking' }];
   }
+
+  return [];
 }
 
-function renderCell(date) {
-  const list = getTodoList(date);
+
+function renderCell(date, booked_dates) {
+  const list = getTodoList(date, booked_dates);
 
   if (list.length) {
     return <Badge className="calendar-todo-item-badge" />;
@@ -37,46 +32,41 @@ function renderCell(date) {
   return null;
 }
 
-const CalendarComponent = () => {
-  const [selectedDate, setSelectedDate] = React.useState(null);
+
+const CalendarComponent = ({ bookedDates }) => {
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  console.log(currentMonth)
 
   const handleSelect = (date) => {
     setSelectedDate(date);
   };
 
-  console.log(selectedDate)
+  // Effect to handle updates to the bookedDates state
+  useEffect(() => {
+    if (bookedDates && bookedDates.length) {
+      const dateString = bookedDates[0];  // Example DD/MM/YYYY format
+      const [day, month, year] = dateString.split('/');  // Split the string
+      const formattedDate = `${year}-${month}-${day}`;  // Reformat to YYYY-MM-DD
+
+      setCurrentMonth(new Date(formattedDate));  // Pass to new Date
+
+    }
+  }, [bookedDates]); // Re-run effect when bookedDates change
 
   return (
-    <div style={{ display: 'flex', gap: '10px', height: '100%', alignItems: 'flex-start'}}>
+    <div style={{ display: 'flex', gap: '10px', height: '100%', alignItems: 'flex-start' }}>
       <Calendar
         compact
-        renderCell={renderCell}
+        renderCell={(date) => renderCell(date, bookedDates)} // Pass booked_dates here
         onSelect={handleSelect}
-        style={{ width: '100%'}}
+        style={{ width: '100%' }}
+        value={currentMonth} // Control the calendar's month view
       />
-      {/* <TodoList date={selectedDate} /> */}
     </div>
   );
 };
 
-// eslint-disable-next-line react/prop-types
-const TodoList = ({ date }) => {
-  const list = getTodoList(date);
-
-  if (!list.length) {
-    return null;
-  }
-
-  return (
-    <List style={{ flex: 1 }} bordered>
-      {list.map((item) => (
-        <List.Item key={item.time}>
-          <div>{item.time}</div>
-          <div>{item.title}</div>
-        </List.Item>
-      ))}
-    </List>
-  );
-};
 
 export default CalendarComponent;
