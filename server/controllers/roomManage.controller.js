@@ -110,10 +110,7 @@ export const updateRoomDetails = async (req, res) => {
     const { roomTypeID } = req.params;
     const {
         roomTypeName,
-        roomCapacity,
-        numberOfRoom,
         roomSize,
-        roomDetail,
         petAllowedType,
         pricePerNight,
         roomPhoto,
@@ -129,10 +126,7 @@ export const updateRoomDetails = async (req, res) => {
                 UPDATE RoomTypes
                 SET 
                     roomTypeName = ?,
-                    roomCapacity = ?,
-                    numberOfRoom = ?,
                     roomSize = ?,
-                    roomDetail = ?,
                     petAllowedType = ?,
                     pricePerNight = ?,
                     roomPhoto = ?
@@ -142,10 +136,7 @@ export const updateRoomDetails = async (req, res) => {
 
             const [result] = await connection.query(updateQuery, [
                 roomTypeName,
-                roomCapacity,
-                numberOfRoom,
                 roomSize,
-                roomDetail,
                 petAllowedType,
                 pricePerNight,
                 roomPhoto,
