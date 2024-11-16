@@ -151,7 +151,7 @@ export const getHotelAndRoomByFilter = async (req, res) => {
         });
 
         for (let room of roomResult) {
-          const imageKey = room.hotelPhoto;
+          const imageKey = room.roomPhoto;
 
           const photoData = await downloadFileFromS3(imageKey);
           const roomPhotoBuffer = photoData.Body;
@@ -171,7 +171,7 @@ export const getHotelAndRoomByFilter = async (req, res) => {
             hotelPolicy: room.hotelPolicy,
             hotelAddress: room.hotelAddress,
             mapLat: room.mapLat,
-            matLong: room.mapLong,
+            mapLong: room.mapLong,
             hotelPhoto: room.hotelPhoto,
             district: room.district,
             avgReviewScore: room.avgReviewScore,

@@ -88,9 +88,9 @@ function TypeChoiceBoxes({onSelectType}) {
         }
     ];
 
-    const handleSelect = (optionId) => {
-        setSelected(optionId);
-        onSelectType(optionId);
+    const handleSelect = (optionTitle) => {
+        setSelected(optionTitle);
+        onSelectType(optionTitle);
     };
 
     return (
@@ -99,14 +99,14 @@ function TypeChoiceBoxes({onSelectType}) {
                 <div
                     key={option.id}
                     className={`col-span-1 bg-white border p-6 rounded-xl drop-shadow-md cursor-pointer ${
-                        selected === option.id ? 'border-pethub-color4' : 'border-neutral-100'
+                        selected === option.title ? 'border-pethub-color4' : 'border-neutral-100'
                     }`}
-                    onClick={() => handleSelect(option.id)}
+                    onClick={() => handleSelect(option.title)}
                 >
                     <div className="grid grid-cols-6 gap-2">
                         <div className="col-start-1 col-span-1 flex items-center">
                             <div className={`w-4 h-4 rounded-full ${
-                                selected === option.id ? 'bg-pethub-color4' : 'bg-gray-300'
+                                selected === option.title ? 'bg-pethub-color4' : 'bg-gray-300'
                             }`}></div>
                         </div>
                         <div className="col-start-2 col-span-5">

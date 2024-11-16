@@ -17,13 +17,14 @@ function Home() {
     const parentRef = useRef(null);
     const [totalWidth, setTotalWidth] = useState(0);
 
+    const fetchCalled = useRef(false);
 
         
     const navigate = useNavigate();
     const location = useLocation()
 
 
-    console.log(totalWidth)
+    // console.log(totalWidth)
 
     const pageCalculate = () => {
         return Math.floor(hotelResult.length/4 + 1)
@@ -94,6 +95,7 @@ function Home() {
 
         setSearchCounter(prevCount => prevCount + 1); 
         const query = new URLSearchParams({...filter, searchCounter}).toString();
+        setIsFetch(0)
         navigate(`/pethub-website/home?${query}`)
     }
 
@@ -125,28 +127,34 @@ function Home() {
 
     // setFilter({petType, hotelName, district, priceRangeLower, priceRangeUpper, checkInDate, checkOutDate})
 
+    const queryParams = new URLSearchParams(location.search);
+
+    useEffect(() => {
 
 
-    useEffect( () => {
-        console.log('abc')
+        console.log('Current query:', location.search);
         const fetchData = async () => {
-            console.log('hello');
-            // setLoading(true)
-            const queryParams = new URLSearchParams(location.search);
-
+            // console.log('hello');
             try {
                 console.log(filter);
                 console.log(queryParams);
                 const res = await axios.get(`http://localhost:5000/api/roomSearch/getHotelAndRoomByFilter/?${queryParams}`);
                 setHotelResult(res.data)
-                setIsFetch(1)
+                setIsFetch(1);
                 console.log(res.data);
+
             } catch (err){
                 console.log(err)
             }
         }
-
+        
         fetchData();
+    
+
+    }, [location.search])
+
+
+    useEffect( () => {
 
         setPagenumber(pageCalculate)
         setPagedata(pageSelection(pageselect))
@@ -170,7 +178,7 @@ function Home() {
             window.removeEventListener('resize', updateWidth);
           };
       
-    }, [location.search, pageselect])
+    }, [pageselect])
 
 
     const addPetTypeArray = () => {
@@ -207,11 +215,44 @@ function Home() {
         return;
     }
 
+    useEffect(() => {
+        console.log('aa')
+        const updatedWithPetType = hotelResult.map(hotel => {
+            const petTypeArray = hotel.roomsAvailable.reduce((acc, room) => {
+                if (!acc.includes(room.petAllowedType)) {
+                    acc.push(room.petAllowedType);
+                }
+                return acc;
+            }, []);
+            return { 
+                ...hotel, 
+                petTypeArray 
+            };
+        });
+    
+        const updatedWithPrices = updatedWithPetType.map(hotel => {
+            const lowestPrice = hotel.roomsAvailable.reduce((minPrice, room) => 
+                Math.min(minPrice, room.pricePerNight), 
+                hotel.roomsAvailable[0]?.pricePerNight || Infinity
+            );
+            const highestPrice = hotel.roomsAvailable.reduce((maxPrice, room) =>
+                 Math.max(maxPrice, room.pricePerNight),
+                 hotel.roomsAvailable[0]?.pricePerNight || 0)
+            return { 
+                ...hotel, 
+                lowestPrice,
+                highestPrice
+            };
+        });
+    
+        setHotelResult(updatedWithPrices);
+        console.log(updatedWithPrices);
+    }, [isFetch]);
+
+
     useEffect(()=> {
-        addPetTypeArray()
-        addLowestRoomPrice()
-        console.log(hotelResult)
-    }, [isFetch])
+        console.log(isFetch)
+    }, [hotelResult])
 
     const districts = [
         "เขตพระนคร", "เขตดุสิต", "เขตหนองจอก", "เขตบางรัก", "เขตบางเขน",
@@ -272,12 +313,12 @@ function Home() {
             <div className="hidden md:block col-span-1"></div>
             <div className="col-span-6 md:col-span-3">
                 <label className="input w-[40vw] h-[10vw] max-h-12 max-w-full text-[3vw] sm:text-sm input-bordered flex items-center gap-2 input-shadow">
-                    <input type="date" className="grow " />
+                    <input type="date" name = "checkIn" value = {filter.checkIn} onChange={handleInputChange} className="grow " />
                 </label>
             </div>
             <div className="col-span-6 md:col-span-3">
                 <label className="input w-[40vw] h-[10vw] max-h-12 max-w-full text-[3vw] sm:text-xs input-bordered flex items-center gap-2 input-shadow">
-                    <input type="date" className="grow" />
+                    <input type="date" name = "checkOut" value = {filter.checkOut} onChange={handleInputChange} className="grow" />
                 </label>
             </div>
             <div className="max-md:row-start-2 col-span-12 md:col-span-4">
@@ -340,7 +381,6 @@ function Home() {
                 {loading ? <HomeHotelBoxLoading /> : 
                 <HomeHotelBox
                 hotelObj = {hotel}
-                hotelID = {hotel.hotelID}
                 hotelName={hotel.hotelName}
                 reviews={hotel.reviewCount}
                 rating={hotel.avgReviewScore}
@@ -348,6 +388,8 @@ function Home() {
                 price={hotel.lowestPrice}
                 imageUrl={hotel.hotelPhoto}
                 petType = {hotel.petTypeArray}
+                checkIn={filter.checkIn}
+                checkOut={filter.checkOut}
                 />
                 }
                 

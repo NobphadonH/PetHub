@@ -3,23 +3,32 @@ import { useNavigate } from "react-router-dom";
 
 function HomeHotelBox({ 
     hotelObj,
-    hotelID,
     hotelName, 
-    roomInfo, 
     reviews, 
     rating, 
     description, 
     price, 
     imageUrl,
     petType,
+    checkIn,
+    checkOut
   }) {
 
     const navigate = useNavigate()
 
     const petIcon = {"สุนัข": "🐶", "แมว":"🐱", "อื่น ๆ":"🫎"}
 
-    const handleNavigate = () => {
-      navigate(`/pethub-website/home/${hotelID}`, {state: hotelObj})
+    const goHotelDetail = () => {
+      if (checkIn && checkOut) {
+        const hotelData = {
+          ...hotelObj,
+          checkIn,
+          checkOut
+        }
+        navigate(`/pethub-website/home/${hotelName}`, {state: hotelData})
+      } else {
+        console.log("please select check in and check out date")
+      }
     }
 
     return (
@@ -48,7 +57,7 @@ function HomeHotelBox({
           </div>
           <div className="p-2 md:px-3 flex justify-between items-center">
             <div className="flex items-center gap-3">
-                <button onClick={handleNavigate} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-[17vw] max-md:text-[2vw] h-[7vw] md:w-32 font-medium">
+                <button onClick={goHotelDetail} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-[17vw] max-md:text-[2vw] h-[7vw] md:w-32 font-medium">
                 รายละเอียด
                 </button>
                 <div className="max-lg:hidden flex gap-2">

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "./Utils/Navbar";
 import { useState, useEffect, useRef } from 'react';
 import PictureUpload from "./Utils/PictureUpload";
@@ -11,6 +11,13 @@ function RoomsBooking() {
   const [customPet, setCustomPet] = useState(0)
   const elementRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const roomData = location.state;
+  console.log("ROOMDATA");
+  console.log(roomData);
 
   useEffect(() => {
     // Get today's date in the format YYYY-MM-DD

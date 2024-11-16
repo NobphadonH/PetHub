@@ -34,8 +34,8 @@ const router = createBrowserRouter([
   {path: "/pethub-website/listhost", element: <ListHost />,},
   {path: "/pethub-website/hostsignup", element: <HostSignUp />,},
   {path: "/pethub-website/basics", element: <Basics />,},
-  {path: "/pethub-website/home/:hotelID", element: <HotelDetail />,},
-  {path: "/pethub-website/home/:hotelID/:roomID", element: <RoomsBooking />,},
+  {path: "/pethub-website/home/:hotelName", element: <HotelDetail />,},
+  {path: "/pethub-website/home/:hotelName/:roomTypeName", element: <RoomsBooking />,},
   {path: "/pethub-website/rooms", element: <Rooms />,},
   {path: "/pethub-website/confirm", element: <Confirm />,},
   {path: "/pethub-website/finish", element: <Finish />,},
@@ -46,7 +46,7 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <RouterProvider router={router}/>
-  </StrictMode>,
+  // <StrictMode>
+  // </StrictMode>,
+  <RouterProvider router={router}/>
 )

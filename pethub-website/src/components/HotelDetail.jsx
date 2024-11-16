@@ -17,16 +17,22 @@ function HotelDetail() {
     const location = useLocation()
 
     const hotelData = location.state;
+    console.log("HOTELDATA");
     console.log(hotelData);
 
-    useEffect(() => {
+    const petIcon = {"สุนัข": "🐶", "แมว":"🐱", "อื่น ๆ":"🫎"}
 
+
+    useEffect(() => {
+        console.log(hotelData);
         const today = new Date();
-        const year = today.getFullYear();
+        const year = today.getFullYear();   
         const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
         const day = String(today.getDate()).padStart(2, '0');
         setCurrentDate(`${year}-${month}-${day}`);
 
+
+        
         const loadScript = () => {
           const script = document.createElement('script');
           script.src = "https://api.longdo.com/map/?key=2b0da15d101163c9f1968c6c656c8ca5";
@@ -43,7 +49,7 @@ function HotelDetail() {
     
           mapRef.current = map;
     
-          var marker = new window.longdo.Marker({ lon: 100.56, lat: 13.74 });
+          var marker = new window.longdo.Marker({lon: 100.56, lat: 13.74 });
           map.Overlays.add(marker);
           map.zoomRange({ min: 6, max: 20 });
           map.location({ lon: 100.56, lat: 13.74 }, true);
@@ -80,55 +86,70 @@ function HotelDetail() {
           };
       }, []);
     
-      const handleDivClick = () => {
+      const handleAddressClick = () => {
         if (mapRef.current) {
-          mapRef.current.location({ lon: 100.56, lat: 13.74 }, true);
+          mapRef.current.location({lon: 100.56, lat: 13.74  }, true);
           mapRef.current.zoom(14, true);
         }
+        // navigate(`https://www.google.com/maps?q=${hotelData.mapLat},${hotelData.mapLong}`)
       };
 
-      const handleSelect = (e) => {
+    const handleSelect = (e) => {
         setBarSel(e.target.id)
-      }
+    }
 
-      console.log(barSel)
+    console.log(barSel)
+    const checkIn = hotelData.checkIn
+    const checkOut = hotelData.checkOut
+    const goBooking = (room) => {
+        const roomData = {
+            ...room,
+            checkIn,
+            checkOut
+        }
+        console.log(roomData)
+        navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, {state : roomData})
+    }
+    
+
 
   return (
     <>
      <Navbar /> 
      <div className='mt-20 md:mt-28 w-[96vw] lg:w-11/12 xl:w-11/12 2xl:w-[1280px] grid grid-cols-12 grid-rows-2 h-[500px] max-lg:h-[45vw] xl:h-[600px] mx-auto gap-1 lg:gap-3 xl:gap-5'>
-        <div className='col-start-8 rounded-md col-span-5 row-span-1 bg-gray-300'></div>
+        {/* <div className='col-start-8 rounded-md col-span-5 row-span-1 bg-gray-300'></div>
         <div className='col-start-8 rounded-md col-span-5 row-start-2 bg-gray-300'></div>
-        <div className='row-start-1 rounded-md col-span-7 row-span-2 bg-gray-300'></div>
+        <div className='row-start-1 rounded-md col-span-7 row-span-2 bg-gray-300'></div> */}
+        <img src={hotelData.hotelPhoto} className="row-start-1 rounded-md col-span-7 row-span-2 bg-gray-300" />
+
      </div>
      <div className='mt-5 md:mt-10 w-[96vw] lg:w-11/12 xl:w-11/12 2xl:w-[1280px] h-full mx-auto'>
         <div className='w-full lg:h-20 flex gap-5 text-[10px] sm:text-[2vw] md:text-lg xl:text-xl font items-center'>
             <div id='0' onClick={handleSelect} className={`px-3 lg:px-5 py-1 lg:py-2 border-pethub-color1 cursor-pointer ${barSel == 0 ? ' border-b-2 font-bold' : ''}`}>Overview</div>
             <div id='1' onClick={handleSelect} className={`px-3 lg:px-5 py-1 lg:py-2 border-pethub-color1 cursor-pointer ${barSel == 1 ? ' border-b-2 font-bold' : ''}`}>Guest reviews</div>
-            <div id='2' onClick={handleSelect} className={`px-3 lg:px-5 py-1 lg:py-2 border-pethub-color1 cursor-pointer ${barSel == 2 ? ' border-b-2 font-bold' : ''}`}>Chat</div>
         </div>
      </div>
      <div className='w-full h-full bg-[#F4F4F4]'>
         <div className='w-[90vw] lg:w-11/12 xl:w-10/12 2xl:w-[1280px] h-full md:h-[600px] lg:h-[1000px] mx-auto py-[1vw] lg:py-10 flex flex-wrap md:grid grid-cols-12 grid-rows-12 gap-x-[3%] md:gap-4'>
             <div className='max-md:basis-full col-span-12 md:col-span-8 row-span-3 lg:row-span-2 max-md:py-[2vw] max-lg:py-5'>
-                <h1 className='text-start text-[5vw] md:text-2xl lg:text-3xl xl:text-5xl uppercase font-bold '>{param.hotelname}</h1>
+                <h1 className='text-start text-[5vw] md:text-2xl lg:text-3xl xl:text-5xl uppercase font-bold '>{hotelData.hotelName}</h1>
                 <div className="flex my-[1vw] md:my-3 lg:my-4 gap-1 items-center">
-                    {Array.from({ length: 5 }).map((_, index) => (
+                    {Array.from({ length: hotelData.avgReviewScore }).map((_, index) => (
                     <svg key={index} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-star-fill w-[8px] sm:w-[12px] lg:w-[16px] text-yellow-400" viewBox="0 0 16 16">
                         <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                     </svg>
                     ))}
                     <div className="max-md:text-[2vw] ml-1 md:ml-3">
-                    {5} ({1200} Reviews)
+                    {parseFloat(hotelData.avgReviewScore).toFixed(2)} ({hotelData.reviewCount} Reviews)
                     </div>
                 </div>
-                <div onClick={handleDivClick} className='flex gap-3 items-center justify-start text-gray-400'>
+                <a href= {`https://www.google.com/maps?q=${hotelData.mapLat},${hotelData.mapLong}`} target="_blank" className='flex gap-3 items-center justify-start text-gray-400'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="cursor-pointer bi bi-geo-alt text-blue-400 max-md:w-[16px]" viewBox="0 0 16 16">
                         <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10"/>
                         <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
                     </svg>
-                    <div className='hover:text-blue-500 cursor-pointer text-start text-[10px] sm:text-[2vw] md:text-[14px] xl:text-lg  transition-all duration-300 ease-in-out max-lg:line-clamp-1 max-lg:overflow-hidden'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium, voluptates?</div>
-                </div>
+                    <div className='hover:text-blue-500 cursor-pointer text-start text-[10px] sm:text-[2vw] md:text-[14px] xl:text-lg  transition-all duration-300 ease-in-out max-lg:line-clamp-1 max-lg:overflow-hidden'>{hotelData.hotelAddress}</div>
+                </a>
             </div>
             <div className='max-md:w-full max-md:h-[40vw] max-md:my-[2vw] bg-white rounded-md col-span-12 md:col-span-4 row-span-4'>
             <div
@@ -139,14 +160,16 @@ function HotelDetail() {
             <div className={`max-md:w-[60%] ${barSel == 1 ? 'max-md:h-full' : 'max-md:h-[250px]'}   overflow-y-hidden bg-white rounded-md col-span-8 lg:col-span-8 row-span-10 max-md:p-[3vw] max-lg:px-8 max-lg:py-4 py-12 px-14 text-start`}>
                 <div className={`text-[3vw] lg:text-2xl font-semibold mb-[1vw] md:mb-6 overflow-y  ${barSel == 0 ? '' : 'hidden'}`}>Overview</div>
                 <div className={`text-[2vw] md:text-sm max-md:h-[160px] h-[80%] lg:h-[90%] px-4 overflow-y-scroll hide-scrollbar ${barSel == 0 ? '' : 'hidden'}`}>
-                    <p>Bangmod Pet Hotel เป็นโรงแรมสัตว์เลี้ยงระดับพรีเมียม ตั้งอยู่ในย่านบางมด กรุงเทพมหานคร ที่ออกแบบมาเพื่อตอบโจทย์ความต้องการของเจ้าของสัตว์เลี้ยงที่มองหาที่พักอันปลอดภัย สะดวกสบาย และทันสมัยสำหรับเพื่อนขนฟูของพวกเขา เราให้บริการที่พักทั้งระยะสั้นและระยะยาว พร้อมสิ่งอำนวยความสะดวกครบครันและการดูแลอย่างใกล้ชิดจากผู้เชี่ยวชาญด้านสัตว์เลี้ยง</p>
+                    <p>{hotelData.hotelDescription}</p>
+                    {/* <p>Bangmod Pet Hotel เป็นโรงแรมสัตว์เลี้ยงระดับพรีเมียม ตั้งอยู่ในย่านบางมด กรุงเทพมหานคร ที่ออกแบบมาเพื่อตอบโจทย์ความต้องการของเจ้าของสัตว์เลี้ยงที่มองหาที่พักอันปลอดภัย สะดวกสบาย และทันสมัยสำหรับเพื่อนขนฟูของพวกเขา เราให้บริการที่พักทั้งระยะสั้นและระยะยาว พร้อมสิ่งอำนวยความสะดวกครบครันและการดูแลอย่างใกล้ชิดจากผู้เชี่ยวชาญด้านสัตว์เลี้ยง</p>
                     
                     <p>โรงแรมของเรามีพื้นที่กว้างขวาง รวมถึงห้องพักที่สะอาดและมีระบบควบคุมอุณหภูมิที่เหมาะสม พร้อมสนามวิ่งเล่นสำหรับสัตว์เลี้ยง และโซนกิจกรรมที่ออกแบบมาเพื่อความสนุกสนานและการออกกำลังกายของสัตว์เลี้ยง นอกจากนี้ เรายังมีบริการดูแลพิเศษ เช่น การอาบน้ำ ตัดขน และตรวจสุขภาพเบื้องต้น โดยทีมงานที่มีความรักและประสบการณ์ในการดูแลสัตว์เลี้ยง</p>
                     
-                    <p>ไม่ว่าคุณจะมีสุนัข แมว หรือสัตว์เลี้ยงชนิดอื่น ๆ เราพร้อมให้บริการและดูแลพวกเขาด้วยความรักและความใส่ใจ เพื่อให้คุณมั่นใจได้ว่าสัตว์เลี้ยงของคุณจะได้รับการดูแลเป็นอย่างดีระหว่างการเข้าพักที่ Bangmod Pet Hotel.</p>
+                    <p>ไม่ว่าคุณจะมีสุนัข แมว หรือสัตว์เลี้ยงชนิดอื่น ๆ เราพร้อมให้บริการและดูแลพวกเขาด้วยความรักและความใส่ใจ เพื่อให้คุณมั่นใจได้ว่าสัตว์เลี้ยงของคุณจะได้รับการดูแลเป็นอย่างดีระหว่างการเข้าพักที่ Bangmod Pet Hotel.</p> */}
                     <div className='text-md lg:text-xl my-[1vw] md:my-6 overflow-y'>ข้อกำหนด</div>
                     <div>
-                        <h2>ข้อกำหนดในการเข้าพักที่ Bangmod Pet Hotel</h2>
+                        <p>{hotelData.hotelPolicy}</p>
+                        {/* <h2>ข้อกำหนดในการเข้าพักที่ Bangmod Pet Hotel</h2>
 
                         <h3>ประเภทสัตว์เลี้ยงที่รับบริการ:</h3>
                         <ol className="list-decimal ml-5">
@@ -191,7 +214,7 @@ function HotelDetail() {
                             <li>ในกรณีฉุกเฉินที่สัตว์เลี้ยงมีอาการป่วย...</li>
                         </ol>
 
-                        <p >หมายเหตุ: โปรดทำความเข้าใจและยอมรับข้อกำหนดเหล่านี้ก่อนทำการจองเพื่อประสบการณ์ที่ราบรื่นและปลอดภัยสำหรับสัตว์เลี้ยงของท่าน</p>
+                        <p >หมายเหตุ: โปรดทำความเข้าใจและยอมรับข้อกำหนดเหล่านี้ก่อนทำการจองเพื่อประสบการณ์ที่ราบรื่นและปลอดภัยสำหรับสัตว์เลี้ยงของท่าน</p> */}
                     </div>
 
                 </div>
@@ -281,24 +304,26 @@ function HotelDetail() {
                     <div className='w-full '>
                         <div className='flex justify-between items-center mt-[1vw] md:mt-5'>
                             <div className='text-start'>ประเภท: </div>
-                            <div className='max-w-40 font-normal transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>โรงแรมสัตว์เลี้ยงมืออาชีพ</div>
+                            <div className='max-w-40 font-normal transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>{hotelData.hotelType}</div>
                         </div>
                         <div className='flex justify-between items-start mt-2'>
-                            <div className='text-start transition-all duration-300 ease-in-out max-lg:line-clamp-1 max-lg:overflow-hidden'>ประเภทห้อง: </div>
+                            {/* <div className='text-start transition-all duration-300 ease-in-out max-lg:line-clamp-1 max-lg:overflow-hidden'>ประเภทห้อง: </div>
                             <div className='max-w-40 transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>
                                 ห้องทั่วไป, ห้องพิเศษ
-                            </div>
+                            </div> */}
                         </div>
                         <div className='flex justify-between items-start mt-2'>
                             <div className='text-start transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>สัตว์เลี้ยงที่รับ: </div>
                             <div className='max-w-40 transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>
-                                🐱, 🐶 และอื่นๆ
+                            {hotelData.petTypeArray.map((pet, index) => (
+                                    <div key={index} className="text-2xl"> {petIcon[pet]}</div>
+                            ))}                            
                             </div>
-                        </div>
+                            </div>
                         <div className='flex justify-between items-start mt-2'>
                             <div className='text-start'>ราคา: </div>
                             <div className='flex justify-end gap-2'>
-                                <div className='max-w-40 font-normal transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>2,000 - 10,000 บาท</div>
+                                <div className='max-w-40 font-normal transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'> {hotelData.lowestPrice == hotelData.highestPrice ? hotelData.lowestPrice : hotelData.lowestPrice + " - " + hotelData.highestPrice} บาท</div>
   
 
                             </div>
@@ -315,7 +340,7 @@ function HotelDetail() {
         <div className='mt-5 md:mt-5 w-[96vw] lg:w-11/12 xl:w-11/12 2xl:w-[1280px] h-full mx-auto px-5'>
             <div className='flex items-start lg:items-center justify-between flex-col lg:flex-row'>
                 <div className='text-start text-[5vw] sm:text-xl lg:text-2xl xl:text-3xl font-semibold'>Available rooms</div>
-                <div className='flex items-center gap-[2vw] md:gap-3 max-md:my-[3vw]'>
+                {/* <div className='flex items-center gap-[2vw] md:gap-3 max-md:my-[3vw]'>
                     <input
                         type="date"
                         name="email"
@@ -334,29 +359,34 @@ function HotelDetail() {
                     <a className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white max-md:text-[2vw] max-md:w-[10vw] h-[7vw] font-medium">
                         <a >ค้นหา</a>
                     </a>
-                </div>
+                </div> */}
             </div>
             <div ref={parentRef} className="md:mt-4 lg:mt-8 xl:mt-10 w-full overflow-hidden mx-auto relative h-[70vw] md:h-[550px]  lg:h-[650px]">
             <motion.div ref={containerRef} className="absolute h-[60vw] md:h-[500px] lg:h-[600px] rounded-md mx-auto md:py-5 flex gap-3 lg:gap-5" drag="x" dragConstraints={{ left: -totalWidth, right: 0 }} transition={{ type: "spring", stiffness: 300, damping: 30 }}>
-                {Array.from({length : 5}).map((_, index) => (
+                {hotelData.roomsAvailable.map((room, index) => (
                     <div key={index} className='w-[45vw] md:w-[350px] xl:w-[400px] bg-white rounded-lg overflow-hidden'>
-                        <div className='w-full h-[50%] bg-slate-200'></div>
+                        <div className='w-full h-[50%] bg-slate-200'>
+                            <img src={room.roomPhoto} className="w-full h-full object-cover rounded-md" />
+                        </div>
                         <div className='w-full h-[50%] p-[2vw] md:p-6 text-start'>
                             <div className='flex justify-between items-end'>
-                                <div className='text-[2.5vw] md:text-lg lg:text-xl xl:text-2xl'>ห้องขนาดทั่วไป (แมว)</div>
-                                <div className='text-[2vw] md:text-sm lg:text-base xl:text-lg'>25x25 ตรม</div>
+                                <div className='text-[2.5vw] md:text-lg lg:text-xl xl:text-2xl'>{room.roomTypeName} ({room.petAllowedType})</div>
+                                <div className='text-[2vw] md:text-sm lg:text-base xl:text-lg'>{room.roomSize} ตรม</div>
                             </div>
-                            <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-lg md:my-1 lg:my-3'>ของเล่นแมว, อาหาร, อาบน้ำ, ดูแล 24 ชั่วโมง</div>
-                            <div className='text-[1.5vw] md:text-xs lg:text-sm xl:text-base transition-all duration-300 ease-in-out line-clamp-2 overflow-hidden text-gray-400'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque voluptatum dolor, ipsam natus similique aperiam eveniet quos, magni voluptatem deserunt odio aspernatur reprehenderit laborum molestias illum unde ipsum libero pariatur?</div>
-                            <div className='text-[2vw] md:text-base my-[1vw] md:my-2 lg:my-5'>400 บาท/คืน</div>
-                            <a href={`/pethub-website/home/${param.hotelname}/room001`} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium">
-                                <a >จองห้อง</a>
-                            </a>
+                            {/* <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-lg md:my-1 lg:my-3'>ของเล่นแมว, อาหาร, อาบน้ำ, ดูแล 24 ชั่วโมง</div> */}
+                            <div className='text-[2vw] md:text-xs lg:text-sm xl:text-base transition-all duration-300 ease-in-out line-clamp-2 overflow-hidden text-gray-400'>
+                                {room.roomDetail.length > 150 ? room.roomDetail.substring(0, 150) + '...' : room.roomDetail}
+                            </div>
+                            <div className='text-[2vw] md:text-base my-[1vw] md:my-2 lg:my-5'>{parseFloat(room.pricePerNight).toFixed(0) } บาท/คืน</div>
+                            <button onClick={() => goBooking(room)} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium" >
+                                จองห้อง
+                            </button>
+
                         </div>
                     </div>
                 ))}
             </motion.div>
-        </div>
+            </div>
         </div>
      </div>
      <Footer />
