@@ -1,7 +1,8 @@
 import { connectToDatabase } from "../utils/dbConnection.js";
 
+//function for fetching details
 export const getRoomDetails = async (req, res) => {
-    const { hotelID, roomTypeID } = req.params;
+    const { roomTypeID } = req.params;
 
     const { dbpool, sshClient } = await connectToDatabase();
     dbpool.getConnection((err, connection) => {
@@ -16,7 +17,7 @@ export const getRoomDetails = async (req, res) => {
             SELECT roomTypeID, roomTypeName, roomCapacity, numberOfRoom, roomSize, roomDetail, 
                    petAllowedType, pricePerNight, roomPhoto
             FROM RoomTypes
-            WHERE roomTypeID = ? AND hotelID = ?
+            WHERE roomTypeID = ?
         `;
 
         // Query to get bookings associated with this room (with pet details from the booking)
@@ -36,7 +37,7 @@ export const getRoomDetails = async (req, res) => {
         `;
 
         // Fetch room details
-        connection.query(roomQuery, [roomTypeID, hotelID], (roomErr, roomResults) => {
+        connection.query(roomQuery, [roomTypeID], (roomErr, roomResults) => {
             if (roomErr) {
                 console.log(roomErr);
                 res.status(500).json({ message: "Failed to fetch room details" });
@@ -59,7 +60,8 @@ export const getRoomDetails = async (req, res) => {
                     return;
                 }
 
-                // For each booking, fetch the associated pet (one pet per booking)
+                if (bookingResults.length > 0) {
+                // For each booking, fetch the associated pet
                 const bookingsWithPets = [];
 
                 for (let booking of bookingResults) {
@@ -88,10 +90,78 @@ export const getRoomDetails = async (req, res) => {
                 };
 
                 res.status(200).json(roomDetails);
+            } else {
+                // No bookings for this room
+                const roomDetails = {
+                    ...roomResults[0],
+                    bookings: [] // Return an empty bookings array
+                    };
+            res.status(200).json(roomDetails);
+                }
                 sshClient.end();
             });
-
             connection.release();
         });
     });
+};
+
+// Function to update room details
+export const updateRoomDetails = async (req, res) => {
+    const { roomTypeID } = req.params;
+    const {
+        roomTypeName,
+        roomCapacity,
+        numberOfRoom,
+        roomSize,
+        roomDetail,
+        petAllowedType,
+        pricePerNight,
+        roomPhoto,
+    } = req.body;
+
+    try {
+        const { dbpool, sshClient } = await connectToDatabase();
+        const connection = await dbpool.promise().getConnection();
+
+        try {
+            // Update query
+            const updateQuery = `
+                UPDATE RoomTypes
+                SET 
+                    roomTypeName = ?,
+                    roomCapacity = ?,
+                    numberOfRoom = ?,
+                    roomSize = ?,
+                    roomDetail = ?,
+                    petAllowedType = ?,
+                    pricePerNight = ?,
+                    roomPhoto = ?
+                WHERE 
+                    roomTypeID = ?
+            `;
+
+            const [result] = await connection.query(updateQuery, [
+                roomTypeName,
+                roomCapacity,
+                numberOfRoom,
+                roomSize,
+                roomDetail,
+                petAllowedType,
+                pricePerNight,
+                roomPhoto,
+                roomTypeID,
+            ]);
+
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ message: "Room not found or no changes made" });
+            }
+
+            res.status(200).json({ message: "Room details updated successfully" });
+        } finally {
+            connection.release();
+        }
+    } catch (err) {
+        console.error("Error updating room details:", err);
+        res.status(500).json({ message: "An error occurred while updating room details" });
+    }
 };

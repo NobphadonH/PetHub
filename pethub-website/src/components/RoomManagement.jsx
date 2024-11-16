@@ -2,14 +2,15 @@ import Navbar from "./Utils/Navbar"
 import CalendarComponent from "./Utils/CalendarComponent"
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 function RoomManagement() {
     const [roomDetails, setRoomDetails] = useState(null);
-    const [bookingDetails, setBookingDetails] = useState(null);
-    const [selectedBooking, setSelectedBooking] = useState(null);
+    const [bookingDetails, setBookingDetails] = useState({});
+    const [selectedBooking, setSelectedBooking] = useState({});
     const [allDatesBetweenBookings, setAllDatesBetweenBookings] = useState(null)
-    const hotelID = 1; // Replace with actual hotelID
-    const roomTypeID = 1; // Replace with actual roomTypeID
+    const { roomID } = useParams();
+    const roomTypeID = roomID;
 
     console.log(selectedBooking)
 
@@ -80,10 +81,9 @@ function RoomManagement() {
         setAllDatesBetweenBookings(getDatesBetween(booking.checkInDate, booking.checkOutDate))} 
 
     useEffect(() => {
-        console.log("hotelID:", hotelID);
         console.log("roomTypeID:", roomTypeID);
         // Fetch room details from the backend
-        axios.get(`http://localhost:5000/api/roomManage/${hotelID}/${roomTypeID}`)
+        axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`)
           .then(response => {
             console.log("API response:", response.data);
             // Destructure the response data correctly
@@ -110,7 +110,7 @@ function RoomManagement() {
           .catch(error => {
             console.error("There was an error fetching the data!", error);
           });
-      }, [hotelID, roomTypeID]);
+      }, [roomTypeID]);
     
       if (!roomDetails || !bookingDetails) {
         return <div>Loading...</div>;
@@ -198,9 +198,9 @@ function RoomManagement() {
         <div className="w-full h-full border-[1px] rounded-md relative max-md:py-[4vw] p-[3vw] md:p-4 lg:p-8 flex flex-col">
             <div className="absolute top-0 h-[1vw] md:h-2 w-4/12 bg-pethub-color1 left-4"></div>
             <div className="flex flex-wrap gap-[2vw] md:gap-2 lg:gap-5">
-                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">การจองเลขที่: <span className="text-gray-ุ00 font-light">{selectedBooking.bookingID}</span></div>
-                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">สถานะ: <span className={`font-normal ${selectedBooking.bookingStatus === 'confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{selectedBooking.bookingStatus}</span></div>
-                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">การจอง: <span className="text-gray-400 font-light">{calculateNights(selectedBooking.checkInDate, selectedBooking.checkOutDate)} คืน</span></div>
+                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">การจองเลขที่: <span className="text-gray-ุ00 font-light">{selectedBooking?.bookingID || '-'}</span></div>
+                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">สถานะ: <span className={`font-normal ${selectedBooking.bookingStatus === 'confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{selectedBooking?.bookingStatus || '-'}</span></div>
+                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">การจอง: <span className="text-gray-400 font-light">{calculateNights(selectedBooking.checkInDate, selectedBooking.checkOutDate) || '-'} คืน</span></div>
             </div>
             <div className="my-[2vw] md:my-4 text-[1.5vw] md:text-xs lg:text-sm">จองวันที่ {formatDate(selectedBooking.paymentDate)|| 'ยังไม่จ่าย'}</div>
             <div className="font-semibold text-[2vw] md:text-base lg:text-xl">ข้อมูลทั่วไป</div>
@@ -221,7 +221,7 @@ function RoomManagement() {
                         type="text"
                         name="email"
                         placeholder=""
-                        value={formatDate(selectedBooking.checkOutDate)}
+                        value={formatDate(selectedBooking.checkOutDate) || '-'}
                         className="input input-bordered w-full h-[8vw] max-h-10  text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm bg-gray-100 md:mb-3"
                     />
                 </div>
@@ -231,7 +231,9 @@ function RoomManagement() {
                         type="text"
                         name="email"
                         placeholder=""
-                        value={`${selectedBooking?.bookerFirstName} ${selectedBooking?.bookerLastName}`}
+                        value={selectedBooking?.bookerFirstName && selectedBooking?.bookerLastName
+                            ? `${selectedBooking.bookerFirstName} ${selectedBooking.bookerLastName}`
+                            : '-'}
                         className="input input-bordered w-full h-[8vw] max-h-10  text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm bg-gray-100 md:mb-3"
                     />
                 </div>
@@ -241,7 +243,7 @@ function RoomManagement() {
                         type="text"
                         name="email"
                         placeholder=""
-                        value={selectedBooking.bookerPhone}
+                        value={selectedBooking.bookerPhone || '-'}
                         className="input input-bordered w-full h-[8vw] max-h-10  text-[2vw] sm:h-10 xl:h-12 max-w-64 sm:text-xs lg:text-sm bg-gray-100 md:mb-3"
                     />
                 </div>
