@@ -66,3 +66,16 @@ input[type=number] {
     opacity: .5;
   }
 }
+
+/* Custom CSS to reduce SVG size in the Quill toolbar */
+.ql-toolbar .ql-formats svg {
+  width: 16px;  /* Set a smaller width */
+  height: 16px; /* Set a smaller height */
+}
+
+@media (max-width: 768px){
+  .ql-toolbar .ql-formats svg {
+    width: 14px;  /* Set a smaller width */
+    height: 14px; /* Set a smaller height */
+  }
+}

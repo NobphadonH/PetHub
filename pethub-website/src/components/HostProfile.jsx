@@ -1,6 +1,9 @@
 import Navbar from "./Utils/Navbar"
 import { motion } from "framer-motion"
 import { useState, useRef, useEffect } from "react";
+import TextEditor from "./Utils/TextEditor";
+
+
 
 function HostProfile() {
     const containerRef = useRef(null);
@@ -53,7 +56,12 @@ function HostProfile() {
             </div>
         </div>
      </div>
-     <div className="lg:px-14 text-[3vw] md:text-2xl lg:text-3xl text-start mt-[6vw] md:mt-10 lg:mt-16 w-11/12 xl:w-10/12 max-w-[1200px] mx-auto font-semibold">รายละเอียดโรงแรม</div>
+     <div className="lg:px-14 text-[4vw] md:text-2xl lg:text-3xl text-start mt-[6vw] md:mt-10 lg:mt-16 w-11/12 xl:w-10/12 max-w-[1200px] mx-auto font-semibold">รายละเอียดโรงแรม</div>
+     <div className="lg:px-20 my-2 md:my-5 w-11/12 xl:w-10/12 max-w-[1200px] mx-auto">
+        <div className="md:mb-5 text-start text-[3vw] md:text-sm lg:text-base">คำอธิบายโรงแรม (Overview) & ข้อกำหนด</div>
+        <TextEditor />
+
+     </div>
      <div className=" text-[3vw] md:text-2xl lg:text-3xl text-start mt-[6vw] md:mt-10 lg:mt-16 w-11/12 xl:w-10/12 max-w-[1200px] mx-auto font-semibold">
     <div className="my-[2vw] md:my-4 w-full flex justify-between gap-5">
         <div>จัดการห้องพัก</div>
