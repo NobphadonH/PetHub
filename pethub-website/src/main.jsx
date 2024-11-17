@@ -21,6 +21,7 @@ import RoomsBooking from './components/RoomsBooking.jsx';
 import AddRooms from './components/AddRooms.jsx';
 import RoomManagement from './components/RoomManagement.jsx';
 import Payment from './components/Payment.jsx';
+import HostProfile from './components/HostProfile.jsx';
 
 
 
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
   {path: "/pethub-website/addrooms", element: <AddRooms />,},
   {path: "/pethub-website/hostprofile/:roomID", element: <RoomManagement />,},
   {path: "/pethub-website/payment", element: <Payment />,},
+  {path: "/pethub-website/hostprofile", element: <HostProfile />,},
 ]);
 
 createRoot(document.getElementById('root')).render(
