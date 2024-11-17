@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from "./Utils/Navbar";
+import Footer from './Utils/Footer'
 
 const HotelProfileManagement = () => {
   return (
@@ -27,7 +28,7 @@ const HotelProfileManagement = () => {
               <img
                 src="https://via.placeholder.com/400x300"
                 alt="Hotel"
-                className="rounded-md shadow-md border-4 border-pethub-color6"
+                className=" shadow-md border-4 border-pethub-color6"
               />
             </div>
 
@@ -169,124 +170,159 @@ const HotelProfileManagement = () => {
         </div>
         
         {/* Room Management */}
-            <section className="bg-white shadow-md rounded-lg p-6 mt-6 text-left">
-        <h2 className="text-xl font-semibold mb-4">จัดการห้องพัก</h2>
+            <section className="bg-white shadow-md rounded-lg p-6 mt-6 text-left text-black">
+        <h2 className="text-3xl font-semibold mb-4">จัดการห้องพัก</h2>
 
         {/* Room Summary */}
-        <div className="flex justify-between items-center mb-6 text-left">
-          <p><strong>จำนวนห้องพัก:</strong> <span className="text-red-500">10 ห้อง</span></p>
+        <div className="flex justify-start items-center gap-16 text-lg">
+          <p><strong>จำนวนห้องพัก:</strong> <span className="text-pethub-color6">10 ห้อง</span></p>
           <p><strong>Available:</strong> <span className="text-green-500">3 ห้อง</span></p>
           <p><strong>Booked:</strong> <span className="text-blue-500">2 ห้อง</span></p>
           <p><strong>Not Available:</strong> <span className="text-red-500">5 ห้อง</span></p>
         </div>
 
         {/* Room Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
-          {/* Room Card 1 */}
-          <div className="bg-gray-50 shadow rounded-md p-4">
-            <img
-              src="https://via.placeholder.com/300x200"
-              alt="Room"
-              className="rounded-md mb-4"
-            />
-            <p><strong>ประเภทห้อง:</strong> ห้องทั่วไป A2</p>
-            <p><strong>สถานะ:</strong> <span className="text-red-500">Not available</span></p>
-            <button className="mt-4 w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600">
-              จัดการ
-            </button>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left text-lg pt-8">
+          {/* A2 */}
+          <div className="border shadow-md overflow-hidden">
+          <hr className="border-t-2 border-red-500 w-full pt-4" />
+            <div className="relative">
+              <img
+                src="https://via.placeholder.com/300x200"
+                alt="Room A2"
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="p-4">
+              <p className="text-black font-semibold">ประเภทห้อง: ห้องทั่วไป A2</p>
+              <p className="text-black font-semibold">สถานะ:  <span className="text-red-500">Not available</span></p>
+            </div>
+            <div className="p-4">
+              <button className="bg-pethub-color4 text-white w-full py-2 hover:bg-orange-400">
+                จัดการ
+              </button>
+            </div>
           </div>
-          {/* Room Card 2 */}
-          <div className="bg-gray-50 shadow rounded-md p-4">
-            <img
-              src="https://via.placeholder.com/300x200"
-              alt="Room"
-              className="rounded-md mb-4"
-            />
-            <p><strong>ประเภทห้อง:</strong> ห้องทั่วไป A3</p>
-            <p><strong>สถานะ:</strong> <span className="text-green-500">Available</span></p>
-            <button className="mt-4 w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600">
-              จัดการ
-            </button>
-          </div>  
-          {/* Room Card 3 */}
-          <div className="bg-gray-50 shadow rounded-md p-4">
-            <img
-              src="https://via.placeholder.com/300x200"
-              alt="Room"
-              className="rounded-md mb-4"
-            />
-            <p><strong>ประเภทห้อง:</strong> ห้อง VIP A5</p>
-            <p><strong>สถานะ:</strong> <span className="text-green-500">Available</span></p>
-            <button className="mt-4 w-full bg-orange-500 text-white py-2 rounded hover:bg-orange-600">
-              จัดการ
-            </button>
+        
+          {/* A3 */}
+          <div className="border shadow-md overflow-hidden">
+          <hr className="border-t-2 border-green-500 w-full pt-4" />
+            <div className="relative">
+              <img
+                src="https://via.placeholder.com/300x200"
+                alt="Room A3"
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="p-4">
+              <p className="text-black font-semibold">ประเภทห้อง: ห้องทั่วไป A3</p>
+              <p className="text-black font-semibold">สถานะ: <span className="text-green-500">Available</span></p>
+            </div>
+            <div className="p-4">
+              <button className="bg-pethub-color4 text-white w-full py-2 hover:bg-orange-400">
+                จัดการ
+              </button>
+            </div>
+          </div>
+        
+          {/* VIP A5 */}
+          <div className="border shadow-md overflow-hidden">
+          <hr className="border-t-2 border-green-500 w-full pt-4" />
+            <div className="relative">
+              <img
+                src="https://via.placeholder.com/300x200"
+                alt="Room VIP A5"
+                className="w-full h-auto"
+              />
+            </div>
+            <div className="p-4">
+              <p className="text-black font-semibold">ประเภทห้อง: ห้อง VIP A5</p>
+              <p className="text-black font-semibold">สถานะ: <span className="text-green-500">Available</span></p>
+            </div>
+            <div className="p-4">
+              <button className="bg-pethub-color4 text-white w-full py-2 hover:bg-orange-400">
+                จัดการ
+              </button>
+            </div>
           </div>
         </div>
 
           {/* Add Room Button */}
           <div className="text-right mt-6">
-            <button className="bg-red-500 text-white px-6 py-2 rounded shadow hover:bg-red-600">
+            <button className="bg-red-700 text-white px-6 py-2 rounded shadow hover:bg-red-800">
               เพิ่มห้อง +
             </button>
           </div>
         </section>
 
         {/* Booking Management */}
-                <section className="bg-white shadow-md rounded-lg p-6 mt-6 text-left">
-          <h2 className="text-xl font-semibold mb-4">จัดการการจอง</h2>
-
+        <section className="bg-white shadow-md rounded-lg p-6 mt-6 text-left text-black">
+          <h2 className="text-3xl font-semibold mb-4">
+            จัดการการจอง
+          </h2>
+        
           {/* Booking Summary */}
-          <div className="mb-6 ">
-            <p className="text-gray-700">
-              การจองวันนี้: <span className="text-orange-500">2 รายการ</span>
+          <div className="mb-6">
+            <p className="text-black text-lg">
+              <strong>การจองวันนี้: </strong>
+              <span className="text-orange-500">2 รายการ</span>
             </p>
           </div>
-
+        
           {/* Booking Table */}
-          <table className="w-full border-collapse border border-gray-300 ">
+          <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-gray-200 text-left">
-                <th className="p-3 border border-gray-300">หมายเลขการจอง</th>
-                <th className="p-3 border border-gray-300">วันที่จอง</th>
-                <th className="p-3 border border-gray-300">เวลา</th>
-                <th className="p-3 border border-gray-300">ประเภทห้อง</th>
-                <th className="p-3 border border-gray-300">สถานะการจอง</th>
-                <th className="p-3 border border-gray-300">รายละเอียด</th>
+              <tr className="bg-gray-200 text-left text-pethub-color6 text-lg border-b-2 border-pethub-color6">
+                <th className="p-3">หมายเลขการจอง</th>
+                <th className="p-3">วันที่จอง</th>
+                <th className="p-3">เวลา</th>
+                <th className="p-3">ประเภทห้อง</th>
+                <th className="p-3">สถานะการจอง</th>
+                <th className="p-3">รายละเอียด</th>
               </tr>
             </thead>
             <tbody>
               {/* Row 1: รอการชำระเงิน */}
-              <tr className="bg-gray-50 text-gray-700">
-                <td className="p-3 border border-gray-300">B-987-6543210</td>
-                <td className="p-3 border border-gray-300">10/10/2567</td>
-                <td className="p-3 border border-gray-300">5/11/2567</td>
-                <td className="p-3 border border-gray-300">ห้อง VIP B2</td>
-                <td className="p-3 border border-gray-300 text-gray-500">รอการชำระเงิน</td>
-                <td className="p-3 border border-gray-300 text-orange-500 cursor-pointer hover:underline">
+              <tr className="bg-gray-50 text-black ">
+                <td className="p-3 flex items-center ">
+                  <div className="w-2 h-6 bg-gray-400 mr-2 "></div>
+                  B-987-6543210
+                </td>
+                <td className="p-3">10/10/2567</td>
+                <td className="p-3">5/11/2567</td>
+                <td className="p-3">ห้อง VIP B2</td>
+                <td className="p-3 text-gray-400">รอการชำระเงิน</td>
+                <td className="p-3 text-orange-500 cursor-pointer hover:underline">
                   รายละเอียด
                 </td>
               </tr>
-
+        
               {/* Row 2: ชำระเงินแล้ว */}
-              <tr className="bg-gray-50 text-gray-700 ">
-                <td className="p-3 border border-gray-300">B-233-2308275</td>
-                <td className="p-3 border border-gray-300">10/10/2567</td>
-                <td className="p-3 border border-gray-300">12/11/2567</td>
-                <td className="p-3 border border-gray-300">ห้อง VIP B3</td>
-                <td className="p-3 border border-gray-300 text-green-500">ชำระเงินแล้ว</td>
-                <td className="p-3 border border-gray-300 text-orange-500 cursor-pointer hover:underline">
+              <tr className="bg-gray-50 text-black">
+                <td className="p-3 flex items-center">
+                  <div className="w-2 h-6 bg-green-400 mr-2"></div>
+                  B-233-2308275
+                </td>
+                <td className="p-3">10/10/2567</td>
+                <td className="p-3">12/11/2567</td>
+                <td className="p-3">ห้อง VIP B3</td>
+                <td className="p-3 text-green-400">ชำระเงินแล้ว</td>
+                <td className="p-3 text-orange-500 cursor-pointer hover:underline">
                   รายละเอียด
                 </td>
               </tr>
-
+        
               {/* Row 3: รอการยืนยัน */}
-              <tr className="bg-gray-50 text-gray-700">
-                <td className="p-3 border border-gray-300">B-546-2734815</td>
-                <td className="p-3 border border-gray-300">10/10/2567</td>
-                <td className="p-3 border border-gray-300">12/11/2567</td>
-                <td className="p-3 border border-gray-300">ห้อง VIP B6</td>
-                <td className="p-3 border border-gray-300 text-yellow-500">รอการยืนยัน</td>
-                <td className="p-3 border border-gray-300 text-orange-500 cursor-pointer hover:underline">
+              <tr className="bg-gray-50 text-black">
+                <td className="p-3 flex items-center">
+                  <div className="w-2 h-6 bg-yellow-400 mr-2"></div>
+                  B-546-2734815
+                </td>
+                <td className="p-3">10/10/2567</td>
+                <td className="p-3">12/11/2567</td>
+                <td className="p-3">ห้อง VIP B6</td>
+                <td className="p-3 text-yellow-400">รอการยืนยัน</td>
+                <td className="p-3 text-orange-500 cursor-pointer hover:underline">
                   รายละเอียด
                 </td>
               </tr>
@@ -294,114 +330,62 @@ const HotelProfileManagement = () => {
           </table>
         </section>
 
-
         {/* Booking History */}
         <section className="bg-white shadow-md rounded-lg p-6 mt-6 text-left">
-          <h2 className="text-xl font-semibold mb-4">ประวัติการจอง</h2>
-
+          <h2 className="text-3xl font-semibold mb-4 text-black">ประวัติการจอง</h2>
+        
           {/* Booking History Table */}
-          <table className="w-full border-collapse border border-gray-300">
+          <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-gray-200 text-left">
-                <th className="p-3 border border-gray-300">หมายเลขการจอง</th>
-                <th className="p-3 border border-gray-300">วันที่จอง</th>
-                <th className="p-3 border border-gray-300">เวลา</th>
-                <th className="p-3 border border-gray-300">ประเภทห้อง</th>
-                <th className="p-3 border border-gray-300">สถานะการจอง</th>
-                <th className="p-3 border border-gray-300">รายละเอียด</th>
+              <tr className="bg-gray-200 text-left text-pethub-color6 text-lg border-b-2 border-pethub-color6">
+                <th className="p-3">หมายเลขการจอง</th>
+                <th className="p-3">วันที่จอง</th>
+                <th className="p-3">เวลา</th>
+                <th className="p-3">ประเภทห้อง</th>
+                <th className="p-3">สถานะการจอง</th>
+                <th className="p-3">รายละเอียด</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="text-gray-700">
-                <td className="p-3 border border-gray-300">B-987-6543210</td>
-                <td className="p-3 border border-gray-300">10/10/2567</td>
-                <td className="p-3 border border-gray-300">5/11/2567</td>
-                <td className="p-3 border border-gray-300">ห้อง VIP B2</td>
-                <td className="p-3 border border-gray-300 text-gray-500">เช็คเอาท์</td>
-                <td className="p-3 border border-gray-300 text-orange-500 cursor-pointer hover:underline">รายละเอียด</td>
+              <tr className="text-black">
+                <td className="p-3 flex items-center">
+                  <div className="w-2 h-6 bg-gray-400 mr-2"></div>
+                  B-987-6543210
+                </td>
+                <td className="p-3">10/10/2567</td>
+                <td className="p-3">5/11/2567</td>
+                <td className="p-3">ห้อง VIP B2</td>
+                <td className="p-3 text-gray-400">เช็คเอาท์</td>
+                <td className="p-3 text-orange-500 cursor-pointer hover:underline">รายละเอียด</td>
               </tr>
-              <tr className="text-gray-700">
-                <td className="p-3 border border-gray-300">B-233-2308275</td>
-                <td className="p-3 border border-gray-300">13/10/2567</td>
-                <td className="p-3 border border-gray-300">12/11/2567</td>
-                <td className="p-3 border border-gray-300">ห้อง VIP B3</td>
-                <td className="p-3 border border-gray-300 text-blue-500">กำลังเช็คอิน</td>
-                <td className="p-3 border border-gray-300 text-orange-500 cursor-pointer hover:underline">รายละเอียด</td>
+              <tr className="text-black">
+                <td className="p-3 flex items-center">
+                  <div className="w-2 h-6 bg-blue-400 mr-2"></div>
+                  B-233-2308275
+                </td>
+                <td className="p-3">13/10/2567</td>
+                <td className="p-3">12/11/2567</td>
+                <td className="p-3">ห้อง VIP B3</td>
+                <td className="p-3 text-blue-400">กำลังเช็คอิน</td>
+                <td className="p-3 text-orange-500 cursor-pointer hover:underline">รายละเอียด</td>
               </tr>
-              <tr className="text-gray-700">
-                <td className="p-3 border border-gray-300">B-546-2734815</td>
-                <td className="p-3 border border-gray-300">10/10/2567</td>
-                <td className="p-3 border border-gray-300">12/11/2567</td>
-                <td className="p-3 border border-gray-300">ห้อง VIP B6</td>
-                <td className="p-3 border border-gray-300 text-red-500">ยกเลิกการจอง</td>
-                <td className="p-3 border border-gray-300 text-orange-500 cursor-pointer hover:underline">รายละเอียด</td>
+              <tr className="text-black">
+                <td className="p-3 flex items-center">
+                  <div className="w-2 h-6 bg-red-400 mr-2"></div>
+                  B-546-2734815
+                </td>
+                <td className="p-3">10/10/2567</td>
+                <td className="p-3">12/11/2567</td>
+                <td className="p-3">ห้อง VIP B6</td>
+                <td className="p-3 text-red-400">ยกเลิกการจอง</td>
+                <td className="p-3 text-orange-500 cursor-pointer hover:underline">รายละเอียด</td>
               </tr>
             </tbody>
           </table>
         </section>
 
         {/* Footer */}
-        <footer className="bg-gray-100 border-t border-gray-300 mt-8 text-left">
-          <div className="container mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 text-gray-700">
-            {/* Logo and Tagline */}
-            <div>
-              <h3 className="text-blue-500 font-semibold text-lg">my Dream Place</h3>
-              <p>Your next goto companion for travel</p>
-            </div>
-
-            {/* Company Links */}
-            <div>
-              <h4 className="text-lg font-medium mb-3">Company</h4>
-              <ul className="space-y-2">
-                <li><a href="#about" className="hover:text-blue-500">About</a></li>
-                <li><a href="#jobs" className="hover:text-blue-500">Jobs</a></li>
-                <li><a href="#newsroom" className="hover:text-blue-500">Newsroom</a></li>
-                <li><a href="#advertising" className="hover:text-blue-500">Advertising</a></li>
-                <li><a href="#contact" className="hover:text-blue-500">Contact us</a></li>
-              </ul>
-            </div>
-
-            {/* Explore Links */}
-            <div>
-              <h4 className="text-lg font-medium mb-3">Explore</h4>
-              <ul className="space-y-2">
-                <li><a href="#australia" className="hover:text-blue-500">Australia</a></li>
-                <li><a href="#new-zealand" className="hover:text-blue-500">New Zealand</a></li>
-                <li><a href="#usa" className="hover:text-blue-500">United States of America (USA)</a></li>
-                <li><a href="#greece" className="hover:text-blue-500">Greece</a></li>
-                <li><a href="#maldives" className="hover:text-blue-500">Maldives</a></li>
-                <li><a href="#singapore" className="hover:text-blue-500">Singapore</a></li>
-                <li><a href="#see-more" className="hover:text-blue-500">See more</a></li>
-              </ul>
-            </div>
-
-            {/* Terms and Policies */}
-            <div>
-              <h4 className="text-lg font-medium mb-3">Terms and Policies</h4>
-              <ul className="space-y-2">
-                <li><a href="#privacy-policy" className="hover:text-blue-500">Privacy Policy</a></li>
-                <li><a href="#terms-of-use" className="hover:text-blue-500">Terms of use</a></li>
-                <li><a href="#accessibility" className="hover:text-blue-500">Accessibility</a></li>
-                <li><a href="#reward-policy" className="hover:text-blue-500">Reward system policy</a></li>
-              </ul>
-            </div>
-
-            {/* Help Links */}
-            <div>
-              <h4 className="text-lg font-medium mb-3">Help</h4>
-              <ul className="space-y-2">
-                <li><a href="#support" className="hover:text-blue-500">Support</a></li>
-                <li><a href="#cancel-bookings" className="hover:text-blue-500">Cancel your bookings</a></li>
-                <li><a href="#use-coupon" className="hover:text-blue-500">Use Coupon</a></li>
-                <li><a href="#refund-policies" className="hover:text-blue-500">Refund Policies</a></li>
-                <li><a href="#international-travel-docs" className="hover:text-blue-500">International Travel Documents</a></li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Bottom Bar */}
-          <div className="bg-orange-200 h-2 mt-6"></div>
-        </footer>
+        <Footer />
 
       </main>
     </div>
