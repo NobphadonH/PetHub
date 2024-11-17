@@ -1,23 +1,111 @@
 import Navbar from "./Utils/Navbar";
 import AddRoomsForm from "./Utils/AddRoomsForm";
-import { useState } from 'react';
+import { useState} from 'react';
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Rooms() {
+    const navigate = useNavigate()
+    const location = useLocation()
+
+    const [hotelFormData]= useState(location.state);
+
+    // console.log(location.state)
+
+
     const [forms, setForms] = useState([{ id: 1, image: null }]);
+    const [formData, setFormData] = useState()
+    const [roomFormArray, setRoomFormArray] = useState([]);
+    // const [roomFormArray, setRoomFormArray] = useState(location.state.readyRoomFormArray ? location.state.readyRoomFormArray : {})
+
+    // console.log(location.state.readyRoomFormArray)
+    // const obj = location.state.readyRoomFormArray
+
+    console.log(location.state);
+    // if (location.state.readyRoomFormArray) {
+    //     setRoomFormArray(obj);
+    //     console.log("yay!")
+    // } else {
+    //     console.log("oh")
+    // }
 
     const addForm = () => {
         setForms([...forms, { id: forms.length + 1, image: null }]);
+        setRoomFormArray((prevData) => [...prevData, {}]);
     };
 
     const removeForm = (index) => {
         setForms(forms.filter((_, i) => i !== index));
+        setRoomFormArray((prevData) => prevData.filter((_, i) => i !== index));
+        
     };
 
-    const updateImage = (index, newImage) => {
-        setForms(forms.map((form, i) => 
-            i === index ? { ...form, image: newImage } : form
-        ));
+    const convertFileToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
     };
+    
+    // Convert each image in roomFormArray before navigating
+    const prepareRoomFormArrayForNavigation = async () => {
+        const updatedRoomFormArray = await Promise.all(
+            roomFormArray.map(async (room) => {
+                if (room.selectedImage instanceof File) {
+                    const base64Image = await convertFileToBase64(room.selectedImage);
+                    return { ...room, selectedImage: base64Image };
+                }
+                return room;
+            })
+        );
+        return updatedRoomFormArray;
+    };
+    
+
+
+    const updateImage = (index, newImage) => {
+        setRoomFormArray(prevArray => {
+            const updatedArray = [...prevArray];
+            updatedArray[index] = {
+                ...updatedArray[index],
+                image: newImage
+            };
+            return updatedArray;
+        });
+    };
+
+    const handleChange = (index, data) => {
+        setForms(prevForms => {
+            const updatedForms = [...prevForms];
+            updatedForms[index] = {
+                ...updatedForms[index],
+                ...data
+            };
+            return updatedForms;
+        });
+
+        setRoomFormArray(prevForms => {
+            const updatedForms = [...prevForms];
+            updatedForms[index] = {
+                ...updatedForms[index],
+                ...data
+            };
+            return updatedForms;
+        });
+    };
+    
+
+    const goConfirmPage = async () => {
+        const readyRoomFormArray = await prepareRoomFormArrayForNavigation();
+
+        const hotelAndRoomFormData = {
+            hotelFormData,
+            readyRoomFormArray,
+        };
+        console.log(hotelAndRoomFormData)
+        navigate('/pethub-website/confirm', {state: hotelAndRoomFormData})
+    }
 
     return (
         <div>
@@ -49,7 +137,8 @@ function Rooms() {
                     {forms.map((form, index) => (
                         <div key={form.id}>
                             <AddRoomsForm
-                                image={form.image}
+                                onDataChange={(data) => handleChange(index, data)}
+                                image={roomFormArray[index]?.image || null}
                                 onImageChange={(newImage) => updateImage(index, newImage)}
                             />
                             <button
@@ -71,7 +160,7 @@ function Rooms() {
                     <button className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
                         ขั้นตอนก่อนหน้า
                     </button>
-                    <button className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
+                    <button onClick={goConfirmPage}className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
                         ขั้นตอนต่อไป
                     </button>
                 </div>

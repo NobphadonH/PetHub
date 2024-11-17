@@ -9,6 +9,8 @@ function HostSignUp() {
     email: "",
     firstName: "",
     lastName: "",
+    phoneNumber: "",
+    Address: "",
     password: "",
     confirmPassword: ""
   });
@@ -40,6 +42,8 @@ function HostSignUp() {
       return;
     }
 
+    
+
     console.log("Submitted data:", formData);
   };
 
@@ -48,7 +52,7 @@ function HostSignUp() {
       <ToastContainer position="top-center" autoClose={1000} hideProgressBar />
       <Navbar />
       <div className="absolute top-12 left-0 right-0 bottom-0">
-        <div className="mt-32 lg:mt-0 w-full h-full flex justify-center items-center">
+        <div className="mt-64 md:mt-32 w-full h-full flex justify-center items-center">
           <div className="p-10" style={{ width: "540px" }}>
             <div className="flex items-center justify-center gap-3">
               <h1 className="text-3xl font-bold">
@@ -62,7 +66,7 @@ function HostSignUp() {
               สมัคร Host Account
             </h2>
             <form onSubmit={handleSubmit}>
-              <p className="text-start text-sm my-3">Email</p>
+              <p className="text-start text-sm my-3">อีเมล</p>
               <input
                 type="email"
                 name="email"
@@ -89,22 +93,40 @@ function HostSignUp() {
                 placeholder="นามสกุล"
                 className="input input-bordered w-full bg-gray-100 mb-3"
               />
-              <p className="text-start text-sm my-3">Password</p>
+              <p className="text-start text-sm my-3">เบอร์โทรศัพท์</p>
+              <input
+                type="number"
+                name="phoneNumber"
+                onChange={handleChange}
+                value={formData.phoneNumber}
+                placeholder="เบอร์โทรศัพท์"
+                className="input input-bordered w-full bg-gray-100 mb-3"
+              />
+              <p className="text-start text-sm my-3">ที่อยู่</p>
+              <input
+                type="text"
+                name="Address"
+                onChange={handleChange}
+                value={formData.Address}
+                placeholder="ที่อยู่"
+                className="input input-bordered w-full bg-gray-100 mb-3"
+              />
+              <p className="text-start text-sm my-3">รหัสผ่าน</p>
               <input
                 type="password"
                 name="password"
                 onChange={handleChange}
                 value={formData.password}
-                placeholder="Password"
+                placeholder="รหัสผ่าน"
                 className="input input-bordered w-full bg-gray-100 mb-6"
               />
-              <p className="text-start text-sm my-3">Confirm Password</p>
+              <p className="text-start text-sm my-3">ยืนยันรหัสผ่าน</p>
               <input
                 type="password"
                 name="confirmPassword"
                 onChange={handleChange}
                 value={formData.confirmPassword}
-                placeholder="Confirm Password"
+                placeholder="ยืนยันรหัสผ่าน"
                 className="input input-bordered w-full bg-gray-100 mb-6"
               />
               <button

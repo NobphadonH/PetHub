@@ -2,7 +2,9 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import './index.css'
+import 'rsuite/dist/rsuite-no-reset.min.css';
 import App from './App.jsx'
+import Test from './components/Test.jsx';
 import Profile from './components/Profile.jsx';
 import Home from './components/Home.jsx';
 import Login from './components/Login.jsx';
@@ -17,10 +19,16 @@ import Confirm from './components/Confirm.jsx';
 import Finish from './components/Finish.jsx';
 import RoomsBooking from './components/RoomsBooking.jsx';
 import HotelProfileManagement from './components/HotelProfileManagement.jsx';
+import AddRooms from './components/AddRooms.jsx';
+import RoomManagement from './components/RoomManagement.jsx';
+import Payment from './components/Payment.jsx';
+import HostProfile from './components/HostProfile.jsx';
+
 
 
 const router = createBrowserRouter([
   {path: "/pethub-website", element: <App />,},
+  {path: "/pethub-website/test", element: <Test />,},
   {path: "/pethub-website/profile", element: <Profile />,},
   {path: "/pethub-website/home", element: <Home />,},
   {path: "/pethub-website/signin", element: <Login />,},
@@ -28,17 +36,21 @@ const router = createBrowserRouter([
   {path: "/pethub-website/listhost", element: <ListHost />,},
   {path: "/pethub-website/hostsignup", element: <HostSignUp />,},
   {path: "/pethub-website/basics", element: <Basics />,},
-  {path: "/pethub-website/home/:hotelname", element: <HotelDetail />,},
-  {path: "/pethub-website/home/:hotelname/:roomID", element: <RoomsBooking />,},
+  {path: "/pethub-website/home/:hotelName", element: <HotelDetail />,},
+  {path: "/pethub-website/home/:hotelName/:roomTypeName", element: <RoomsBooking />,},
   {path: "/pethub-website/rooms", element: <Rooms />,},
   {path: "/pethub-website/confirm", element: <Confirm />,},
   {path: "/pethub-website/finish", element: <Finish />,},
   {path: "/pethub-website/petregister", element: <PetRegister />,},
   {path: "/pethub-website/hotel-profile", element: <HotelProfileManagement /> },
+  {path: "/pethub-website/addrooms", element: <AddRooms />,},
+  {path: "/pethub-website/hostprofile/:roomID", element: <RoomManagement />,},
+  {path: "/pethub-website/payment", element: <Payment />,},
+  {path: "/pethub-website/hostprofile", element: <HostProfile />,},
 ]);
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <RouterProvider router={router}/>
-  </StrictMode>,
+  // <StrictMode>
+  // </StrictMode>,
+  <RouterProvider router={router}/>
 )

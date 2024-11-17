@@ -1,5 +1,6 @@
 import { connectToDatabase } from "../utils/dbConnection.js";
 import { uploadFileToS3, downloadFileFromS3 } from "../utils/s3FileTransfer.js";
+import jwt from "jsonwebtoken";
 import fs from 'fs'
 
 export const getHotelByID = async (req, res) => {
@@ -63,12 +64,41 @@ export const getHotelByVerification = async (req, res) => {
 
             connection.query("SELECT * FROM Hotels WHERE verification = ?", 
                 [verification],
-                (err, rows) => {
+                async (err, rows) => {
                 if (err) throw err;
 
-                res.status(200).send(rows)
-                connection.release()
-                sshClient.end()
+                const hotelsDataWithPhoto = [];
+
+                try {
+                    // Use a for...of loop with await to ensure the photos are downloaded sequentially
+                    for (let hotelData of rows) {
+                        const imageKey = hotelData.hotelPhoto;
+                
+                        // Wait for the download to complete before moving to the next
+                        const photoData = await downloadFileFromS3(imageKey);
+                        const hotelPhotoBuffer = photoData.Body;
+                        const hotelPhotoFile = `data:${photoData.ContentType};base64,${hotelPhotoBuffer.toString('base64')}`;
+                        
+                        // Add the photo data to the hotel data
+                        hotelData.hotelPhoto = hotelPhotoFile;
+                        
+                        // Push the modified hotel data into the result array
+                        hotelsDataWithPhoto.push(hotelData);
+                    }
+                
+                    // Send the response after all photos are processed
+                    res.status(200).json(hotelsDataWithPhoto);
+                    connection.release()
+                    sshClient.end()
+                } catch (error) {
+                    // Catch and handle any errors that occur during the process
+                    console.error("Error downloading photos:", error);
+                    if (!res.headersSent) {
+                        res.status(500).json({ error: 'Failed to download photo from S3', details: error.message });
+                        connection.release()
+                        sshClient.end()
+                    }
+                }
             })
         })
     } catch (error) {
@@ -109,15 +139,19 @@ export const verifyHotel = async (req, res) => {
 
 export const createHotel = async (req, res) => {
     try {
-        const {hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, checkInFrom, checkOutUntil, selectedImage} = req.body
+        const {hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, selectedImage, mapLat, mapLong} = req.body
         const filePath = req.file.path
         const fileName = req.file.filename
         const fileContent = fs.readFileSync(filePath)
 
-        // res.status(200);
+        // const token = req.cookies.jwt
+        // const payload = jwt.verify(token, "Bhun-er");
+        // const userID = payload["userID"];
+
+        const userID = req.user.userID
+
+
         console.log(req.body)
-        // console.log(req.file)
-        // return;
         const { dbpool, sshClient } = await connectToDatabase();
 
         uploadFileToS3(fileName, fileContent, req.file.mimetype).then((url) => {
@@ -129,18 +163,20 @@ export const createHotel = async (req, res) => {
                     sshClient.end();
                     return;
                 }
-                const mapLat = "20"
-                const mapLong = "30"
-                const query = `INSERT INTO Hotels (hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, mapLat, mapLong,
-                checkInFrom, checkOutUntil, hotelPhoto, verification) 
+
+                const query = `INSERT INTO Hotels (hotelName, userID, hotelType, hotelDescription, hotelPolicy, hotelAddress, district, mapLat, mapLong,
+                 hotelPhoto, verification) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
                 connection.query(
                     query,
-                    [hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, mapLat, mapLong, checkInFrom, checkOutUntil, url, "unverified"],
+                    [hotelName, hotelType, userID, hotelDescription, hotelPolicy, hotelAddress, district, mapLat, mapLong,  url, "unverified"],
                     (err, results) => {
                         if (err) throw err
                         console.log(results)
+                        res.status(200).json({hotelID: results.insertId})
+                        connection.release()
+                        sshClient.end()
                     }
                 )
 
@@ -151,9 +187,20 @@ export const createHotel = async (req, res) => {
         })
 
 
+        // Step 4: Delete the file from the local uploads folder after upload
+        const localFilePath = `uploads/${fileName}`;
+        fs.unlink(localFilePath, (err) => {
+            if (err) {
+                console.log('Error deleting the local file:', err);
+            } else {
+                console.log('Local file deleted successfully.');
+            }
+        });
+
 
     } catch (error) {
         console.log("Error in hotel controller", error.message);
         res.status(500).json({ error: "Internal Server Error" }); 
     }
 }
+

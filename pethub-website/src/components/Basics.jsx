@@ -1,7 +1,10 @@
 import Navbar from "./Utils/Navbar"
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import PointerLocation from "./Utils/PointerLocation";
 import axios from 'axios'
+import Cookies from "js-cookie";
+
 
 function PictureUpload({onImageSelected}) {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -85,9 +88,9 @@ function TypeChoiceBoxes({onSelectType}) {
         }
     ];
 
-    const handleSelect = (optionId) => {
-        setSelected(optionId);
-        onSelectType(optionId);
+    const handleSelect = (optionTitle) => {
+        setSelected(optionTitle);
+        onSelectType(optionTitle);
     };
 
     return (
@@ -96,14 +99,14 @@ function TypeChoiceBoxes({onSelectType}) {
                 <div
                     key={option.id}
                     className={`col-span-1 bg-white border p-6 rounded-xl drop-shadow-md cursor-pointer ${
-                        selected === option.id ? 'border-pethub-color4' : 'border-neutral-100'
+                        selected === option.title ? 'border-pethub-color4' : 'border-neutral-100'
                     }`}
-                    onClick={() => handleSelect(option.id)}
+                    onClick={() => handleSelect(option.title)}
                 >
                     <div className="grid grid-cols-6 gap-2">
                         <div className="col-start-1 col-span-1 flex items-center">
                             <div className={`w-4 h-4 rounded-full ${
-                                selected === option.id ? 'bg-pethub-color4' : 'bg-gray-300'
+                                selected === option.title ? 'bg-pethub-color4' : 'bg-gray-300'
                             }`}></div>
                         </div>
                         <div className="col-start-2 col-span-5">
@@ -120,6 +123,7 @@ function TypeChoiceBoxes({onSelectType}) {
 function Basics() {
 
     const navigate = useNavigate();
+    const [pointerLocation, setPointerLocation] = useState({ lon: 100.56, lat: 13.74 });
    
     const [formData, setFormData] = useState({
         hotelName: "",
@@ -129,13 +133,23 @@ function Basics() {
         district: "",
         hotelType: null,
         selectedImage: null, // For the image
-        checkInFrom: "15:00",     //temporary for test
-        checkOutUntil: "11:00"
+        cookies: Cookies.get("user-auth")
     })
+
+
+    const convertFileToBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+    };
 
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
+        // console.log(pointerLocation);
         setFormData((values) => ({
             ...values,
             [name]: value,
@@ -158,11 +172,23 @@ function Basics() {
 
 
 
-    const goAddRoomsPage = () => {
-        // You can pass the formData as state when navigating
+    const goAddRoomsPage = async () => {
+        // Prepare hotelFormData with base64 if selectedImage is present
         console.log(formData);
-        // navigate("/pethub-website/rooms", { state: formData });
+        const hotelFormData = {
+            ...formData,
+            mapLat: pointerLocation.lat,
+            mapLong: pointerLocation.lon,
+            selectedImage: formData.selectedImage 
+                ? await convertFileToBase64(formData.selectedImage) 
+                : null,
+        };
+    
+        // Navigate to the next page with hotelFormData
+        navigate("/pethub-website/rooms", { state: hotelFormData });
     };
+
+
 
     const testAddHotel = async () => {
         const data = new FormData()
@@ -174,13 +200,15 @@ function Basics() {
         data.append('hotelType', formData.hotelType);
         data.append('checkInFrom', formData.checkInFrom);
         data.append('checkOutUntil', formData.checkOutUntil);
+        data.append('mapLat', pointerLocation.lat);
+        data.append('mapLong', pointerLocation.lon);
         if (formData.selectedImage) {
             data.append('selectedImage', formData.selectedImage, formData.selectedImage.name);
         }
 
         console.log(formData)
         try{
-            const res = axios.post('http://localhost:5000/api/hotel/createHotel/', data, {headers:{"Contetnt-Type":"multipart/form-data" }})
+            const res = axios.post('http://localhost:5000/api/hotel/createHotel/', data, {headers:{"Content-Type":"multipart/form-data" }})
             console.log(res.data)
             console.log(res.status)
             // console.log(formData)
@@ -207,15 +235,15 @@ function Basics() {
         <div>
             <Navbar />
             <div className="flex flex-col mt-24">
-                <div className="text-black font-bold text-3xl mt-4">ลงทะเบียนโรงแรมสัตว์เลี้ยงของคุณให้สมบูรณ์แบบบน PetHub</div>
+                <div className="text-black font-bold text-[3vw] md:text-2xl lg:text-3xl mt-4">ลงทะเบียนโรงแรมสัตว์เลี้ยงของคุณให้สมบูรณ์แบบบน PetHub</div>
                 <div className="flex justify-center">
                     <div className="max-w-xl mx-auto">
-                        <div className="text-gray-800 text-base mt-4">
+                        <div className="text-gray-800 text-xs lg:text-base mt-4">
                             กรุณากรอกแบบฟอร์มด้านล่าง ข้อมูลทุกช่องจำเป็นต้องกรอก
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col w-1/2 bg-white border border-neutral-100 drop-shadow-xl p-8 rounded-3xl mt-8 mx-auto">
+                <div className="flex flex-col w-4/5 lg:w-1/2 bg-white border border-neutral-100 drop-shadow-xl p-8 rounded-3xl mt-8 mx-auto">
                     <div className="flex justify-center items-center">
                         <ul className="steps w-full max-w-2xl mt-2">
                             <li className="step step-accent text-gray-800 text-sm">ข้อมูลทั่วไป</li>
@@ -267,6 +295,14 @@ function Basics() {
                                 </select>
                             </label>
                         </div>
+                        <div className="w-full h-80 my-8 rounded-md">
+                        <div className="text-left text-black text-base mb-2">ปักหมุดตำแหน่งโรงแรมของคุณแบนแผนที่</div>
+                        <PointerLocation
+                            pointerLocation={pointerLocation}
+                            setPointerLocation={setPointerLocation}
+                        />
+                        </div>
+
                         <div className="text-left text-black font-bold text-xl mt-12">ใส่รูปของโรงแรมของคุณ</div>
                         <div className="text-left text-gray-600 text-sm mt-2 mb-4">ใส่รูปเพื่อให้ลูกค้าเห็นภาพบรรยากาศของโรงแรม</div>
                         <PictureUpload onImageSelected={handleImageChange}/>
@@ -274,7 +310,7 @@ function Basics() {
                     </div>
                 </div>
                 <div className="flex justify-end items-center w-full max-w-3xl -mt-4 mb-4 p-6 mx-auto">
-                    <button onClick={testAddHotel} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
+                    <button onClick={goAddRoomsPage} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
                         ขั้นตอนต่อไป
                     </button>
                 </div>

@@ -3,8 +3,12 @@ import logo from "../../public/logo.svg";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 function Login() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,7 +22,7 @@ function Login() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
@@ -31,8 +35,28 @@ function Login() {
       toast.error("Please enter a valid email address.");
       return;
     }
-
+    try {
+      // Send POST request to the Node.js API endpoint
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/signin",
+        formData,
+        {withCredentials: true}
+      );
+      toast.success("Signin successful");
+      console.log("Response:", response.data);
+      if (response.status == 200) {
+        Cookies.set("user-auth", response.data["token"]);
+        navigate("/pethub-website/Home");
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.error || "Login failed");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    }
   };
+
   console.log(formData);
   return (
     <>
@@ -44,17 +68,17 @@ function Login() {
             <div className=" flex items-center justify-center gap-3">
               <h1 className="text-3xl font-bold">
                 ยินดีต้อนรับสู่{" "}
-                <span className="text-pethub-color1">Pethub</span>
+                <span className="text-pethub-color1">PET HUB</span>
               </h1>
               <span className="lg:inline-flex items-center hidden ">
                 <img src={logo} alt="logo" width={30} />
               </span>
             </div>
             <h2 className=" font-medium mt-10 mb-5">
-              เข้าสู๋ระบบด้วย Pethub account
+              เข้าสู๋ระบบด้วย PET HUB account
             </h2>
             <form onSubmit={handleSubmit}>
-              <p className="text-start text-sm my-3">Email</p>
+              <p className="text-start text-sm my-3">อีเมล</p>
               <input
                 type="email"
                 name="email"
@@ -63,13 +87,13 @@ function Login() {
                 placeholder="example@gmail.com"
                 className="input input-bordered w-full bg-gray-100 mb-3"
               />
-              <p className="text-start text-sm my-3">Password</p>
+              <p className="text-start text-sm my-3">รหัสผ่าน</p>
               <input
                 type="password"
                 name="password"
                 onChange={handleChange}
                 value={formData.password}
-                placeholder="Password"
+                placeholder="รหัสผ่าน"
                 className="input input-bordered w-full bg-gray-100 mb-6"
               />
               <button

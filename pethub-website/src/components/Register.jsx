@@ -2,17 +2,23 @@ import { useState } from 'react';
 import Navbar from './Utils/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
 function Register() {
+
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    fName: '',
+    lName: '',
     email: '',
     phone: '',
     password: '',
     confirmPassword: '',
-    address: ''
+    address: '',
+    userRole: 'Client'
   });
+ 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +28,7 @@ function Register() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
     // Check for blank fields
@@ -49,6 +55,21 @@ function Register() {
     // If validation passes, proceed with submission logic
     console.log('Registration Data:', formData);
     // Add API call or other registration logic here
+    try {
+      // Send POST request to the Node.js API endpoint
+      const response = await axios.post('http://localhost:5000/api/auth/signup', formData, { withCredentials: true });
+      toast.success("Signup successful");
+      console.log("Response:", response.data);
+      navigate('/pethub-website/signin');
+    }
+    catch (error) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.error || "Signup failed");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    }
+  
   };
 
   return (
@@ -70,8 +91,8 @@ function Register() {
                   <p className="text-start text-sm mb-3">ชื่อ</p>
                   <input
                     type="text"
-                    name="firstName"
-                    value={formData.firstName}
+                    name="fName"
+                    value={formData.fName}
                     onChange={handleChange}
                     className="input input-bordered w-full bg-gray-100 mb-3"
                   />
@@ -80,14 +101,14 @@ function Register() {
                   <p className="text-start text-sm mb-3">นามสกุล</p>
                   <input
                     type="text"
-                    name="lastName"
-                    value={formData.lastName}
+                    name="lName"
+                    value={formData.lName}
                     onChange={handleChange}
                     className="input input-bordered w-full bg-gray-100 mb-3"
                   />
                 </div>
                 <div className="col-span-2 md:col-span-1">
-                  <p className="text-start text-sm mb-3">Email</p>
+                  <p className="text-start text-sm mb-3">อีเมล</p>
                   <input
                     type="email"
                     name="email"
@@ -108,7 +129,7 @@ function Register() {
                   />
                 </div>
                 <div className="col-span-2 md:col-span-1">
-                  <p className="text-start text-sm mb-3">Password</p>
+                  <p className="text-start text-sm mb-3">รหัสผ่าน</p>
                   <input
                     type="password"
                     name="password"
@@ -118,7 +139,7 @@ function Register() {
                   />
                 </div>
                 <div className="col-span-2 md:col-span-1">
-                  <p className="text-start text-sm mb-3">Confirm Password</p>
+                  <p className="text-start text-sm mb-3">ยืนยันรหัสผ่าน</p>
                   <input
                     type="password"
                     name="confirmPassword"

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 function HotelRecommendLoading() {
     return (
         <div className="w-[40vw] md:w-[300px] h-full bg-white border-2 rounded-lg p-[2vw] md:p-3 flex flex-col justify-between items-center">

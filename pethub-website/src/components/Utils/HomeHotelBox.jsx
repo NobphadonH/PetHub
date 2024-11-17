@@ -1,14 +1,36 @@
 /* eslint-disable react/prop-types */
+import { useNavigate } from "react-router-dom";
+
 function HomeHotelBox({ 
+    hotelObj,
     hotelName, 
-    roomInfo, 
     reviews, 
     rating, 
     description, 
     price, 
     imageUrl,
     petType,
+    checkIn,
+    checkOut
   }) {
+
+    const navigate = useNavigate()
+
+    const petIcon = {"สุนัข": "🐶", "แมว":"🐱", "อื่น ๆ":"🫎"}
+
+    const goHotelDetail = () => {
+      if (checkIn && checkOut) {
+        const hotelData = {
+          ...hotelObj,
+          checkIn,
+          checkOut
+        }
+        navigate(`/pethub-website/home/${hotelName}`, {state: hotelData})
+      } else {
+        console.log("please select check in and check out date")
+      }
+    }
+
     return (
       <div className="bg-white mx-auto w-full md:w-[350px] lg:w-[940px] xl:w-[1040px] h-[60vw] md:h-[480px] lg:h-[320px] border-2 lg:mx-auto rounded-md p-2 md:p-4 lg:p-8 flex lg:gap-10 flex-col lg:flex-row">
         <div className="w-full lg:w-[340px] h-[260px] bg-slate-200 rounded-md flex justify-center items-center text-gray-400">
@@ -17,7 +39,7 @@ function HomeHotelBox({
         <div className="text-start flex flex-col justify-between max-md:gap-0 max-lg:gap-5">
           <div className="px-3 my-1 md:my-5 lg:my-3 max-w-[550px]">
             <h1 className="mt-2 text-[3vw] md:text-2xl transition-all duration-300 ease-in-out max-lg:line-clamp-1 max-lg:overflow-hidden">
-              {hotelName} <span className="text-[2vw] md:text-lg">{roomInfo}</span>
+              {hotelName} 
             </h1>
             <div className="flex lg:my-5 gap-1 items-center">
               {Array.from({ length: rating }).map((_, index) => (
@@ -26,7 +48,7 @@ function HomeHotelBox({
                 </svg>
               ))}
               <div className="max-md:text-[2vw] ml-1 md:ml-3">
-                {rating} ({reviews} Reviews)
+                {parseFloat(rating).toFixed(2)} ({reviews} Reviews)
               </div>
             </div>
             <p className="text-[1.5vw] md:text-sm lg:pr-20 text-gray-400 transition-all duration-300 ease-in-out max-lg:line-clamp-2 max-lg:overflow-hidden">
@@ -35,12 +57,12 @@ function HomeHotelBox({
           </div>
           <div className="p-2 md:px-3 flex justify-between items-center">
             <div className="flex items-center gap-3">
-                <a href={`/pethub-website/home/${hotelName}`} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-[17vw] max-md:text-[2vw] h-[7vw] md:w-32 font-medium">
-                <a href={`/pethub-website/home/${hotelName}`}>รายละเอียด</a>
-                </a>
+                <button onClick={goHotelDetail} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-[17vw] max-md:text-[2vw] h-[7vw] md:w-32 font-medium">
+                รายละเอียด
+                </button>
                 <div className="max-lg:hidden flex gap-2">
                     {petType.map((pet, index) => (
-                        <div key={index} className="text-2xl">{pet}</div>
+                        <div key={index} className="text-2xl"> {petIcon[pet]}</div>
                     ))}
                 </div>
             </div>
