@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 export default function Navbar() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null); // Ref to track dropdown element
+    const [isLogin, setIsLogin] = useState(false)
 
     const toggleDropdown = () => {
         setIsDropdownOpen((prev) => !prev);
@@ -68,10 +69,33 @@ export default function Navbar() {
                 </div>
 
                 <div className="navbar-end">
-                    <ul className="flex gap-10 px-1 items-center">
-                        <li><a href="/pethub-website/hostsignup" className="text-pethub-color6 hidden xl:block">มาเป็น partner กับเรา</a></li>
-                        <li><a href="/pethub-website/signin" className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-[20vw] max-sm:text-[3vw] max-md:text-[2vw] h-[10vw] md:w-28 max-w-28 max-h-12 font-medium">Sign in</a></li>
-                    </ul>
+                    {isLogin ? 
+                    <div>
+                        <ul className="flex gap-10 px-1 items-center">
+                            <li><a href="/pethub-website/hostsignup" className="text-pethub-color6 hidden xl:block">มาเป็น partner กับเรา</a></li>
+                            <li><a href="/pethub-website/signin" className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-[20vw] max-sm:text-[3vw] max-md:text-[2vw] h-[10vw] md:w-28 max-w-28 max-h-12 font-medium">Sign in</a></li>
+                        </ul>
+                    </div>
+                    :
+                    <div>
+                        <ul className="flex gap-10 px-1 items-center">
+
+                            <div className='cursor-pointer flex items-center gap-4 max-md:hidden'>
+                                <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-person-circle" viewBox="0 0 16 16">
+                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                <path fillRule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                                </svg>
+                                </div>
+                                <div>Chatchanan Boonpa</div>
+                            </div>
+                            <div className='cursor-pointer flex'>
+                                <div className='md:text-sm'>logout</div>
+                            </div>
+                        </ul>
+                    </div>
+                    
+                    }
                 </div>
             </div>
         </div>
