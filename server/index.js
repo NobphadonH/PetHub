@@ -3,13 +3,13 @@ import cors from "cors";
 import authRoutes from "./routes/auth.route.js";
 import petRoutes from "./routes/pet.route.js";
 import hotelRoutes from "./routes/hotel.route.js";
-import creditCardRoutes from "./routes/creditCard.route.js";
 import userRoutes from "./routes/user.route.js";
 import roomSearchRoutes from "./routes/roomSearch.route.js";
 import bookingRoutes from "./routes/booking.route.js";
 import roomRoutes from "./routes/room.route.js"
 import getHotelProfileRoutes from "./routes/getHotelProfile.route.js";
 import roomManageRoutes from "./routes/roomManage.route.js";
+import paymentRoutes from "./routes/payment.route.js"
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -33,7 +33,6 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/pet", petRoutes);
 app.use("/api/hotel", hotelRoutes);
-app.use("/api/creditCard", creditCardRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/roomSearch", roomSearchRoutes);
 app.use("/api/booking", bookingRoutes);
