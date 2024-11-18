@@ -33,17 +33,17 @@ const router = createBrowserRouter([
   {path: "/pethub-website/home", element: <Home />,},
   {path: "/pethub-website/signin", element: <Login />,},
   {path: "/pethub-website/signup", element: <Register />,},
-  {path: "/pethub-website/listhost", element: <ListHost />,},
+  {path: "/pethub-website/listhost", element: <ListHost />,},  //need responsive
   {path: "/pethub-website/hostsignup", element: <HostSignUp />,},
   {path: "/pethub-website/basics", element: <Basics />,},
-  {path: "/pethub-website/home/:hotelName", element: <HotelDetail />,},
+  {path: "/pethub-website/home/:hotelName", element: <HotelDetail />,}, 
   {path: "/pethub-website/home/:hotelName/:roomTypeName", element: <RoomsBooking />,},
   {path: "/pethub-website/rooms", element: <Rooms />,},
-  {path: "/pethub-website/confirm", element: <Confirm />,},
-  {path: "/pethub-website/finish", element: <Finish />,},
+  {path: "/pethub-website/confirm", element: <Confirm />,},  //need responsive
+  {path: "/pethub-website/finish", element: <Finish />,}, //need responsive
   {path: "/pethub-website/petregister", element: <PetRegister />,},
-  {path: "/pethub-website/hotel-profile", element: <HotelProfileManagement /> },
-  {path: "/pethub-website/addrooms", element: <AddRooms />,},
+  {path: "/pethub-website/hotel-profile", element: <HotelProfileManagement /> }, 
+  {path: "/pethub-website/addrooms", element: <AddRooms />,},  //need responsive
   {path: "/pethub-website/hostprofile/:roomID", element: <RoomManagement />,},
   {path: "/pethub-website/payment", element: <Payment />,},
   {path: "/pethub-website/hostprofile", element: <HostProfile />,},
