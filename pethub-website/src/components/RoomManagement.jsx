@@ -75,10 +75,87 @@ function RoomManagement() {
         return dates;
     }
       
-
     const handleBookingClick = (booking) => {
         setSelectedBooking(booking);
-        setAllDatesBetweenBookings(getDatesBetween(booking.checkInDate, booking.checkOutDate))} 
+        setAllDatesBetweenBookings(getDatesBetween(booking.checkInDate, booking.checkOutDate))}
+
+    const handleApproveBooking = async (bookingID) => {
+        try {
+            // Updated API endpoint to match the backend route
+            const response = await axios.put(`http://localhost:5000/api/roomManage/bookings/${bookingID}/status`, {status: 'Waiting for payment'});
+                
+            if (response.status === 200) {
+                // Update the local state to reflect the change
+                setBookingDetails(prevBookings => 
+                    prevBookings.map(booking => 
+                        booking.bookingID === bookingID 
+                            ? {...booking, bookingStatus: 'Waiting for payment'}
+                            : booking
+                    )
+                );
+        
+                // Update selectedBooking if it's the one being modified
+                if (selectedBooking?.bookingID === bookingID) {
+                    setSelectedBooking(prev => ({...prev, bookingStatus: 'Waiting for payment'}));
+                }
+        
+                // Optional: Show success message
+                alert('Booking has been approved successfully');
+                    
+                // Optionally refresh the data
+                const refreshResponse = await axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`);
+                if (refreshResponse.data) {
+                    setRoomDetails(refreshResponse.data);
+                    setBookingDetails(refreshResponse.data.bookings || []);
+                    if (refreshResponse.data.bookings && refreshResponse.data.bookings.length > 0) {
+                        setSelectedBooking(refreshResponse.data.bookings[0]);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Error updating booking status:", error);
+            alert(`Failed to approve booking: ${error.message}`);
+        }
+    };
+
+    const handleRejectBooking = async (bookingID) => {
+        try {
+            // Send a request to update the booking status to "Canceled"
+            const response = await axios.put(`http://localhost:5000/api/roomManage/bookings/${bookingID}/status`, {status: 'Canceled'});
+    
+            if (response.status === 200) {
+                // Update the local state to reflect the change
+                setBookingDetails(prevBookings => 
+                    prevBookings.map(booking => 
+                        booking.bookingID === bookingID 
+                            ? {...booking, bookingStatus: 'Canceled'}
+                            : booking
+                    )
+                );
+    
+                // Update selectedBooking if it's the one being modified
+                if (selectedBooking?.bookingID === bookingID) {
+                    setSelectedBooking(prev => ({...prev, bookingStatus: 'Canceled'}));
+                }
+    
+                // Optional: Show success message
+                alert('Booking has been rejected successfully.');
+    
+                // Optionally refresh the data
+                const refreshResponse = await axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`, {status: 'Canceled'});
+                if (refreshResponse.data) {
+                    setRoomDetails(refreshResponse.data);
+                    setBookingDetails(refreshResponse.data.bookings || []);
+                    if (refreshResponse.data.bookings && refreshResponse.data.bookings.length > 0) {
+                        setSelectedBooking(refreshResponse.data.bookings[0]);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Error updating booking status:", error);
+            alert(`Failed to reject booking: ${error.message}`);
+        }
+    };
 
     useEffect(() => {
         console.log("roomTypeID:", roomTypeID);
@@ -160,7 +237,7 @@ function RoomManagement() {
                                 <span>{booking.bookingID}</span>
                                  
                             </div>
-                            <div>วันที่จอง: {formatDate(booking.paymentDate) || 'ยังไม่จ่าย'}</div>
+                            <div>วันที่จอง: {formatDate(booking.paymentDate) || '-'}</div>
                         </div>
                         <div className="flex justify-start gap-5">
                             <div>สถานะ: <span className={`font-normal ${booking.bookingStatus === 'confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{booking.bookingStatus}</span></div>
@@ -283,7 +360,19 @@ function RoomManagement() {
             </div>
             <div className="my-[2vw] md:my-4 w-full flex justify-end gap-5">
                 <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color6 md:bg-pethub-color6 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-40 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">ปฎิเสธการอนุมัติ</div>
-                <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-24 sm:h-10 md:w-28 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">อนุมัติ</div>
+                <div className="my-[2vw] md:my-4 w-full flex justify-end gap-5">
+                    {selectedBooking?.bookingStatus?.toLowerCase() === 'Pending'.toLowerCase() && (
+                        <>
+                            <div  
+                            onClick={() => handleRejectBooking(selectedBooking?.bookingID)}
+                            className="flex justify-center items-center rounded-md md:btn bg-pethub-color6 md:bg-pethub-color6 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-40 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">
+                            ปฎิเสธการอนุมัติ</div>
+                            <div 
+                            onClick={() => handleApproveBooking(selectedBooking?.bookingID)}
+                            className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-24 sm:h-10 md:w-28 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base cursor-pointer"
+                            >อนุมัติ</div>
+                    </>
+                    )}</div>
             </div>
         </div>
      </div>
