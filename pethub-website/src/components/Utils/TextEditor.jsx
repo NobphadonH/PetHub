@@ -8,6 +8,8 @@ const QuillEditor = () => {
   const [readOnly, setReadOnly] = useState(false); // State to toggle read-only mode
   const [htmlContent, setHtmlContent] = useState(""); // State to store raw HTML content
 
+  console.log(htmlContent)
+
   useEffect(() => {
     // Initialize Quill only once, when the component mounts
     quillInstance.current = new Quill(quillRef.current, {
