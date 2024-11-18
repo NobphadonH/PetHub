@@ -6,7 +6,7 @@ const QuillEditor = () => {
   const quillRef = useRef(null); // Reference to attach the editor to
   const quillInstance = useRef(null); // Store the Quill instance
   const [readOnly, setReadOnly] = useState(false); // State to toggle read-only mode
-  const [htmlContent, setHtmlContent] = useState(""); // State to store raw HTML content
+  const [htmlContent, setHtmlContent] = useState(``); // State to store raw HTML content
 
   console.log(htmlContent)
 
