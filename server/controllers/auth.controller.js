@@ -14,9 +14,9 @@ export const signin = async (req, res) => {
         return;
       }
 
-      // Update the query to check for either username or email
+      // Update the query to fetch fName and lName
       connection.query(
-        "SELECT * FROM Users WHERE (email = ?)",
+        "SELECT userID, userRole, fName, lName, password FROM Users WHERE email = ?",
         [email],
         async (err, rows) => {
           if (err) throw err;
@@ -42,8 +42,7 @@ export const signin = async (req, res) => {
           }
 
           // Login successful, generate token and set cookie
-          const userID = user["userID"];
-          const userRole = user["userRole"]; // Retrieve userRole from query result
+          const { userID, userRole, fName, lName } = user;
 
           const token = jwt.sign({ userID, userRole }, "Bhun-er", {
             expiresIn: "15d",
@@ -58,7 +57,7 @@ export const signin = async (req, res) => {
               secure: process.env.NODE_ENV !== "development",
             })
             .status(200)
-            .json({ token, userRole }); // Add userRole to response
+            .json({ token, userRole, fName, lName }); // Include fName and lName in response
 
           connection.release(); // Release the connection back to the pool
           sshClient.end();
@@ -71,6 +70,7 @@ export const signin = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 export const signout = (req, res) => {
   try {

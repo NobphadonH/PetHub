@@ -115,25 +115,30 @@ function Profile() {
         <div className="w-full flex justify-between items-center">
           <div className="text-[3vw] md:text-lg lg:text-2xl xl:text-3xl font-bold text-pethub-color6">สัตว์เลี้ยง<span className="text-pethub-color1">ของฉัน</span></div>
         </div>
-        <div className="my-[4vw] md:my-5 lg:my-10 max-h-[300px] md:max-h-[500px] overflow-y-scroll hide-scrollbar flex flex-col gap-5">
+        {Array.from({ length: 3 }).map((_, index) => (
+        <div key={index} className="my-[4vw] md:my-5 lg:my-10 max-h-[300px] md:max-h-[500px] overflow-y-scroll hide-scrollbar flex flex-col gap-5">
           <div className="w-full h-[26vw] md:h-52 lg:h-60 xl:h-72 rounded-md p-[1vw] md:p-3 border-[1px] flex gap-[1vw] md:gap-5">
             <div className="w-[240px] lg:w-[300px] xl:w-[350px] h-full bg-slate-100 rounded-md overflow-hidden">
-              <img src="https://s.isanook.com/ca/0/ui/285/1425207/staywithnoppo-20240522_152537-446114668_721839553257673_573084092354014144_n.jpeg" className=" object-cover" alt="" />
+              <img src="https://s.isanook.com/ca/0/ui/285/1425207/staywithnoppo-20240522_152537-446114668_721839553257673_573084092354014144_n.jpeg" className="object-cover" alt="" />
             </div>
             <div className="w-[600px] lg:grow flex flex-col p-[1vw] md:p-3 lg:p-5 pb-0 justify-between">
               <div className="flex flex-wrap justify-between text-[2vw] md:text-base lx:text-lg font-semibold text-pethub-color6">
-                <div>ชื่อ: <span className="text-pethub-color1">นปโปะ</span> </div>
+                <div>ชื่อ: <span className="text-pethub-color1">นปโปะ</span></div>
                 <div>อายุ: <span className="text-pethub-color1">1 ปี 2 เดือน</span></div>
                 <div>ประเภท: <span className="text-pethub-color1">สุนัข</span></div>
                 <div>เพศ: <span className="text-pethub-color1">เพศผู้</span></div>
               </div>
               <div>
                 <p className="text-start font-semib text-[2vw] md:text-xs xl:text-sm my-1 lg:my-3">คำอธิบายลักษณะเพิ่มเติม</p>
-                <p className="overflow-y-scroll hide-scrollbar rounded-md w-full h-[15vw] md:h-20 lg:h-28 xl:h-36 bg-slate-100 p-[1vw] md:p-2 lg:p-4 round-md text-start text-[2vw] md:text-xs xl:text-sm my-1 lg:my-3">นปโปะหม่ำๆ หม่ำๆ กู๊ดบอย กู๊ดบอยหม่ำๆ หม่ำๆ เก่งมาก นปโปะหม่ำๆ หม่ำๆ กู๊ดบอย กู๊ดบอยหม่ำๆ หม่ำๆ เก่งมาก</p>
+                <p className="overflow-y-scroll hide-scrollbar rounded-md w-full h-[15vw] md:h-20 lg:h-28 xl:h-36 bg-slate-100 p-[1vw] md:p-2 lg:p-4 round-md text-start text-[2vw] md:text-xs xl:text-sm my-1 lg:my-3">
+                  นปโปะหม่ำๆ หม่ำๆ กู๊ดบอย กู๊ดบอยหม่ำๆ หม่ำๆ เก่งมาก นปโปะหม่ำๆ หม่ำๆ กู๊ดบอย กู๊ดบอยหม่ำๆ หม่ำๆ เก่งมาก
+                </p>
               </div>
             </div>
           </div>
         </div>
+      ))}
+
         <div className="w-full flex justify-end">
           <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-28 lg:w-32 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">เพิ่มสัตว์เลี้ยง</div>
         </div>
