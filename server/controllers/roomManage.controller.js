@@ -23,17 +23,19 @@ export const getRoomDetails = async (req, res) => {
         // Query to get bookings associated with this room (with pet details from the booking)
         const bookingQuery = `
             SELECT 
-                B.bookingID, B.checkInDate, B.checkOutDate, B.bookingStatus, B.paymentStatus, B.paymentDate,
+                B.bookingID, B.checkInDate, B.checkOutDate, B.bookingStatus, P.paymentStatus, P.paymentDate,
                 U.fName AS bookerFirstName, U.lName AS bookerLastName, U.phone AS bookerPhone,
                 B.petID
             FROM 
                 Bookings B
             JOIN 
                 Users U ON B.userID = U.userID
+            LEFT JOIN 
+                Payments P ON B.bookingID = P.bookingID
             WHERE 
                 B.roomTypeID = ?
             ORDER BY 
-                B.checkInDate DESC
+                B.bookingID DESC
         `;
 
         // Fetch room details
@@ -105,54 +107,84 @@ export const getRoomDetails = async (req, res) => {
     });
 };
 
-// Function to update room details
-export const updateRoomDetails = async (req, res) => {
-    const { roomTypeID } = req.params;
-    const {
-        roomTypeName,
-        roomSize,
-        petAllowedType,
-        pricePerNight,
-        roomPhoto,
-    } = req.body;
-
+export const updateBookingStatus = async (req, res) => {
+    const { bookingID } = req.params; // Get the booking ID from the URL
+    const { status } = req.body; // Get the new status from the request body
+    
     try {
         const { dbpool, sshClient } = await connectToDatabase();
         const connection = await dbpool.promise().getConnection();
 
         try {
-            // Update query
-            const updateQuery = `
-                UPDATE RoomTypes
-                SET 
-                    roomTypeName = ?,
-                    roomSize = ?,
-                    petAllowedType = ?,
-                    pricePerNight = ?,
-                    roomPhoto = ?
-                WHERE 
-                    roomTypeID = ?
-            `;
-
-            const [result] = await connection.query(updateQuery, [
-                roomTypeName,
-                roomSize,
-                petAllowedType,
-                pricePerNight,
-                roomPhoto,
-                roomTypeID,
-            ]);
+            // Update the booking status in the database
+            const [result] = await connection.query(
+                `UPDATE Bookings SET bookingStatus = ? WHERE bookingID = ?`,
+                [status, bookingID]
+            );
 
             if (result.affectedRows === 0) {
-                return res.status(404).json({ message: "Room not found or no changes made" });
+                return res.status(404).json({ message: "Booking not found." });
             }
 
-            res.status(200).json({ message: "Room details updated successfully" });
+            res.status(200).json({ message: `Booking ${bookingID} status updated to ${status}.` });
+            console.log(`Received status: ${status} for bookingID: ${bookingID}`);
         } finally {
             connection.release();
         }
-    } catch (err) {
-        console.error("Error updating room details:", err);
-        res.status(500).json({ message: "An error occurred while updating room details" });
+        sshClient.end();
+    } catch (error) {
+        console.error("Error updating booking status:", error);
+        res.status(500).json({ message: "Failed to update booking status.", error });
     }
 };
+// Function to update room details
+// export const updateRoomDetails = async (req, res) => {
+//     const { roomTypeID } = req.params;
+//     const {
+//         roomTypeName,
+//         roomSize,
+//         petAllowedType,
+//         pricePerNight,
+//         roomPhoto,
+//     } = req.body;
+
+//     try {
+//         const { dbpool, sshClient } = await connectToDatabase();
+//         const connection = await dbpool.promise().getConnection();
+
+//         try {
+//             // Update query
+//             const updateQuery = `
+//                 UPDATE RoomTypes
+//                 SET 
+//                     roomTypeName = ?,
+//                     roomSize = ?,
+//                     petAllowedType = ?,
+//                     pricePerNight = ?,
+//                     roomPhoto = ?
+//                 WHERE 
+//                     roomTypeID = ?
+//             `;
+
+//             const [result] = await connection.query(updateQuery, [
+//                 roomTypeName,
+//                 roomSize,
+//                 petAllowedType,
+//                 pricePerNight,
+//                 roomPhoto,
+//                 roomTypeID,
+//             ]);
+
+//             if (result.affectedRows === 0) {
+//                 return res.status(404).json({ message: "Room not found or no changes made" });
+//             }
+
+//             res.status(200).json({ message: "Room details updated successfully" });
+//         } finally {
+//             connection.release();
+//         }
+//     } catch (err) {
+//         console.error("Error updating room details:", err);
+//         res.status(500).json({ message: "An error occurred while updating room details" });
+//     }
+// };

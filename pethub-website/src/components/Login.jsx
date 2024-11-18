@@ -24,28 +24,35 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!formData.email || !formData.password) {
       toast.error("Please fill in all fields.");
       return;
     }
-
+  
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       toast.error("Please enter a valid email address.");
       return;
     }
+  
     try {
       // Send POST request to the Node.js API endpoint
       const response = await axios.post(
         "http://localhost:5000/api/auth/signin",
         formData,
-        {withCredentials: true}
+        { withCredentials: true }
       );
-      toast.success("Signin successful");
-      console.log("Response:", response.data);
-      if (response.status == 200) {
-        Cookies.set("user-auth", response.data["token"]);
+  
+      if (response.status === 200) {
+        // Set cookies with user information
+        const { token, userRole, fName, lName } = response.data;
+        Cookies.set("user-auth", token, { secure: true, sameSite: "Strict" });
+        Cookies.set("user-fName", fName, { secure: true, sameSite: "Strict" });
+        Cookies.set("user-lName", lName, { secure: true, sameSite: "Strict" });
+        Cookies.set("user-role", userRole, { secure: true, sameSite: "Strict" });
+  
+        toast.success("Signin successful");
         navigate("/pethub-website/Home");
       }
     } catch (error) {
@@ -56,6 +63,7 @@ function Login() {
       }
     }
   };
+  
 
   console.log(formData);
   return (
