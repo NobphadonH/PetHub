@@ -507,14 +507,15 @@ function Home() {
                 <HotelRecommend
                     key={index} // It's good practice to use a unique key for each mapped component
                     hotelName={hotel.hotelName}
-                    reviews={hotel.reviews}
-                    rating={hotel.rating}
-                    price={hotel.price}
-                    link={hotel.link}
-                    imageUrl={hotel.imageUrl}
-                    petType={hotel.petType}
+                    reviews={hotel.reviewCount} // Assuming 'reviews' refers to the count of reviews
+                    rating={hotel.avgReviewScore} // Assuming 'rating' refers to the average review score
+                    price={hotel.roomsAvailable[0].pricePerNight} // Assuming you want to pass the price of the first room available
+                    link={`/hotel/${hotel.hotelID}`} // Assuming you have a hotel detail page
+                    imageUrl={hotel.hotelPhoto} // Assuming the image is in base64 format
+                    petType={hotel.roomsAvailable[0].petType} // Concatenate pet types allowed in the hotel
                 />
             ))}
+
         </motion.div>
       </div>
       <Footer />

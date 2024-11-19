@@ -25,7 +25,6 @@ import Payment from './components/Payment.jsx';
 import HostProfile from './components/HostProfile.jsx';
 
 
-
 const router = createBrowserRouter([
   {path: "/pethub-website", element: <App />,},
   {path: "/pethub-website/test", element: <Test />,},
@@ -48,6 +47,9 @@ const router = createBrowserRouter([
   {path: "/pethub-website/payment", element: <Payment />,},
   {path: "/pethub-website/hostprofile", element: <HostProfile />,},
 ]);
+
+
+
 
 createRoot(document.getElementById('root')).render(
   // <StrictMode>

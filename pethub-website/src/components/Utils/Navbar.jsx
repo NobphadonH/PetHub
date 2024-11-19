@@ -2,6 +2,8 @@ import logo from '../../../public/logo.svg';
 import { useState, useEffect, useRef } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -54,6 +56,7 @@ export default function Navbar() {
       setUsername('')
   
       console.log('Logged out successfully');
+      toast("Logged out successfully");
     } catch (error) {
       console.error('Error during logout:', error.message);
     }
@@ -68,6 +71,8 @@ export default function Navbar() {
   }, []);
 
   return (
+    <>
+    <ToastContainer />
     <div className="fixed top-0 left-0 right-0 dropdown z-50">
       <div className="navbar border-b-2 bg-white px-4 md:px-20 xl:px-40">
         {/* Mobile Navbar Toggle */}
@@ -143,5 +148,6 @@ export default function Navbar() {
         </div>
       </div>
     </div>
+    </>
   );
 }

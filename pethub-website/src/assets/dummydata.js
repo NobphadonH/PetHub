@@ -320,7 +320,7 @@ export const hotelData = [
       "hotelDescription": "โรงแรมสไตล์บูติกสุดหรูที่ให้บริการที่พักชั้นเลิศและการดูแลสัตว์เลี้ยงอย่างอบอุ่น ท่ามกลางบรรยากาศที่เงียบสงบและเต็มไปด้วยความสะดวกสบาย คุณและสัตว์เลี้ยงของคุณจะได้พักผ่อนในห้องที่ตกแต่งอย่างหรูหรา พร้อมเพลิดเพลินกับบริการอันแสนพิเศษจากทีมงานที่มีความเชี่ยวชาญในการดูแลสัตว์เลี้ยงทุกชนิด โรงแรมยังมีสิ่งอำนวยความสะดวกมากมาย เช่น พื้นที่เล่นสำหรับสัตว์เลี้ยงและบริการสปาสัตว์เลี้ยงเพื่อเพิ่มความสุขให้กับเพื่อนสี่ขาของคุณ",
       "hotelID": 1,
       "hotelName": "Royal Pet Palace",
-      "hotelPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+      "hotelPhoto": "https://images.unsplash.com/photo-1455587734955-081b22074882?q=80&w=1920&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "hotelPolicy": "สัตว์เลี้ยงสามารถพักได้ทุกส่วนของโรงแรม แต่ต้องอยู่ภายใต้การดูแลของเจ้าของอย่างใกล้ชิด ห้ามปล่อยสัตว์เลี้ยงวิ่งเล่นในพื้นที่สาธารณะโดยไม่มีสายจูง และเจ้าของต้องเก็บทำความสะอาดทันทีหากสัตว์เลี้ยงทำเลอะเทอะ นอกจากนี้ สัตว์เลี้ยงทุกตัวต้องได้รับวัคซีนครบถ้วนและมีใบรับรองสุขภาพจากสัตวแพทย์",
       "hotelType": "2",
       "mapLat": "13.75630000",
@@ -332,7 +332,7 @@ export const hotelData = [
           "pricePerNight": "150.00",
           "roomCapacity": 2,
           "roomDetail": "ห้องพักขนาดกลางสำหรับเจ้าของและสัตว์เลี้ยงที่เดินทางมาด้วยกัน มีเตียงนอนแสนสบายและระเบียงส่วนตัว",
-          "roomPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+          "roomPhoto": "https://plus.unsplash.com/premium_photo-1661964402307-02267d1423f5?q=80&w=1973&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
           "roomSize": "15.00",
           "roomTypeID": 11,
           "roomTypeName": "Deluxe Room"
@@ -342,7 +342,7 @@ export const hotelData = [
           "pricePerNight": "180.00",
           "roomCapacity": 1,
           "roomDetail": "ห้องพักสำหรับแมวที่มีพื้นที่เล่นพิเศษและมุมพักผ่อนที่อบอุ่น",
-          "roomPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+          "roomPhoto": "https://plus.unsplash.com/premium_photo-1661926818635-3d413932f2a9?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
           "roomSize": "10.00",
           "roomTypeID": 16,
           "roomTypeName": "Cat Suite"
@@ -356,7 +356,7 @@ export const hotelData = [
       "hotelDescription": "โรงแรมบรรยากาศสุดชิลที่พร้อมต้อนรับสัตว์เลี้ยงและเจ้าของด้วยบริการอันแสนพิเศษ ตั้งอยู่ในย่านใจกลางเมืองที่สะดวกต่อการเดินทาง ห้องพักทุกห้องถูกออกแบบมาเพื่อรองรับการเข้าพักของคุณและสัตว์เลี้ยง ไม่ว่าจะเป็นสุนัข แมว หรือสัตว์เลี้ยงชนิดอื่น คุณจะพบกับพื้นที่ส่วนตัวที่กว้างขวางและพื้นที่พักผ่อนสำหรับสัตว์เลี้ยงที่มีความปลอดภัยและสะดวกสบาย",
       "hotelID": 2,
       "hotelName": "Pet Haven Hotel",
-      "hotelPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+      "hotelPhoto": "https://images.unsplash.com/photo-1625959157952-fb2b24f7c272?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "hotelPolicy": "สัตว์เลี้ยงต้องอยู่ภายใต้การดูแลของเจ้าของทุกเวลา ห้ามปล่อยสัตว์เลี้ยงโดยไม่มีการควบคุมเพื่อความปลอดภัย หากสัตว์เลี้ยงมีพฤติกรรมก้าวร้าวหรือสร้างความรำคาญ เจ้าของอาจถูกขอให้นำสัตว์เลี้ยงออกจากบริเวณนั้น โปรดตรวจสอบให้แน่ใจว่าสัตว์เลี้ยงของคุณมีสุขภาพดีและได้รับวัคซีนครบก่อนการเข้าพัก",
       "hotelType": "3",
       "mapLat": "13.72300000",
@@ -368,7 +368,7 @@ export const hotelData = [
           "pricePerNight": "120.00",
           "roomCapacity": 1,
           "roomDetail": "ห้องราคาประหยัดที่เหมาะสำหรับแมวและเจ้าของที่ต้องการพักผ่อน มีมุมเล่นและของเล่นแมว",
-          "roomPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+          "roomPhoto": "https://images.unsplash.com/photo-1612152605347-f93296cb657d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
           "roomSize": "10.00",
           "roomTypeID": 12,
           "roomTypeName": "Budget Room"
@@ -378,7 +378,7 @@ export const hotelData = [
           "pricePerNight": "110.00",
           "roomCapacity": 1,
           "roomDetail": "ห้องสำหรับกระต่ายพร้อมคอกพิเศษและของเล่นกระต่าย",
-          "roomPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+          "roomPhoto": "https://images.unsplash.com/photo-1538683270504-3d09ad7ae739?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
           "roomSize": "8.00",
           "roomTypeID": 17,
           "roomTypeName": "Rabbit Room"
@@ -392,7 +392,7 @@ export const hotelData = [
       "hotelDescription": "โรงแรมที่มีสิ่งอำนวยความสะดวกครบครันและต้อนรับสัตว์เลี้ยงทุกชนิด ด้วยพื้นที่สีเขียวขนาดใหญ่และลานวิ่งเล่นที่ปลอดภัยสำหรับสัตว์เลี้ยง โรงแรมยังมีบริการพิเศษ เช่น คลาสฝึกสัตว์เลี้ยงและบริการอาบน้ำ-ตัดขนจากทีมงานมืออาชีพ ทำให้วันหยุดของคุณและสัตว์เลี้ยงเป็นวันที่สมบูรณ์แบบและไม่มีความกังวล",
       "hotelID": 3,
       "hotelName": "Bangna Pet Resort",
-      "hotelPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+      "hotelPhoto": "https://images.unsplash.com/photo-1667842288007-ea49b67ce9cf?q=80&w=2034&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "hotelPolicy": "สัตว์เลี้ยงต้องได้รับการตรวจสุขภาพและมีใบรับรองก่อนเข้าพัก เจ้าของต้องมีสายจูงติดตัวเสมอเมื่อพาสัตว์เลี้ยงออกจากห้องพัก และห้ามปล่อยสัตว์เลี้ยงอยู่ตามลำพังในห้องพักโดยไม่มีการดูแล",
       "hotelType": "1",
       "mapLat": "13.66880000",
@@ -404,7 +404,7 @@ export const hotelData = [
           "pricePerNight": "130.00",
           "roomCapacity": 3,
           "roomDetail": "ห้องขนาดใหญ่พิเศษพร้อมลานวิ่งเล่นสำหรับสัตว์เลี้ยง มีเตียงขนาดใหญ่และโซนผ่อนคลาย",
-          "roomPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+          "roomPhoto": "https://images.unsplash.com/photo-1568495248636-6432b97bd949?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
           "roomSize": "20.00",
           "roomTypeID": 13,
           "roomTypeName": "Family Suite"
@@ -414,7 +414,7 @@ export const hotelData = [
           "pricePerNight": "140.00",
           "roomCapacity": 2,
           "roomDetail": "ห้องพักสำหรับสุนัขพร้อมสวนส่วนตัวและเครื่องเล่นออกกำลังกาย",
-          "roomPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+          "roomPhoto": "https://images.unsplash.com/photo-1612152605347-f93296cb657d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
           "roomSize": "12.00",
           "roomTypeID": 18,
           "roomTypeName": "Dog Room"
@@ -428,7 +428,7 @@ export const hotelData = [
       "hotelDescription": "โรงแรมสำหรับสัตว์เลี้ยงที่ใกล้สนามบิน เหมาะสำหรับการเดินทางโดยเครื่องบิน ให้บริการห้องพักสะดวกสบายและราคาย่อมเยา เหมาะสำหรับการพักผ่อนระหว่างรอเที่ยวบิน โรงแรมยังมีบริการพิเศษ เช่น บริการขนส่งสัตว์เลี้ยงไปยังสนามบิน และพื้นที่จอดรถที่ปลอดภัยสำหรับผู้เข้าพัก",
       "hotelID": 4,
       "hotelName": "Donmuang Pet Stop",
-      "hotelPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+      "hotelPhoto": "https://images.unsplash.com/photo-1538683270504-3d09ad7ae739?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "hotelPolicy": "สัตว์เลี้ยงห้ามเข้าในห้องอาหารและต้องมีสายจูงทุกครั้งเมื่ออยู่ในพื้นที่สาธารณะ หากสัตว์เลี้ยงมีอาการเจ็บป่วยต้องแจ้งเจ้าหน้าที่ทันทีเพื่อความปลอดภัย",
       "hotelType": "4",
       "mapLat": "13.91260000",
@@ -464,7 +464,7 @@ export const hotelData = [
       "hotelDescription": "โรงแรมหรูหราใจกลางเมือง ที่ให้บริการที่พักและดูแลสัตว์เลี้ยงอย่างหรูหรา ห้องพักทุกห้องได้รับการออกแบบอย่างพิถีพิถัน พร้อมสิ่งอำนวยความสะดวกที่ครบครันและบริการระดับห้าดาว ที่นี่เหมาะสำหรับผู้ที่ต้องการประสบการณ์พักผ่อนสุดพิเศษและมีสัตว์เลี้ยงร่วมเดินทางด้วย มีบริการพิเศษเช่น ฟิตเนสสำหรับสัตว์เลี้ยง และอาหารสัตว์เลี้ยงที่ปรุงสดใหม่จากเชฟผู้เชี่ยวชาญ",
       "hotelID": 5,
       "hotelName": "Sathorn Luxury Pet Hotel",
-      "hotelPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+      "hotelPhoto": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "hotelPolicy": "ไม่อนุญาตให้สัตว์เลี้ยงที่มีเสียงดังรบกวนแขกคนอื่น สัตว์เลี้ยงต้องอยู่ในสายจูงเมื่ออยู่นอกห้องพัก และเจ้าของต้องรับผิดชอบต่อความสะอาดของสัตว์เลี้ยงตลอดการเข้าพัก",
       "hotelType": "1",
       "mapLat": "13.72340000",
@@ -492,6 +492,114 @@ export const hotelData = [
           "roomTypeName": "Luxury Cat Room"
         }
       ]
-    }
+    },
+    {
+        "avgReviewScore": "4.7000",
+        "district": "เขตวัฒนา",
+        "hotelAddress": "234 ถนนสุขุมวิท 23 แขวงคลองตันเหนือ เขตวัฒนา กรุงเทพ 10110",
+        "hotelDescription": "โรงแรมสไตล์โมเดิร์นที่พร้อมต้อนรับสัตว์เลี้ยงทุกประเภท พร้อมด้วยบริการสุดล้ำ เช่น ห้องฝึกสุนัขอัจฉริยะและคลินิกสัตว์เลี้ยงในตัว ที่พักของคุณและสัตว์เลี้ยงจะได้รับการดูแลอย่างดีเยี่ยม พร้อมเพลิดเพลินกับสิ่งอำนวยความสะดวกที่ทันสมัยในบรรยากาศใจกลางเมือง",
+        "hotelID": 6,
+        "hotelName": "Urban Pet Oasis",
+        "hotelPhoto": "https://plus.unsplash.com/premium_photo-1681922761648-d5e2c3972982?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "hotelPolicy": "สัตว์เลี้ยงต้องได้รับการควบคุมตลอดเวลาในพื้นที่สาธารณะ และห้ามนำสัตว์เลี้ยงเข้าไปในบริเวณที่ห้าม เจ้าของต้องแสดงหลักฐานวัคซีนก่อนเข้าพักและรับผิดชอบต่อความสะอาดของสัตว์เลี้ยงเอง",
+        "hotelType": "2",
+        "mapLat": "13.74280000",
+        "mapLong": "100.56480000",
+        "reviewCount": 45,
+        "roomsAvailable": [
+          {
+            "petAllowedType": "สุนัข",
+            "pricePerNight": "220.00",
+            "roomCapacity": 3,
+            "roomDetail": "ห้องพรีเมียมพร้อมวิวเมืองและพื้นที่พักผ่อนสำหรับสุนัข พร้อมเตียงคู่และโซนพักผ่อนสุดหรู",
+            "roomPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+            "roomSize": "22.00",
+            "roomTypeID": 21,
+            "roomTypeName": "Premium Dog Suite"
+          },
+          {
+            "petAllowedType": "แมว",
+            "pricePerNight": "150.00",
+            "roomCapacity": 1,
+            "roomDetail": "ห้องพักกว้างขวางพร้อมเครื่องเล่นและมุมพักผ่อนสำหรับแมวโดยเฉพาะ",
+            "roomPhoto": "https://images.unsplash.com/photo-1439130490301-25e322d88054?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            "roomSize": "12.00",
+            "roomTypeID": 22,
+            "roomTypeName": "Cat Deluxe Room"
+          }
+        ]
+      },
+      {
+        "avgReviewScore": "4.1000",
+        "district": "เขตลาดพร้าว",
+        "hotelAddress": "789 ถนนลาดพร้าว แขวงจอมพล เขตจตุจักร กรุงเทพ 10900",
+        "hotelDescription": "ที่พักแสนอบอุ่นสำหรับสัตว์เลี้ยงที่รัก พร้อมด้วยสนามหญ้ากว้างและโซนออกกำลังกาย โรงแรมมีบริการสัตว์เลี้ยงครบวงจร เช่น บริการกรูมมิ่งและฝึกอบรมเบื้องต้นในบรรยากาศที่เหมาะกับสัตว์เลี้ยงทุกขนาดและสายพันธุ์",
+        "hotelID": 7,
+        "hotelName": "Ladprao Pet Retreat",
+        "hotelPhoto": "https://images.unsplash.com/photo-1594741158704-5a784b8e59fb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "hotelPolicy": "สัตว์เลี้ยงทุกตัวต้องมีสายจูงเมื่ออยู่นอกห้อง เจ้าของต้องแสดงใบรับรองสุขภาพและรับผิดชอบต่อสัตว์เลี้ยงหากเกิดอุบัติเหตุหรือเสียหายใดๆ",
+        "hotelType": "3",
+        "mapLat": "13.82720000",
+        "mapLong": "100.57640000",
+        "reviewCount": 30,
+        "roomsAvailable": [
+          {
+            "petAllowedType": "กระต่าย",
+            "pricePerNight": "90.00",
+            "roomCapacity": 2,
+            "roomDetail": "ห้องกระต่ายพร้อมพื้นที่เล่นพิเศษและของเล่นหลากหลาย",
+            "roomPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+            "roomSize": "9.00",
+            "roomTypeID": 23,
+            "roomTypeName": "Bunny Play Room"
+          },
+          {
+            "petAllowedType": "นก",
+            "pricePerNight": "70.00",
+            "roomCapacity": 1,
+            "roomDetail": "ห้องนกพร้อมกรงขนาดใหญ่และวิวสวน",
+            "roomPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+            "roomSize": "7.00",
+            "roomTypeID": 24,
+            "roomTypeName": "Bird Haven Room"
+          }
+        ]
+      },
+      {
+        "avgReviewScore": "3.6000",
+        "district": "เขตห้วยขวาง",
+        "hotelAddress": "555 ถนนรัชดาภิเษก แขวงห้วยขวาง เขตห้วยขวาง กรุงเทพ 10310",
+        "hotelDescription": "โรงแรมที่พร้อมต้อนรับสัตว์เลี้ยงทุกสายพันธุ์ พร้อมด้วยสิ่งอำนวยความสะดวกสำหรับสัตว์เลี้ยง เช่น ลานออกกำลังกายกลางแจ้งและคาเฟ่สำหรับเจ้าของสัตว์เลี้ยง ให้คุณได้ใช้เวลาคุณภาพร่วมกับเพื่อนรักสี่ขาในบรรยากาศทันสมัยและสนุกสนาน",
+        "hotelID": 8,
+        "hotelName": "Ratchada Pet Stay",
+        "hotelPhoto": "https://images.unsplash.com/photo-1506399790179-ddf35cdb2675?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        "hotelPolicy": "สัตว์เลี้ยงต้องได้รับวัคซีนและมีสุขภาพแข็งแรงก่อนเข้าพัก เจ้าของต้องมีสายจูงและต้องดูแลสัตว์เลี้ยงอย่างใกล้ชิดเมื่ออยู่ในพื้นที่ส่วนกลาง",
+        "hotelType": "2",
+        "mapLat": "13.77080000",
+        "mapLong": "100.57700000",
+        "reviewCount": 20,
+        "roomsAvailable": [
+          {
+            "petAllowedType": "แมว",
+            "pricePerNight": "110.00",
+            "roomCapacity": 1,
+            "roomDetail": "ห้องแมวพร้อมกระจกชมวิวและโซนพักผ่อนส่วนตัว",
+            "roomPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+            "roomSize": "10.00",
+            "roomTypeID": 25,
+            "roomTypeName": "Cat Comfort Room"
+          },
+          {
+            "petAllowedType": "สุนัข",
+            "pricePerNight": "130.00",
+            "roomCapacity": 2,
+            "roomDetail": "ห้องสำหรับสุนัขพร้อมเตียงแสนสบายและพื้นที่ออกกำลังกาย",
+            "roomPhoto": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAA",
+            "roomSize": "14.00",
+            "roomTypeID": 26,
+            "roomTypeName": "Dog Adventure Room"
+          }
+        ]
+      },
   ]
   

@@ -1,14 +1,36 @@
 import Navbar from "./Utils/Navbar"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import Cookies from 'js-cookie';
+import { useNavigate, useLocation } from "react-router-dom";
+
 
 function Profile() {
   const [isClick, setIsClick] = useState(Array(3).fill(false));
+  const navigate = useNavigate()
 
   function handleClick(index) {
     setIsClick((prev) =>
       prev.map((value, i) => (i === index ? !value : false))
     );
   }
+  
+  useEffect(() => {
+    const role = Cookies.get('user-role'); // Retrieve the role from cookies
+    console.log(role)
+
+    // Check if the required cookie is missing
+    if (!role) {
+      navigate(`/pethub-website/signin`); // Redirect to sign-in if no role is found
+    } else {
+      // If role is 'client', redirect to profile
+      if (role === 'client') {
+        navigate(`/pethub-website/profile`);
+      }else if(role === 'host') {
+        navigate(`/pethub-website/hostprofile`);
+        
+      }
+    }
+  }, [Cookies]);
   
   
   console.log(isClick)
