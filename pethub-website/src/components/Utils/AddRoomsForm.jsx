@@ -94,7 +94,7 @@ export default function AddRoomsForm({onDataChange, image, onImageChange, index}
                         </select>
                     </label>
                 </div>
-                <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
                     <label className="form-control w-full">
                         <div className="text-left text-black text-base mb-2">จำนวนห้อง</div>
                         <div className="relative w-full">
@@ -114,7 +114,7 @@ export default function AddRoomsForm({onDataChange, image, onImageChange, index}
                         </div>
                     </label>
                 </div>
-                <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
                     <label className="form-control w-full">
                         <div className="text-left text-black text-base mb-2">ขนาดห้อง</div>
                         <div className="relative w-full">

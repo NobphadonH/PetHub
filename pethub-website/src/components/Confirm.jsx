@@ -13,7 +13,6 @@ function Confirm() {
         e.preventDefault();
         console.log(hotelAndRoomFormData)
 
-
         const hotelData = new FormData()
         const hotelFormData = hotelAndRoomFormData.hotelFormData;
         let hotelID;
@@ -66,7 +65,6 @@ function Confirm() {
             }
         })
 
-
         try {
             const res = await axios.post('http://localhost:5000/api/room/createRooms/', roomArrayData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
             console.log(res.data)
@@ -74,7 +72,6 @@ function Confirm() {
         } catch(error) {
             console.error(error);
         }
-
     }
 
     const goBack = (e) => {
@@ -84,18 +81,18 @@ function Confirm() {
     return (
         <div>
             <Navbar />
-            <div className="flex flex-col mt-24">
-                <div className="text-black font-bold text-3xl mt-4">
+            <div className="flex flex-col mt-24 px-4 sm:px-8 md:px-16 lg:px-32">
+                <div className="text-black font-bold text-xl mx-10 md:text-2xl lg:text-3xl mt-4 text-center">
                     ลงทะเบียนโรงแรมสัตว์เลี้ยงของคุณให้สมบูรณ์แบบบน PetHub
                 </div>
                 <div className="flex justify-center">
                     <div className="max-w-xl mx-auto">
-                        <div className="text-gray-800 text-base mt-4">
+                        <div className="text-gray-800 text-base mt-4 text-center sm:text-left">
                             กรุณากรอกแบบฟอร์มด้านล่าง ข้อมูลทุกช่องจำเป็นต้องกรอก
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col w-1/2 bg-white border border-neutral-100 drop-shadow-xl p-8 rounded-3xl mt-8 mx-auto">
+                <div className="flex flex-col w-full sm:w-3/4 lg:w-1/2 bg-white border border-neutral-100 drop-shadow-xl p-8 rounded-3xl mt-8 mx-auto">
                     <div className="flex justify-center items-center">
                         <ul className="steps w-full max-w-2xl mt-2">
                             <li className="step step-accent text-gray-800 text-sm">ข้อมูลทั่วไป</li>

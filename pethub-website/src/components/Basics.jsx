@@ -94,7 +94,7 @@ function TypeChoiceBoxes({onSelectType}) {
     };
 
     return (
-        <div className="grid grid-cols-2 gap-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             {options.map(option => (
                 <div
                     key={option.id}
