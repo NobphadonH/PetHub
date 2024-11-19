@@ -359,7 +359,6 @@ function RoomManagement() {
             ))}
             </div>
             <div className="my-[2vw] md:my-4 w-full flex justify-end gap-5">
-                <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color6 md:bg-pethub-color6 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-40 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">ปฎิเสธการอนุมัติ</div>
                 <div className="my-[2vw] md:my-4 w-full flex justify-end gap-5">
                     {selectedBooking?.bookingStatus?.toLowerCase() === 'Pending'.toLowerCase() && (
                         <>

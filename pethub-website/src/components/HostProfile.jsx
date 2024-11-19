@@ -2,6 +2,7 @@ import Navbar from "./Utils/Navbar"
 import { motion } from "framer-motion"
 import { useState, useRef, useEffect } from "react";
 import TextEditor from "./Utils/TextEditor";
+import axios from "axios";
 
 
 
@@ -9,6 +10,39 @@ function HostProfile() {
     const containerRef = useRef(null);
     const parentRef = useRef(null);
     const [totalWidth, setTotalWidth] = useState(0);
+    const [hotelData, setHotelData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const formatDate = (date) => {
+      if (!date) return ''; // Handle null or undefined date
+      
+      const dateObj = new Date(date);
+      const day = String(dateObj.getDate()).padStart(2, '0'); // Get day and pad with leading 0 if needed
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Get month (0-indexed, so add 1)
+      const year = dateObj.getFullYear(); // Use AD (Gregorian calendar year)
+      
+      return `${day}/${month}/${year}`; // Return formatted date in AD
+    };
+
+    // Fetch data from the backend
+  useEffect(() => {
+    const fetchHotelProfile = async () => {
+      try {
+        const hotelID = "1"; // Example hotelID, replace dynamically as needed
+        const response = await axios.get(`http://localhost:5000/api/getHotelProfile/hostprofile/${hotelID}`);
+        console.log("Fetched hotel profile:", response.data);
+        setHotelData(response.data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching hotel profile:", err);
+        setError("Failed to load hotel profile. Please try again later.");
+        setLoading(false);
+      }
+    };
+
+    fetchHotelProfile();
+  }, []);
 
     useEffect(() => {
     const updateWidth = () => {
@@ -27,6 +61,11 @@ function HostProfile() {
         window.removeEventListener('resize', updateWidth);
         };
     }, [])
+    
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>{error}</div>;
+  
+    const { hotelID, hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, fName, lName, phone, rooms, bookings } = hotelData;
 
   return (
     <>
@@ -41,16 +80,16 @@ function HostProfile() {
         <div className="h-full flex flex-col justify-between grow px-[2vw] pt-[2vw] md:px-4 md-pt-4 lg:px-7 lg:pt-7">
             <div className="flex flex-col gap-[1vw] md:gap-3">
                 <div className="flex justify-between items-end">
-                    <div className="text-[2.5vw] md:text-lg lg:text-2xl font-semibold">ชื่อจดทะเบียน: <span className="text-pethub-color1">Bangmod hotel</span></div>
-                    <div className="hidden md:block text-[1.5vw] md:text-xs lg:text-lg">C-349-342350</div>
+                    <div className="text-[2.5vw] md:text-lg lg:text-2xl font-semibold">ชื่อจดทะเบียน: <span className="text-pethub-color1">{hotelName}</span></div>
+                    <div className="hidden md:block text-[1.5vw] md:text-xs lg:text-lg">{hotelID}</div>
                 </div>
-                <div className="text-[2vw] md:text-sm lg:text-lg font-semibold transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">สถานที่ตั้ง: <span className="text-pethub-color6 font-normal">123 ถนนสุขุมวิท, วัฒนา, กรุงเทพมหานคร 10110, (ใกล้ BTS อโศก)</span></div>
-                <div className="text-[2vw] md:text-sm lg:text-lg font-semibold">ประเภทที่พัก: <span className="text-pethub-color6 font-normal">Professional Pet hotel</span></div>
-                <div className="text-[2vw] md:text-sm lg:text-lg font-semibold">Cancelation Policy: <span className="text-pethub-color6 font-normal">Flexible cancelation</span></div>
+                <div className="text-[2vw] md:text-sm lg:text-lg font-semibold transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">สถานที่ตั้ง: <span className="text-pethub-color6 font-normal">{hotelAddress}</span></div>
+                <div className="text-[2vw] md:text-sm lg:text-lg font-semibold">ประเภทที่พัก: <span className="text-pethub-color6 font-normal">{hotelType}</span></div>
+                <div className="text-[2vw] md:text-sm lg:text-lg font-semibold">Cancelation Policy: <span className="text-pethub-color6 font-normal">{hotelPolicy}</span></div>
             </div>
             <div className="flex justify-between items-center">
-                <div className="text-[2.5vw] md:text-base lg:text-xl font-semibold">ผู้ดูแล: <span className="text-[2vw] md:text-sm lg:text-base text-pethub-color6 font-normal">นายกฤษณ์ สมบูรณ์สุข</span></div>
-                <div className="text-[2.5vw] md:text-base lg:text-xl font-semibold">เบอร์โทร: <span className="text-[2vw] md:text-sm lg:text-base text-pethub-color6 font-normal">094-XXX-XXXX</span></div>
+                <div className="text-[2.5vw] md:text-base lg:text-xl font-semibold">ผู้ดูแล: <span className="text-[2vw] md:text-sm lg:text-base text-pethub-color6 font-normal">{fName} {lName}</span></div>
+                <div className="text-[2.5vw] md:text-base lg:text-xl font-semibold">เบอร์โทร: <span className="text-[2vw] md:text-sm lg:text-base text-pethub-color6 font-normal">{phone}</span></div>
                 <div className="text-[2vw] md:text-sm lg:text-base max-lg:hidden">ส่งคำร้องแก้ไขข้อมูล</div>
                 
             </div>
@@ -71,18 +110,19 @@ function HostProfile() {
      <div className="w-11/12 xl:w-10/12 max-w-[1200px] mx-auto">
         <div ref={parentRef} className="md:mt-4 lg:mt-8 xl:mt-10 w-full overflow-hidden mx-auto relative h-[70vw] md:h-[550px]  lg:h-[650px]">
             <motion.div ref={containerRef} className="absolute h-[60vw] md:h-[500px] lg:h-[600px] rounded-md mx-auto md:py-5 flex gap-3 lg:gap-5" drag="x" dragConstraints={{ left: -totalWidth, right: 0 }} transition={{ type: "spring", stiffness: 300, damping: 30 }}>
-                {Array.from({length : 5}).map((_, index) => (
-                    <div key={index} className='w-[45vw] md:w-[350px] xl:w-[400px] bg-white rounded-lg overflow-hidden'>
+              {rooms.map((room, index) => (
+                    <div key={room.roomTypeID} className='w-[45vw] md:w-[350px] xl:w-[400px] bg-white rounded-lg overflow-hidden'>
                         <div className='w-full h-[50%] bg-slate-200'></div>
                         <div className='w-full h-[50%] p-[2vw] md:p-6 text-start'>
                             <div className='flex justify-between items-end'>
-                                <div className='text-[2.5vw] md:text-lg lg:text-xl xl:text-2xl'>ห้องขนาดทั่วไป (แมว)</div>
-                                <div className='text-[2vw] md:text-sm lg:text-base xl:text-lg'>25x25 ตรม</div>
+                                <div className='text-[2.5vw] md:text-lg lg:text-xl xl:text-2xl'>{room.roomTypeName}</div>
+                                <div className='text-[2vw] md:text-sm lg:text-base xl:text-lg'>{room.roomSize} ตร.ม.</div>
                             </div>
-                            <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-lg md:my-1 lg:my-3'>ของเล่นแมว, อาหาร, อาบน้ำ, ดูแล 24 ชั่วโมง</div>
+                            {/* <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-lg md:my-1 lg:my-3'>ของเล่นแมว, อาหาร, อาบน้ำ, ดูแล 24 ชั่วโมง</div> */}
+                            <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-lg md:my-1 lg:my-3'>{room.roomDetail}</div>
                             <div className='text-[1.5vw] md:text-xs lg:text-sm xl:text-base transition-all duration-300 ease-in-out line-clamp-2 overflow-hidden text-gray-400'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque voluptatum dolor, ipsam natus similique aperiam eveniet quos, magni voluptatem deserunt odio aspernatur reprehenderit laborum molestias illum unde ipsum libero pariatur?</div>
-                            <div className='text-[2vw] md:text-base my-[1vw] md:my-2 lg:my-5'>400 บาท/คืน</div>
-                            <a href={`/pethub-website/home/hostprofile/room001`} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium">
+                            <div className='text-[2vw] md:text-base my-[1vw] md:my-2 lg:my-5'>{room.pricePerNight} บาท/คืน</div>
+                            <a href={`/pethub-website/home/hostprofile/room${room.roomTypeID}`} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium">
                                 <a >จัดการห้องพัก</a>
                             </a>
                         </div>
@@ -109,26 +149,26 @@ function HostProfile() {
               </tr>
             </thead>
             {/* row 1 */}
-            {Array.from({length: 3}).map((_, index) => (
-              <tbody  key={index}>
+            {bookings.map((booking) => (
+              <tbody  key={booking.bookingID}>
                 <tr className="text-xs lg:text-sm xl:text-base">
                   <td>
                     <div className="flex items-center gap-4">
                       <div className="w-2 h-8 lg:h-10 xl:h-14 bg-green-500"></div>
-                      <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">B-123-4567890</div>
+                      <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">{booking.bookingID}</div>
                     </div>
                   </td>
                   <td  className="max-md:hidden">
-                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">10/10/2567</div>
+                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">{formatDate(booking.checkInDate)}</div>
                   </td>
                   <td  className="max-md:hidden">
-                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">10/10/2567</div>
+                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">{formatDate(booking.checkOutDate)}</div>
                   </td>
                   <td className="max-sm:hidden">
-                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">ห้องขนาดทั่วไป</div>
+                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">{booking.roomTypeID}</div>
                   </td>
                   <td className="max-md:pr-0">
-                    <span className="badge badge-ghost badge-sm bg-green-100 text-[2.5vw] sm:text-xs lg:text-sm xl:text-base">ชำระเงินแล้ว</span>
+                    <span className="badge badge-ghost badge-sm bg-green-100 text-[2.5vw] sm:text-xs lg:text-sm xl:text-base">{booking.bookingStatus}</span>
                   </td>
                   <th>
                     <button className="btn btn-ghost btn-xs"><span className="max-lg:hidden ">รายละเอียด</span>

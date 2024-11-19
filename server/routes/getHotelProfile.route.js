@@ -1,5 +1,5 @@
 import express from 'express';
-import { getHotelProfile, updateHotelProfile } from '../controllers/getHotelProfile.controller.js';
+import { getHotelProfile } from '../controllers/getHotelProfile.controller.js';
 
 const router = express.Router();
 
@@ -7,6 +7,6 @@ const router = express.Router();
 router.get('/hostprofile/:hotelID', getHotelProfile);
 
 // Update hotel description and policy by hotelID
-router.put("/update/:hotelID", updateHotelProfile);
+// router.put("/update/:hotelID", updateHotelProfile);
 
 export default router;
