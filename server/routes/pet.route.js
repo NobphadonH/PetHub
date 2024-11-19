@@ -20,7 +20,7 @@ router.post(
   createPet
 );
 
-router.post("/getAllPetsByUserID", verifyRole("Client"), getAllPetsByUserID);
+router.get("/getAllPetsByUserID", verifyRole("Client"), getAllPetsByUserID);
 
 router.post(
   "/updatePetByPetID",
@@ -31,6 +31,6 @@ router.post(
 
 router.post("/deletePetByPetID", verifyRole("Client"), deletePetByPetID);
 
-router.post("/getMatchingPets", verifyRole("Client"), getMatchingPets);
+router.get("/getMatchingPets", verifyRole("Client"), getMatchingPets);
 
 export default router;

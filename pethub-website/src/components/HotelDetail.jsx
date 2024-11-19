@@ -108,6 +108,7 @@ function HotelDetail() {
     console.log(barSel)
     const checkIn = hotelData.checkIn
     const checkOut = hotelData.checkOut
+    const hotelPhoto = hotelData.hotelPhoto
     const goBooking = (room) => {
         const token = Cookies.get("user-auth");
       
@@ -115,12 +116,14 @@ function HotelDetail() {
           navigate("/pethub-website/signin");
           return;
         }
-      
+
         const roomData = {
-          ...room,
-          checkIn,
-          checkOut
-        };
+            ...room,
+            checkIn,
+            checkOut,
+            hotelPhoto
+        }
+      
         console.log(hotelData);
         navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData, hotelState: hotelData });
       };
