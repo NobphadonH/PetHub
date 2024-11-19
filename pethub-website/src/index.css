@@ -79,3 +79,9 @@ input[type=number] {
     height: 14px; /* Set a smaller height */
   }
 }
+
+input[type="date"] {
+  background-color: white !important; /* Force the background to be white */
+  color: black !important;            /* Force the text to be black */
+  appearance: auto; 
+}

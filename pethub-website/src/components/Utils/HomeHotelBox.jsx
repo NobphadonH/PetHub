@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function HomeHotelBox({ 
     hotelObj,
@@ -28,6 +29,7 @@ function HomeHotelBox({
         navigate(`/pethub-website/home/${hotelName}`, {state: hotelData})
       } else {
         console.log("please select check in and check out date")
+        toast.error("กรุณาเลือกวันที่ เช็คอิน - เช็คเอาท์");
       }
     }
 
@@ -36,7 +38,7 @@ function HomeHotelBox({
         <div className="w-full lg:w-[340px] h-[260px] bg-slate-200 rounded-md flex justify-center items-center text-gray-400">
             <img src={imageUrl} alt="hotel-image" className="w-full h-full object-cover rounded-md" />
         </div>
-        <div className="text-start flex flex-col justify-between max-md:gap-0 max-lg:gap-5">
+        <div className="text-start flex grow flex-col justify-between max-md:gap-0 max-lg:gap-5">
           <div className="px-3 my-1 md:my-5 lg:my-3 max-w-[550px]">
             <h1 className="mt-2 text-[3vw] md:text-2xl transition-all duration-300 ease-in-out max-lg:line-clamp-1 max-lg:overflow-hidden">
               {hotelName} 
@@ -51,7 +53,7 @@ function HomeHotelBox({
                 {parseFloat(rating).toFixed(2)} ({reviews} Reviews)
               </div>
             </div>
-            <p className="text-[1.5vw] md:text-sm lg:pr-20 text-gray-400 transition-all duration-300 ease-in-out max-lg:line-clamp-2 max-lg:overflow-hidden">
+            <p className="text-[1.5vw] md:text-sm lg:pr-20 text-gray-400 transition-all duration-300 ease-in-out max-lg:line-clamp-2 line-clamp-3 max-lg:overflow-hidden">
               {description}
             </p>
           </div>

@@ -1,6 +1,6 @@
 import logo from '../../../public/logo.svg';
-import Cookies from 'js-cookie';
 import { useState, useEffect, useRef } from 'react';
+import Cookies from 'js-cookie';
 import axios from 'axios';
 
 export default function Navbar() {
@@ -47,6 +47,7 @@ export default function Navbar() {
       Cookies.remove('user-auth');
       Cookies.remove('user-fName')
       Cookies.remove('user-lName')
+      Cookies.remove('user-role')
   
       // Update the login state
       setIsLogin(false);

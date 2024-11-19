@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 import Footer from "./Utils/Footer"
 import { useState, useEffect, useRef } from "react"
 import { useNavigate, useLocation } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { hotelData } from "../assets/dummydata";
 import axios from "axios";
@@ -16,7 +18,7 @@ function Home() {
     const containerRef = useRef(null);
     const parentRef = useRef(null);
     const [totalWidth, setTotalWidth] = useState(0);
-
+    const [currentDate, setCurrentDate] = useState('');
     const fetchCalled = useRef(false);
 
         
@@ -24,17 +26,18 @@ function Home() {
     const location = useLocation()
 
 
-    // console.log(totalWidth)
 
     const pageCalculate = () => {
-        return Math.floor(hotelResult.length/4 + 1)
+        return Math.floor(hotelData.length/4 + 1)
     }
 
     const pageSelection = (number) => {
-        return hotelResult.slice((4*number), (4*number)+4)
+        return hotelData.slice((4*number), (4*number)+4)
     }
     const [hotelResult, setHotelResult] = useState([]);
     const [isFetch, setIsFetch] = useState(0);
+
+    console.log(hotelResult)
 
     const [x, setX] = useState(0);
     const [pageselect, setPageselect] = useState(0)
@@ -113,6 +116,13 @@ function Home() {
         }));
     }
 
+    const getMinCheckOutDate = () => {
+        if (!filter.checkIn) return currentDate; // Fallback to current date if check-in is not selected
+        const checkInDate = new Date(filter.checkIn);
+        checkInDate.setDate(checkInDate.getDate() + 1); // Add one day
+        return checkInDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+    };
+
     // const petType = queryParams.get("petType") || null;
     // const hotelName = queryParams.get("hotelName") || null;
     // const district = queryParams.get("district") || null;
@@ -130,7 +140,11 @@ function Home() {
     const queryParams = new URLSearchParams(location.search);
 
     useEffect(() => {
-
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const day = String(today.getDate()).padStart(2, '0');
+        setCurrentDate(`${year}-${month}-${day}`);
 
         console.log('Current query:', location.search);
         const fetchData = async () => {
@@ -142,6 +156,7 @@ function Home() {
                 setHotelResult(res.data)
                 setIsFetch(1);
                 console.log(res.data);
+                
 
             } catch (err){
                 console.log(err)
@@ -158,7 +173,7 @@ function Home() {
 
         setPagenumber(pageCalculate)
         setPagedata(pageSelection(pageselect))
-
+        
         setLoading(true)
         setTimeout(() => {setLoading(false)}, 1000)
 
@@ -246,7 +261,6 @@ function Home() {
         });
     
         setHotelResult(updatedWithPrices);
-        console.log(updatedWithPrices);
     }, [isFetch]);
 
 
@@ -272,6 +286,7 @@ function Home() {
   return (
     <div>
       <Navbar />
+      <ToastContainer position="top-center" autoClose={1000} hideProgressBar />
       {/* section1 */}
       <div className="text-start mt-20 lg:mt-32 bg-pethub-color1 w-11/12 xl:w-10/12 max-w-[1200px] h-[270px] md:h-full mx-auto p-8 md:py-10 md:px-12 xl:px-28 relative rounded-md overflow-hidden z-10 opacity-80">
         <div className="absolute top-0 right-0 left-0 md:bottom-0 z-0">
@@ -313,12 +328,12 @@ function Home() {
             <div className="hidden md:block col-span-1"></div>
             <div className="col-span-6 md:col-span-3">
                 <label className="input w-[40vw] h-[10vw] max-h-12 max-w-full text-[3vw] sm:text-sm input-bordered flex items-center gap-2 input-shadow">
-                    <input type="date" name = "checkIn" value = {filter.checkIn} onChange={handleInputChange} className="grow " />
+                    <input type="date" min={currentDate} name = "checkIn" value = {filter.checkIn} onChange={handleInputChange} className="grow" />
                 </label>
             </div>
             <div className="col-span-6 md:col-span-3">
-                <label className="input w-[40vw] h-[10vw] max-h-12 max-w-full text-[3vw] sm:text-xs input-bordered flex items-center gap-2 input-shadow">
-                    <input type="date" name = "checkOut" value = {filter.checkOut} onChange={handleInputChange} className="grow" />
+                <label className="input w-[40vw] h-[10vw] max-h-12 max-w-full text-[3vw] sm:text-sm input-bordered flex items-center gap-2 input-shadow">
+                    <input type="date" min={getMinCheckOutDate()} name = "checkOut" value = {filter.checkOut} onChange={handleInputChange} className="grow" />
                 </label>
             </div>
             <div className="max-md:row-start-2 col-span-12 md:col-span-4">
@@ -346,55 +361,87 @@ function Home() {
       </div>
       {/* section2 */}
       <div className="mx-auto my-5 grid grid-cols-12 w-11/12 md:w-[750px] h-full lg:w-full gap-5 lg:gap-10">
-        <div className="md:hidden col-span-12 flex justify-between">
-            <div className="w-[27vw] h-[10vw] max-h-10 text-[3vw] sm:text-lg">
-                <select name = "petType" value={filter.petType} onChange={handleInputChange} className="h-full w-full border-2 rounded-lg px-3" style={{ color: 'gray' }}>
-                    <option disabled selected style={{ color: 'gray' }}>ประเภทสัตว์</option>
-                    <option value = "สุนัข" style={{ color: 'black' }}>สุนัข</option>
-                    <option value = "แมว" style={{ color: 'black' }}>แมว</option>
-                    <option value = "สัตว์ประเภทอื่นๆ" style={{ color: 'black' }}>สัตว์ประเภทอื่นๆ</option>
-                </select>
-            </div>
-            <div className="w-[27vw] h-[10vw] max-h-10  text-[3vw] sm:text-lg">
-                <select name="district" value={filter.district} onChange={handleInputChange} className="h-full w-full border-2 rounded-lg px-3" style={{ color: 'gray' }}>
-                    <option disabled selected style={{ color: 'gray' }}>สถานที่ตั้ง</option>
-                    {districts.map((district, index) => (
-                        <option value = {district} key={index} style={{ color: 'black' }}>
-                            {district}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div className="w-[27vw] h-[10vw] max-h-10 text-[3vw] sm:text-lg">
-                <select className="h-full w-full border-2 rounded-lg px-3" style={{ color: 'gray' }}>
-                    <option disabled selected style={{ color: 'gray' }}>ช่วงราคา</option>
-                    <option style={{ color: 'black' }}>500-2000 บาท</option>
-                    <option style={{ color: 'black' }}>2000-5000 บาท</option>
-                </select>
-            </div>
+      <div className="md:hidden col-span-12 flex justify-between">
+        <div className="w-[27vw] h-[10vw] max-h-10 text-[3vw] sm:text-lg">
+            <select
+                name="petType"
+                value={filter.petType}
+                onChange={handleInputChange}
+                className="h-full w-full border-2 rounded-lg px-3 bg-white text-black"
+            >
+                <option disabled selected className="text-gray-500">
+                    ประเภทสัตว์
+                </option>
+                <option value="สุนัข" className="text-black">
+                    สุนัข
+                </option>
+                <option value="แมว" className="text-black">
+                    แมว
+                </option>
+                <option value="สัตว์ประเภทอื่นๆ" className="text-black">
+                    สัตว์ประเภทอื่นๆ
+                </option>
+            </select>
         </div>
+        <div className="w-[27vw] h-[10vw] max-h-10 text-[3vw] sm:text-lg">
+            <select
+                name="district"
+                value={filter.district}
+                onChange={handleInputChange}
+                className="h-full w-full border-2 rounded-lg px-3 bg-white text-black"
+            >
+                <option disabled selected className="text-gray-500">
+                    สถานที่ตั้ง
+                </option>
+                {districts.map((district, index) => (
+                    <option value={district} key={index} className="text-black">
+                        {district}
+                    </option>
+                ))}
+            </select>
+        </div>
+        <div className="w-[27vw] h-[10vw] max-h-10 text-[3vw] sm:text-lg">
+            <select className="h-full w-full border-2 rounded-lg px-3 bg-white text-black">
+                <option disabled selected className="text-gray-500">
+                    ช่วงราคา
+                </option>
+                <option className="text-black">500-2000 บาท</option>
+                <option className="text-black">2000-5000 บาท</option>
+            </select>
+        </div>
+    </div>
+
         <div className="col-span-12">
-            <div className="my-2 lg:my-5 text-[3vw] md:text-sm lg:text-lg text-pethub-color1">{hotelData.length} ผลการค้นหา</div>
+            <div className="my-2 lg:my-5 text-[3vw] md:text-sm lg:text-lg text-pethub-color1">{hotelResult.length} ผลการค้นหา</div>
         </div>
-        {hotelResult.map((hotel, index) => (
-            <div key={index} className="col-span-6 lg:col-span-12 row-span-3">
-                {loading ? <HomeHotelBoxLoading /> : 
-                <HomeHotelBox
-                hotelObj = {hotel}
-                hotelName={hotel.hotelName}
-                reviews={hotel.reviewCount}
-                rating={hotel.avgReviewScore}
-                description={hotel.hotelDescription}
-                price={hotel.lowestPrice}
-                imageUrl={hotel.hotelPhoto}
-                petType = {hotel.petTypeArray}
-                checkIn={filter.checkIn}
-                checkOut={filter.checkOut}
-                />
-                }
-                
-            </div>
-        ))}
+            {hotelResult && hotelResult.length > 0 ? (
+                pagedata.map((hotel, index) => (
+                    <div key={index} className="col-span-6 lg:col-span-12 row-span-3">
+                        {loading ? (
+                            <HomeHotelBoxLoading />
+                        ) : (
+                            <HomeHotelBox
+                                hotelObj={hotel}
+                                hotelName={hotel.hotelName}
+                                reviews={hotel.reviewCount}
+                                rating={hotel.avgReviewScore}
+                                description={hotel.hotelDescription}
+                                price={hotel.lowestPrice}
+                                imageUrl={hotel.hotelPhoto}
+                                petType={hotel.petTypeArray}
+                                checkIn={filter.checkIn}
+                                checkOut={filter.checkOut}
+                            />
+                        )}
+                    </div>
+                ))
+            ) : (
+                <div className="col-span-6 lg:col-span-12 row-span-3">
+                    <HomeHotelBoxLoading />
+
+                </div>
+            )}
+
       </div>
       <div className="w-11/12 xl:w-8/12 h-10 mx-auto flex justify-center items-center mt-8 md:mt-20 gap-5">
         <div className="max-md:text-[2.5vw] flex justify-center items-center cursor-pointer" onClick={() => handlePrev()}>Prev</div>

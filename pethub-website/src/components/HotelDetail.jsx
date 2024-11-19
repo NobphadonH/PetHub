@@ -2,6 +2,7 @@
 import Footer from './Utils/Footer'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
+import Cookies from 'js-cookie';
 import { motion } from 'framer-motion'
 
 function HotelDetail() {
@@ -12,16 +13,16 @@ function HotelDetail() {
     const [totalWidth, setTotalWidth] = useState(0);
     const [barSel, setBarSel] = useState(0)
     const [currentDate, setCurrentDate] = useState('');
- 
+    
     const navigate = useNavigate()
     const location = useLocation()
-
+    
     const hotelData = location.state;
     console.log("HOTELDATA");
     console.log(hotelData);
-
+    
     const petIcon = {"สุนัข": "🐶", "แมว":"🐱", "อื่น ๆ":"🫎"}
-
+    
 
     useEffect(() => {
         console.log(hotelData);
@@ -49,10 +50,11 @@ function HotelDetail() {
     
           mapRef.current = map;
     
-          var marker = new window.longdo.Marker({lon: 100.56, lat: 13.74 });
+          var marker = new window.longdo.Marker({lon: hotelData.mapLong, lat: hotelData.mapLat });
+        
           map.Overlays.add(marker);
           map.zoomRange({ min: 6, max: 20 });
-          map.location({ lon: 100.56, lat: 13.74 }, true);
+          map.location({lon: hotelData.mapLong, lat: hotelData.mapLat }, true);
         //   map.Ui.DPad.visible(false);
           map.Ui.Zoombar.visible(false);
           map.Ui.Geolocation.visible(false);
@@ -86,13 +88,18 @@ function HotelDetail() {
           };
       }, []);
     
-      const handleAddressClick = () => {
+      const handleAddressRightClick = (e) => {
+        e.preventDefault(); // Prevent the default context menu from appearing
+      
         if (mapRef.current) {
-          mapRef.current.location({lon: 100.56, lat: 13.74  }, true);
+          mapRef.current.location(
+            { lon: hotelData.mapLong, lat: hotelData.mapLat },
+            true
+          );
           mapRef.current.zoom(14, true);
         }
-        // navigate(`https://www.google.com/maps?q=${hotelData.mapLat},${hotelData.mapLong}`)
       };
+      
 
     const handleSelect = (e) => {
         setBarSel(e.target.id)
@@ -102,15 +109,37 @@ function HotelDetail() {
     const checkIn = hotelData.checkIn
     const checkOut = hotelData.checkOut
     const goBooking = (room) => {
-        const roomData = {
-            ...room,
-            checkIn,
-            checkOut
+        const token = Cookies.get("user-auth");
+      
+        if (!token) {
+          navigate("/pethub-website/signin");
+          return;
         }
-        console.log(roomData)
-        navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, {state : roomData})
+      
+        const roomData = {
+          ...room,
+          checkIn,
+          checkOut
+        };
+        console.log(roomData);
+        navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData });
+      };
+      
+    function mapHotelType(typeNumber) {
+    switch (typeNumber) {
+        case "1":
+        return "โรงแรมสัตว์เลี้ยงระดับมืออาชีพ";
+        case "2":
+        return "เดย์แคร์สัตว์เลี้ยง";
+        case "3":
+        return "โรงพยาบาลหรือคลินิกสัตว์";
+        case "4":
+        return "คาเฟ่สัตว์";
+        default:
+        return "ไม่ทราบประเภทโรงแรม"; // Default case for unknown types
     }
-    
+    }
+      
 
 
   return (
@@ -118,9 +147,12 @@ function HotelDetail() {
      <Navbar /> 
      <div className='mt-20 md:mt-28 w-[96vw] lg:w-11/12 xl:w-11/12 2xl:w-[1280px] grid grid-cols-12 grid-rows-2 h-[500px] max-lg:h-[45vw] xl:h-[600px] mx-auto gap-1 lg:gap-3 xl:gap-5'>
         {/* <div className='col-start-8 rounded-md col-span-5 row-span-1 bg-gray-300'></div>
-        <div className='col-start-8 rounded-md col-span-5 row-start-2 bg-gray-300'></div>
-        <div className='row-start-1 rounded-md col-span-7 row-span-2 bg-gray-300'></div> */}
-        <img src={hotelData.hotelPhoto} className="row-start-1 rounded-md col-span-7 row-span-2 bg-gray-300" />
+        <div className='col-start-8 rounded-md col-span-5 row-start-2 bg-gray-300'></div> */}
+        <div className='row-start-1 rounded-md col-span-12 row-span-2 bg-gray-300 relative overflow-hidden'>
+            <img src={hotelData.hotelPhoto} className="absolute w-full h-full bg-gray-300" />
+
+        </div>
+        
 
      </div>
      <div className='mt-5 md:mt-10 w-[96vw] lg:w-11/12 xl:w-11/12 2xl:w-[1280px] h-full mx-auto'>
@@ -304,7 +336,7 @@ function HotelDetail() {
                     <div className='w-full '>
                         <div className='flex justify-between items-center mt-[1vw] md:mt-5'>
                             <div className='text-start'>ประเภท: </div>
-                            <div className='max-w-40 font-normal transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>{hotelData.hotelType}</div>
+                            <div className='max-w-40 font-normal transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>{mapHotelType(hotelData.hotelType)}</div>
                         </div>
                         <div className='flex justify-between items-start mt-2'>
                             {/* <div className='text-start transition-all duration-300 ease-in-out max-lg:line-clamp-1 max-lg:overflow-hidden'>ประเภทห้อง: </div>
@@ -314,9 +346,9 @@ function HotelDetail() {
                         </div>
                         <div className='flex justify-between items-start mt-2'>
                             <div className='text-start transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>สัตว์เลี้ยงที่รับ: </div>
-                            <div className='max-w-40 transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>
+                            <div className='max-w-40 flex gap-2'>
                             {hotelData.petTypeArray.map((pet, index) => (
-                                    <div key={index} className="text-2xl"> {petIcon[pet]}</div>
+                                    <div key={index}>{pet}</div>
                             ))}                            
                             </div>
                             </div>
@@ -329,9 +361,13 @@ function HotelDetail() {
                             </div>
                         </div>
                     </div>
-                    <a className="flex mt-6 md:mt-0 justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium">
-                        <a >ติดต่อสอบถาม</a>
-                    </a>
+                    <div className=' mt-6 md:mt-0'>
+                        <div className='text-start text-[2vw] md:text-sm md:my-2 transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden text-gray-400'>ท่านสามารถติดต่อทางโรงแรมเพื่อสอบถามข้อมูลเพิ่มเติม</div>
+                        <a className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium">
+                            <a >ติดต่อสอบถาม</a>
+                        </a>
+
+                    </div>
 
                 </div>
             </div>
