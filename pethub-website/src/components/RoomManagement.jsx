@@ -3,6 +3,7 @@ import CalendarComponent from "./Utils/CalendarComponent"
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function RoomManagement() {
     const [roomDetails, setRoomDetails] = useState(null);
@@ -11,9 +12,13 @@ function RoomManagement() {
     const [allDatesBetweenBookings, setAllDatesBetweenBookings] = useState(null)
     const { roomID } = useParams();
     const roomTypeID = roomID;
+    const navigate = useNavigate();
 
     console.log(selectedBooking)
 
+    const handleAddRoomClick = () => {
+        navigate('/pethub-website/addrooms'); // Navigate to the add rooms page
+      };
 
     const formatDate = (date) => {
         if (!date) return ''; // Handle null or undefined date
@@ -213,7 +218,9 @@ function RoomManagement() {
             </div>
             <div className="flex justify-between items-center">
                 <div className="text-[2.5vw] md:text-base lg:text-xl">สถานะ: <span className=" text-red-500">Not Avalaible</span></div>
-                <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-24 sm:h-10 md:w-28 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">แก้ไขข้อมูล</div>
+                <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-24 sm:h-10 md:w-28 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base"
+                    onClick={handleAddRoomClick}>
+                    แก้ไขข้อมูล</div>
             </div>
         </div>
      </div>

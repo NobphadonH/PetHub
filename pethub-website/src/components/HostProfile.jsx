@@ -3,8 +3,7 @@ import { motion } from "framer-motion"
 import { useState, useRef, useEffect } from "react";
 import TextEditor from "./Utils/TextEditor";
 import axios from "axios";
-
-
+import { useNavigate } from 'react-router-dom';
 
 function HostProfile() {
     const containerRef = useRef(null);
@@ -13,6 +12,7 @@ function HostProfile() {
     const [hotelData, setHotelData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     const formatDate = (date) => {
       if (!date) return ''; // Handle null or undefined date
@@ -25,14 +25,23 @@ function HostProfile() {
       return `${day}/${month}/${year}`; // Return formatted date in AD
     };
 
+    const handleDetailClick = (roomID) => {
+      // Navigate to the specified route with the roomID
+      navigate(`/pethub-website/hostprofile/${roomID}`);
+    };
+
+    const handleAddRoomClick = () => {
+      navigate('/pethub-website/addrooms'); // Navigate to the add rooms page
+    };
+
     // Fetch data from the backend
   useEffect(() => {
     const fetchHotelProfile = async () => {
       try {
 
         //const hotelID = "1"; // Example hotelID, replace dynamically as needed
-        const fName = "Pet"; // Retrieve this from cookies or state
-        const lName = "Hotel";   // Retrieve this from cookies or state
+        const fName = "Doggy"; // Retrieve this from cookies or state
+        const lName = "Den";   // Retrieve this from cookies or state
 
         const response = await axios.get(`http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`);
         console.log(`URL: http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`);
@@ -109,7 +118,12 @@ function HostProfile() {
      <div className=" text-[3vw] md:text-2xl lg:text-3xl text-start mt-[6vw] md:mt-10 lg:mt-16 w-11/12 xl:w-10/12 max-w-[1200px] mx-auto font-semibold">
     <div className="my-[2vw] md:my-4 w-full flex justify-between gap-5">
         <div>จัดการห้องพัก</div>
-        <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-24 sm:h-10 md:w-28 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">เพิ่มห้องพัก</div>
+        <button
+      className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-24 sm:h-10 md:w-28 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base"
+      onClick={handleAddRoomClick} // Handle click to navigate
+    >
+      เพิ่มห้องพัก
+    </button>
     </div>
      </div>
      <div className="w-11/12 xl:w-10/12 max-w-[1200px] mx-auto">
@@ -127,9 +141,11 @@ function HostProfile() {
                             <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-lg md:my-1 lg:my-3'>{room.petAllowedType}</div>
                             <div className='text-[1.5vw] md:text-xs lg:text-sm xl:text-base transition-all duration-300 ease-in-out line-clamp-2 overflow-hidden text-gray-400'>{room.roomDetail}</div>
                             <div className='text-[2vw] md:text-base my-[1vw] md:my-2 lg:my-5'>{room.pricePerNight} บาท/คืน</div>
-                            <a href={`/pethub-website/home/hostprofile/room${room.roomTypeID}`} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium">
-                                <a >จัดการห้องพัก</a>
-                            </a>
+                            <button
+                              className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium"
+                              onClick={() => handleDetailClick(room.roomTypeID)}>
+                              จัดการห้องพัก
+                            </button>
                         </div>
                     </div>
                 ))}
@@ -176,7 +192,7 @@ function HostProfile() {
                     <span className="badge badge-ghost badge-sm bg-green-100 text-[2.5vw] sm:text-xs lg:text-sm xl:text-base">{booking.bookingStatus}</span>
                   </td>
                   <th>
-                    <button className="btn btn-ghost btn-xs"><span className="max-lg:hidden ">รายละเอียด</span>
+                    <button className="btn btn-ghost btn-xs" onClick={() => handleDetailClick(booking.roomTypeID)}><span className="max-lg:hidden ">รายละเอียด</span>
 
                     </button>
                   </th>
