@@ -2,6 +2,8 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Navbar from "./Utils/Navbar";
 import { useState, useEffect, useRef } from 'react';
 import PictureUpload from "./Utils/PictureUpload";
+import Cookies from "js-cookie"
+import axios from "axios";
 
 function RoomsBooking() {
   const param = useParams();
@@ -12,6 +14,8 @@ function RoomsBooking() {
   const elementRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
 
+  const [petData, setPetData] = useState([]);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,6 +23,9 @@ function RoomsBooking() {
   const hotelData = location.hotelState;
   console.log("ROOMDATA");
   console.log(location);
+
+//   const cookie  = Cookies.get("jwt");
+
 
   useEffect(() => {
     // Get today's date in the format YYYY-MM-DD
@@ -42,7 +49,25 @@ function RoomsBooking() {
     const dayDifference = timeDifference / (1000 * 60 * 60 * 24);
     return dayDifference
   }
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const res = await axios.get("http://localhost:5000/api/pet/getMatchingPets", {
+                params:{ petAllowedType: roomData.petAllowedType}, 
+                withCredentials: true, 
+              });            
+              setPetData(res.data);
+            console.log(res.data);
 
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    fetchData()
+  }, [])
+
+  
   
   const countPrice = (checkIn, checkOut, pricePerNight) => {
     const date1 = new Date(checkIn);
@@ -107,6 +132,7 @@ function RoomsBooking() {
     <>
         <Navbar />
         <div className='mt-20 md:mt-28 w-[96vw] lg:w-11/12 xl:w-11/12 2xl:w-[1280px] grid grid-cols-12 grid-rows-2 max-lg:h-[35vw] lg:h-[300px] mx-auto gap-1 lg:gap-3 xl:gap-5'>
+
             <div className='row-start-1 rounded-md col-span-5 row-span-2 bg-gray-300'>
                 <img src={roomData.roomPhoto} className="w-full h-full object-cover rounded-md" />
             </div>
@@ -116,30 +142,31 @@ function RoomsBooking() {
             <div className='col-start-11 rounded-md col-span-2 row-span-2 bg-gray-300'>
                 <img src={roomData.roomPhoto} className="w-full h-full object-cover rounded-md" />
             </div>
+
         </div>
         <div className='w-full h-full bg-[#F4F4F4] mt-10'>
         <div className="w-[90vw] lg:w-11/12 xl:w-10/12 2xl:w-[1280px] h-full mx-auto py-[1vw] lg:py-10 grid grid-cols-12 gap-x-[3%] md:gap-4">
             <div className='max-md:basis-full col-span-12 md:col-span-8 max-md:py-[2vw] max-lg:py-5 flex flex-col gap-[5vw] md:gap-10'>
                 <div>
+
                     <h1 className='text-start text-[5vw] md:text-2xl lg:text-3xl xl:text-5xl uppercase font-bold transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>{param.hotelName} <span className="font-normal text-[3vw] md:text-lg lg:text-1xl xl:text-3xl text-gray-500">{roomData.roomTypeName}({roomData.petAllowedType})</span></h1>
                     <div className="flex my-[1vw] md:my-3 lg:my-4 gap-1 items-center">
+
                         {Array.from({ length: 5 }).map((_, index) => (
                         <svg key={index} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-star-fill w-[8px] sm:w-[12px] lg:w-[16px] text-yellow-400" viewBox="0 0 16 16">
                             <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                         </svg>
                         ))}
-                        <div className="max-md:text-[2vw] ml-1 md:ml-3">
-                        {5} ({1200} Reviews)
-                        </div>
-                    </div>
+                    </div> 
                     <div className='flex gap-3 items-center justify-start text-gray-400'>
                         <div className=' text-start text-[10px] sm:text-[2vw] md:text-xs xl:text-sm  transition-all duration-300 ease-in-out max-lg:line-clamp-3 max-lg:overflow-hidden'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Labore sed enim illum, nulla error, consectetur sequi rem delectus reiciendis accusamus doloremque alias ipsa impedit minima beatae aperiam amet accusantium quia? Tempore, obcaecati id cum at fugit enim quia reiciendis eius animi similique? Dignissimos amet nam, aperiam soluta perferendis laboriosam quidem.</div>
                     </div>
                 </div>
                 <div className="md:hidden w-full h-[35vw] bg-white rounded-lg overflow-hidden flex">
                     <div className="relative w-[40%] h-full bg-slate-400">
-                        <img className="absolute bottom-0" src="https://temporary-cdn.wezhan.net/contents/sitefiles3603/18016482/images/7480295.jpg" alt="" />
+                        <img className="absolute bottom-0" src={roomData.roomPhoto} alt="" />
                     </div>
+                
                 <div className="w-[60%] h-full p-[3vw] flex flex-col justify-between">
                     <div>
                         <div className='flex justify-between items-end'>
@@ -209,9 +236,9 @@ function RoomsBooking() {
                                     <p className="text-[3vw] md:text-xs lg:text-lg">สัตว์เลี้ยงของฉัน</p>
                                 </div>
                                 <div className="h-24 w-full overflow-y-scroll hide-scrollbar">
-                                    {Array.from({ length: 2}).map((_, index) => {
+                                    {petData.map((_, index) => {
                                         return (
-                                            <div key={index} className="w-full h-12 lg:h-16 flex items-center justify-between px-5 bg-gray-white">
+                                            <div key={index} className="w-full h-8 lg:h-16 flex items-center justify-between px-5 bg-gray-white">
                                                 <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-3">นปโปะ</p>
                                                 <div className="hover:scale-110">
                                                     <svg onClick={() => handleAddMyPet(index)} xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" className="text-pethub-color3 max-lg:w-6 max-lg:h-6 bi bi-plus-square-fill" viewBox="0 0 16 16">
@@ -222,14 +249,14 @@ function RoomsBooking() {
                                         )
                                     })}
                                 </div>
-                                <div className="w-full h-12 lg:h-16 bg-gray-100 flex items-center px-5 justify-between cursor-pointer">
-                                    <p className="text-[3vw] md:text-xs lg:text-lg">กำหนดสัตว์เลี้ยงเอง</p>
+                                {/* <div className="w-full h-12 lg:h-16 bg-gray-100 flex items-center px-5 justify-between cursor-pointer">
+                                    <p className="text-[3vw] md:text-xs lg:text-lg">เพิ่มสัตว์เลี้ยง</p>
                                     <div  onClick={handleAddCustom} className="hover:scale-110">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" className="text-gray-500 max-lg:w-6 max-lg:h-6 bi bi-plus-square-fill" viewBox="0 0 16 16">
                                         <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0"/>
                                         </svg>
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                             {Array.from({ length: 2}).map((_, index) => (
                                 <div id={index} key={index} className={`${myPet[index] ? "" : "hidden"} w-full relative h-28 sm:h-36 lg:h-40 xl:h-44 border-[1px] my-3 rounded-md p-1 flex`}>
@@ -329,7 +356,7 @@ function RoomsBooking() {
             <div className='max-md:hidden max-md:w-full max-md:h-[40vw] max-md:my-[2vw] h-[320px] lg:h-[400px] xl:h-[500px] bg-white rounded-md col-span-4'>
                 <div className='w-[45vw] md:w-full h-full bg-white rounded-lg overflow-hidden'>
                     <div className='relative w-full h-[55%] overflow-hidden bg-slate-200'>
-                        <img className="absolute bottom-0" src="https://temporary-cdn.wezhan.net/contents/sitefiles3603/18016482/images/7480295.jpg" alt="" />
+                        <img className="absolute bottom-0" src={roomData.roomPhoto} alt="" />
                     </div>
                     <div className='w-full h-[45%] p-[2vw] md:p-4 text-start'>
                         <div className='flex justify-between items-end'>

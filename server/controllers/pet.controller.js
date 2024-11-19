@@ -331,9 +331,13 @@ export const updatePetByPetID = async (req, res) => {
 
 export const getMatchingPets = async (req, res) => {
   try {
-    const { petAllowedType } = req.body;
+    // const { petAllowedType } = req.body;
     const { dbpool, sshClient } = await connectToDatabase();
     const userID = req.user.userID;
+    const petAllowedType = req.query.petAllowedType
+
+    console.log(userID)
+    console.log(req.query)
 
     dbpool.getConnection((err, connection) => {
       if (err) {
