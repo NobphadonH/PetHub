@@ -29,8 +29,13 @@ function HostProfile() {
   useEffect(() => {
     const fetchHotelProfile = async () => {
       try {
-        const hotelID = "1"; // Example hotelID, replace dynamically as needed
-        const response = await axios.get(`http://localhost:5000/api/getHotelProfile/hostprofile/${hotelID}`);
+
+        //const hotelID = "1"; // Example hotelID, replace dynamically as needed
+        const fName = "Pet"; // Retrieve this from cookies or state
+        const lName = "Hotel";   // Retrieve this from cookies or state
+
+        const response = await axios.get(`http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`);
+        console.log(`URL: http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`);
         console.log("Fetched hotel profile:", response.data);
         setHotelData(response.data);
         setLoading(false);
@@ -65,7 +70,7 @@ function HostProfile() {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
   
-    const { hotelID, hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, fName, lName, phone, rooms, bookings } = hotelData;
+    const { hotelID, hotelPhoto, hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, fName, lName, phone, rooms, bookings } = hotelData;
 
   return (
     <>
@@ -75,7 +80,7 @@ function HostProfile() {
         <div className="absolute top-1 lg:top-3 left-0 bottom-1 lg:bottom-3 w-[1vw] md:w-[5px] bg-pethub-color6"></div>
         <div className="absolute top-1 lg:top-3 right-0 bottom-1 lg:bottom-3 w-[1vw] md:w-[5px] bg-pethub-color1"></div>
         <div className="w-[35vw] md:w-[270px] lg:w-[350px] xl:w-[400px] h-full bg-slate-200 rounded-sm overflow-hidden relative">
-            <img className="absolute w-full h-full object-cover" src="https://digital.ihg.com/is/image/ihg/intercontinental-dhaka-8304538615-2x1" alt="" />
+            <img className="absolute w-full h-full object-cover" src={hotelPhoto} alt="" />
         </div>
         <div className="h-full flex flex-col justify-between grow px-[2vw] pt-[2vw] md:px-4 md-pt-4 lg:px-7 lg:pt-7">
             <div className="flex flex-col gap-[1vw] md:gap-3">
@@ -119,8 +124,8 @@ function HostProfile() {
                                 <div className='text-[2vw] md:text-sm lg:text-base xl:text-lg'>{room.roomSize} ตร.ม.</div>
                             </div>
                             {/* <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-lg md:my-1 lg:my-3'>ของเล่นแมว, อาหาร, อาบน้ำ, ดูแล 24 ชั่วโมง</div> */}
-                            <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-lg md:my-1 lg:my-3'>{room.roomDetail}</div>
-                            <div className='text-[1.5vw] md:text-xs lg:text-sm xl:text-base transition-all duration-300 ease-in-out line-clamp-2 overflow-hidden text-gray-400'>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque voluptatum dolor, ipsam natus similique aperiam eveniet quos, magni voluptatem deserunt odio aspernatur reprehenderit laborum molestias illum unde ipsum libero pariatur?</div>
+                            <div className='text-[1.8vw] md:text-sm lg:text-sm xl:text-lg md:my-1 lg:my-3'>{room.petAllowedType}</div>
+                            <div className='text-[1.5vw] md:text-xs lg:text-sm xl:text-base transition-all duration-300 ease-in-out line-clamp-2 overflow-hidden text-gray-400'>{room.roomDetail}</div>
                             <div className='text-[2vw] md:text-base my-[1vw] md:my-2 lg:my-5'>{room.pricePerNight} บาท/คืน</div>
                             <a href={`/pethub-website/home/hostprofile/room${room.roomTypeID}`} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium">
                                 <a >จัดการห้องพัก</a>

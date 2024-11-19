@@ -2,7 +2,10 @@ import { connectToDatabase } from "../utils/dbConnection.js";
 
 // Get Hotel Profile with User Details
 export const getHotelProfile = async (req, res) => {
-    const hotelID = req.params.hotelID;
+    const { fName, lName } = req.params
+    console.log(req.params);
+    console.log(fName);
+    console.log(lName);
     
     const { dbpool, sshClient } = await connectToDatabase();
     dbpool.getConnection((err, connection) => {
@@ -15,7 +18,7 @@ export const getHotelProfile = async (req, res) => {
         // Updated query to include user information
         const hotelQuery = `
             SELECT 
-                H.hotelID, H.hotelName, H.hotelType, H.hotelDescription, 
+                H.hotelID, H.hotelName, H.hotelType, H.hotelDescription, H.hotelPhoto,
                 H.hotelPolicy, H.hotelAddress,
                 U.fName, U.lName, U.phone
             FROM 
@@ -23,10 +26,13 @@ export const getHotelProfile = async (req, res) => {
             JOIN 
                 Users U ON H.userID = U.userID
             WHERE 
-                H.hotelID = ?;
+                U.fName = ? AND U.lName = ?;
         `;
 
-        const roomQuery = `SELECT roomTypeID, roomTypeName, roomCapacity, numberOfRoom, roomSize, roomDetail, petAllowedType, pricePerNight, roomPhoto FROM RoomTypes WHERE hotelID = ?`;
+        const roomQuery = `
+            SELECT roomTypeID, roomTypeName, roomCapacity, numberOfRoom, roomSize, roomDetail, petAllowedType, pricePerNight, roomPhoto 
+            FROM RoomTypes
+            WHERE hotelID = ?`;
         const bookingQuery = `
             SELECT 
                 B.bookingID, B.checkInDate, B.roomTypeID, B.checkOutDate, B.bookingStatus
@@ -40,7 +46,7 @@ export const getHotelProfile = async (req, res) => {
                 B.checkInDate DESC
         `;
 
-        connection.query(hotelQuery, [hotelID], (hotelErr, hotelResult) => {
+        connection.query(hotelQuery, [fName, lName], (hotelErr, hotelResult) => {
             if (hotelErr) {
                 console.log(hotelErr);
                 res.status(500).json({ message: "Failed to fetch hotel profile" });
@@ -53,6 +59,8 @@ export const getHotelProfile = async (req, res) => {
                 sshClient.end();
                 return;
             }
+
+            const hotelID = hotelResult[0].hotelID;  // Define hotelID here
 
             // Fetch associated room types
             connection.query(roomQuery, [hotelID], (roomErr, roomResults) => {
