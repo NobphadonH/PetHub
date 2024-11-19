@@ -16,8 +16,9 @@ function RoomsBooking() {
   const location = useLocation();
 
   const roomData = location.state;
+  const hotelData = location.hotelState;
   console.log("ROOMDATA");
-  console.log(roomData);
+  console.log(location);
 
   useEffect(() => {
     // Get today's date in the format YYYY-MM-DD
@@ -106,15 +107,21 @@ function RoomsBooking() {
     <>
         <Navbar />
         <div className='mt-20 md:mt-28 w-[96vw] lg:w-11/12 xl:w-11/12 2xl:w-[1280px] grid grid-cols-12 grid-rows-2 max-lg:h-[35vw] lg:h-[300px] mx-auto gap-1 lg:gap-3 xl:gap-5'>
-            <div className='row-start-1 rounded-md col-span-5 row-span-2 bg-gray-300'></div>
-            <div className='col-start-6 rounded-md col-span-5 row-span-2 bg-gray-300'></div>
-            <div className='col-start-11 rounded-md col-span-2 row-span-2 bg-gray-300'></div>
+            <div className='row-start-1 rounded-md col-span-5 row-span-2 bg-gray-300'>
+                <img src={roomData.roomPhoto} className="w-full h-full object-cover rounded-md" />
+            </div>
+            <div className='col-start-6 rounded-md col-span-5 row-span-2 bg-gray-300'>
+                <img src={roomData.roomPhoto} className="w-full h-full object-cover rounded-md" />
+            </div>
+            <div className='col-start-11 rounded-md col-span-2 row-span-2 bg-gray-300'>
+                <img src={roomData.roomPhoto} className="w-full h-full object-cover rounded-md" />
+            </div>
         </div>
         <div className='w-full h-full bg-[#F4F4F4] mt-10'>
         <div className="w-[90vw] lg:w-11/12 xl:w-10/12 2xl:w-[1280px] h-full mx-auto py-[1vw] lg:py-10 grid grid-cols-12 gap-x-[3%] md:gap-4">
             <div className='max-md:basis-full col-span-12 md:col-span-8 max-md:py-[2vw] max-lg:py-5 flex flex-col gap-[5vw] md:gap-10'>
                 <div>
-                    <h1 className='text-start text-[5vw] md:text-2xl lg:text-3xl xl:text-5xl uppercase font-bold transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>{param.hotelname} <span className="font-normal text-[3vw] md:text-lg lg:text-1xl xl:text-3xl text-gray-500">ห้องขนาดทั่วไป(แมว)</span></h1>
+                    <h1 className='text-start text-[5vw] md:text-2xl lg:text-3xl xl:text-5xl uppercase font-bold transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>{param.hotelName} <span className="font-normal text-[3vw] md:text-lg lg:text-1xl xl:text-3xl text-gray-500">{roomData.roomTypeName}({roomData.petAllowedType})</span></h1>
                     <div className="flex my-[1vw] md:my-3 lg:my-4 gap-1 items-center">
                         {Array.from({ length: 5 }).map((_, index) => (
                         <svg key={index} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-star-fill w-[8px] sm:w-[12px] lg:w-[16px] text-yellow-400" viewBox="0 0 16 16">

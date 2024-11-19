@@ -19,7 +19,7 @@ function HotelDetail() {
     
     const hotelData = location.state;
     console.log("HOTELDATA");
-    console.log(hotelData);
+    // console.log(hotelData);
     
     const petIcon = {"สุนัข": "🐶", "แมว":"🐱", "อื่น ๆ":"🫎"}
     
@@ -121,8 +121,8 @@ function HotelDetail() {
           checkIn,
           checkOut
         };
-        console.log(roomData);
-        navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData });
+        console.log(hotelData);
+        navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData, hotelState: hotelData });
       };
       
     function mapHotelType(typeNumber) {
