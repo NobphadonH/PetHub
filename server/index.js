@@ -10,6 +10,7 @@ import roomRoutes from "./routes/room.route.js";
 import getHotelProfileRoutes from "./routes/getHotelProfile.route.js";
 import roomManageRoutes from "./routes/roomManage.route.js";
 import paymentRoutes from "./routes/payment.route.js";
+import reviewRoutes from "./routes/review.route.js";
 import cookieParser from "cookie-parser";
 
 const app = express();
@@ -40,6 +41,7 @@ app.use("/api/room", roomRoutes);
 app.use("/api/getHotelProfile", getHotelProfileRoutes);
 app.use("/api/roomManage", roomManageRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/review", reviewRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
