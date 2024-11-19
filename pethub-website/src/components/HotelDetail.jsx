@@ -347,15 +347,13 @@ function HotelDetail() {
                         <div className='flex justify-between items-start mt-2'>
                             <div className='text-start transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>สัตว์เลี้ยงที่รับ: </div>
                             <div className='max-w-40 flex gap-2'>
-                            {hotelData.petTypeArray.map((pet, index) => (
-                                    <div key={index}>{pet}</div>
-                            ))}                            
+                            {hotelData.roomsAvailable[0].petAllowedType}                          
                             </div>
                             </div>
                         <div className='flex justify-between items-start mt-2'>
                             <div className='text-start'>ราคา: </div>
                             <div className='flex justify-end gap-2'>
-                                <div className='max-w-40 font-normal transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'> {hotelData.lowestPrice == hotelData.highestPrice ? hotelData.lowestPrice : hotelData.lowestPrice + " - " + hotelData.highestPrice} บาท</div>
+                                <div className='max-w-40 font-normal transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'> {hotelData.roomsAvailable[0].pricePerNight} บาท</div>
   
 
                             </div>

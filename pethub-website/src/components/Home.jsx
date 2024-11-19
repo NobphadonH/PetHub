@@ -27,17 +27,23 @@ function Home() {
 
 
 
-    const pageCalculate = () => {
-        return Math.floor(hotelData.length/4 + 1)
-    }
-
-    const pageSelection = (number) => {
-        return hotelData.slice((4*number), (4*number)+4)
-    }
+    const pageCalculate = (data) => {
+        if (!data || !Array.isArray(data) || data.length === 0) {
+            return 0;
+        }
+        return Math.ceil(data.length / 4); // Use Math.ceil to cover all items
+    };
+    
+    const pageSelection = (data, number) => {
+        if (!data || !Array.isArray(data) || number < 0) {
+            return [];
+        }
+        return data.slice(4 * number, 4 * number + 4); // Slice the data for the current page
+    };
+    
     const [hotelResult, setHotelResult] = useState([]);
     const [isFetch, setIsFetch] = useState(0);
 
-    console.log(hotelResult)
 
     const [x, setX] = useState(0);
     const [pageselect, setPageselect] = useState(0)
@@ -55,6 +61,7 @@ function Home() {
     // })
     const [filter, setFilter] = useState({})
 
+    console.log(pagedata)
 
 
     const [searchCounter, setSearchCounter] = useState(0); // counter for unique searches
@@ -152,14 +159,27 @@ function Home() {
             try {
                 console.log(filter);
                 console.log(queryParams);
+            
+                // Fetch data from the API
                 const res = await axios.get(`http://localhost:5000/api/roomSearch/getHotelAndRoomByFilter/?${queryParams}`);
-                setHotelResult(res.data)
+            
+                const fetchedData = res.data; // Store the fetched data
+                setHotelResult(hotelData); // Set the hotel result
                 setIsFetch(1);
-                console.log(res.data);
-                
-
-            } catch (err){
-                console.log(err)
+            
+                console.log(fetchedData);
+            
+                // Calculate the number of pages and set the first page data
+                const totalPages = pageCalculate(hotelData); // Pass the fetched data
+                setPagenumber(totalPages);
+            
+                // Ensure pageselect is correctly initialized
+                const currentPage = pageselect || 0; // Default to page 0 if pageselect is not set
+                const paginatedData = pageSelection(hotelData, currentPage); // Get the sliced data for the current page
+            
+                setPagedata(paginatedData);
+            } catch (error) {
+                console.error(error);
             }
         }
         
@@ -171,11 +191,15 @@ function Home() {
 
     useEffect( () => {
 
-        setPagenumber(pageCalculate)
-        setPagedata(pageSelection(pageselect))
+        const totalPages = pageCalculate(hotelResult); // Pass the fetched data
+        setPagenumber(totalPages);
+
+        const currentPage = pageselect || 0; // Default to page 0 if pageselect is not set
+        const paginatedData = pageSelection(hotelResult, currentPage);
         
         setLoading(true)
         setTimeout(() => {setLoading(false)}, 1000)
+        setPagedata(paginatedData);
 
         const updateWidth = () => {
             if (containerRef.current && parentRef.current) {
@@ -414,7 +438,7 @@ function Home() {
         <div className="col-span-12">
             <div className="my-2 lg:my-5 text-[3vw] md:text-sm lg:text-lg text-pethub-color1">{hotelResult.length} ผลการค้นหา</div>
         </div>
-            {hotelResult && hotelResult.length > 0 ? (
+            {pagedata && hotelResult.length > 0 ? (
                 pagedata.map((hotel, index) => (
                     <div key={index} className="col-span-6 lg:col-span-12 row-span-3">
                         {loading ? (
@@ -426,7 +450,7 @@ function Home() {
                                 reviews={hotel.reviewCount}
                                 rating={hotel.avgReviewScore}
                                 description={hotel.hotelDescription}
-                                price={hotel.lowestPrice}
+                                price={hotel.roomsAvailable[0].pricePerNight}
                                 imageUrl={hotel.hotelPhoto}
                                 petType={hotel.petTypeArray}
                                 checkIn={filter.checkIn}

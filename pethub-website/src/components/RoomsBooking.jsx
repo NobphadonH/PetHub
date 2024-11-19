@@ -34,8 +34,26 @@ function RoomsBooking() {
 
   }, []);
 
-  
+  const numberOfDate = (checkIn, checkOut) => {
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+    const timeDifference = checkOutDate - checkInDate;
+    const dayDifference = timeDifference / (1000 * 60 * 60 * 24);
+    return dayDifference
+  }
 
+  
+  const countPrice = (checkIn, checkOut, pricePerNight) => {
+    const date1 = new Date(checkIn);
+    const date2 = new Date(checkOut);
+    
+    const diffTime = Math.abs(date2 - date1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+    const totalPrice = (diffDays) * parseFloat(pricePerNight);
+  
+    return totalPrice.toFixed(2);
+  }
 
   const handleToggleAdd = () => {
     setAddbut(e => !e)
@@ -122,7 +140,7 @@ function RoomsBooking() {
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ขนาดห้อง</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>25x25 ตรม.</div>
+                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.roomSize} ตรม.</div>
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ประเภท</div>
@@ -134,13 +152,13 @@ function RoomsBooking() {
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ราคา</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>400 บาท</div>
+                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.pricePerNight} บาท</div>
                         </div>
                     </div>
                     <div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[2.5vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ราคาจองรวม</div>
-                            <div className='text-[2.5vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>0 บาท</div>
+                            <div className='text-[2.5vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{countPrice(roomData.checkIn, roomData.checkOut, roomData.pricePerNight)} บาท</div>
                         </div>
                     </div>
                     </div>
@@ -157,6 +175,8 @@ function RoomsBooking() {
                                     name="email"
                                     min={currentDate}
                                     placeholder=""
+                                    value={roomData.checkIn}
+                                    disabled={true} 
                                     className="input input-bordered w-[35vw] sm:w-44 h-[8vw] max-h-10  text-[3vw] sm:h-10 xl:h-12 xl:w-64 sm:text-xs lg:text-sm bg-gray-100 mb-3"
                                 />
                             </div>
@@ -168,6 +188,8 @@ function RoomsBooking() {
                                     name="email"
                                     min={currentDate}
                                     placeholder=""
+                                    value={roomData.checkOut}
+                                    disabled={true} 
                                     className="input input-bordered w-[35vw] sm:w-44 h-[8vw] max-h-10  text-[3vw] sm:h-10 xl:h-12 xl:w-64 sm:text-xs lg:text-sm bg-gray-100 mb-3"
                                 />
                             </div>
@@ -308,7 +330,7 @@ function RoomsBooking() {
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ขนาดห้อง</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>25x25 ตรม.</div>
+                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.roomSize} ตรม.</div>
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ประเภท</div>
@@ -320,7 +342,7 @@ function RoomsBooking() {
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ราคา</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>400 บาท</div>
+                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.pricePerNight} บาท</div>
                         </div>
                     </div>
                 </div>
@@ -328,12 +350,12 @@ function RoomsBooking() {
                     <div className="w-full h-[20%] bg-pethub-color6 flex items-center p-5 justify-start text-white text-xl text-[2.5vw] md:text-base lg:text-xl xl:text-2xl">ราคาการจอง</div>
                     <div className="w-full h-[55%] bg-white px-5 py-3 lg:py-5 flex flex-col gap-3 text-[1.8vw] md:text-xs lg:text-sm xl:text-base md:my-1 lg:my-1">
                         <div className="flex items-center justify-between ">
-                            <div>การจอง 2 คืน</div>
-                            <div className=" text-gray-400">800.00</div>
+                            <div>การจอง {numberOfDate(roomData.checkIn, roomData.checkOut)} คืน</div>
+                            <div className=" text-gray-400">{countPrice(roomData.checkIn, roomData.checkOut, roomData.pricePerNight)}</div>
                         </div>
                         <div className="flex items-center justify-between">
                             <div>สัตว์เลี้ยงที่เข้าพัก 2 ตัว</div>
-                            <div className=" text-gray-400">100.00</div>
+                            <div className=" text-gray-400">0.00</div>
                         </div>
                         <div className="flex items-center justify-between">
                             <div>ค่าบริการ</div>
@@ -348,7 +370,7 @@ function RoomsBooking() {
                         <hr />
                         <div className="flex items-center justify-between h-[70%] text-[1.8vw] md:text-base lg:text-lg xl:text-xl">
                             <div>ทั้งหมด</div>
-                            <div>800 บาท</div>
+                            <div>{countPrice(roomData.checkIn, roomData.checkOut, roomData.pricePerNight)} บาท</div>
                         </div>
                     </div>
                 </div>
