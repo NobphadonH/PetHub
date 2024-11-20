@@ -164,18 +164,18 @@ function Home() {
                 const res = await axios.get(`http://localhost:5000/api/roomSearch/getHotelAndRoomByFilter/?${queryParams}`);
             
                 const fetchedData = res.data; // Store the fetched data
-                setHotelResult(hotelData); // Set the hotel result
+                setHotelResult(fetchedData); // Set the hotel result
                 setIsFetch(1);
             
                 console.log(fetchedData);
             
                 // Calculate the number of pages and set the first page data
-                const totalPages = pageCalculate(hotelData); // Pass the fetched data
+                const totalPages = pageCalculate(fetchedData); // Pass the fetched data
                 setPagenumber(totalPages);
             
                 // Ensure pageselect is correctly initialized
                 const currentPage = pageselect || 0; // Default to page 0 if pageselect is not set
-                const paginatedData = pageSelection(hotelData, currentPage); // Get the sliced data for the current page
+                const paginatedData = pageSelection(fetchedData, currentPage); // Get the sliced data for the current page
             
                 setPagedata(paginatedData);
             } catch (error) {
