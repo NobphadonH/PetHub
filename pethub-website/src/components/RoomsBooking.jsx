@@ -14,6 +14,8 @@ function RoomsBooking() {
   const elementRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
 
+  const [bookingData, setBookingData] = useState({});
+
   const [petData, setPetData] = useState([]);
 
   const navigate = useNavigate();
@@ -170,7 +172,7 @@ function RoomsBooking() {
                 <div className="w-[60%] h-full p-[3vw] flex flex-col justify-between">
                     <div>
                         <div className='flex justify-between items-end'>
-                            <div className='font-semibold text-[2.5vw] md:text-base lg:text-xl xl:text-2xl'>รายระเอียดของห้องพัก</div>   
+                            <div className='font-semibold text-[2.5vw] md:text-base lg:text-xl xl:text-2xl'>รายละเอียดของห้องพัก</div>   
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ขนาดห้อง</div>
@@ -178,11 +180,11 @@ function RoomsBooking() {
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ประเภท</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>ห้องนาดทั่วไป</div>
+                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.roomTypeName} </div>
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ประเภทสัตว์ที่รับ</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>แมว</div>
+                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.perAllowedType}</div>
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ราคา</div>
@@ -344,7 +346,8 @@ function RoomsBooking() {
                         <div className="z-10">
                             <p className="font-semibold  text-[3vw] md:text-xs lg:text-sm xl:text-sm my-[3vw] md:my-3 lg:my-6">ข้อมูลสัตว์การดูแลสัตว์เลี้ยง</p>
                             <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-3">ข้อมูลสำคัญของน้องๆ ของคุณ เช่น โรคประจำตัว หรือความจำเป็นในการดูแลเป็นพิเศษต่างๆ แนะนำให้แจ้งให้ทางโรงแรมทราบถึงการปฎิบัติดูแลต่างๆ</p>
-                            <textarea className="textarea w-full min-h-[20vw] max-h-[20vw] md:min-h-32 md:max-h-48 lg:min-h-44 lg:max-h-80 text-[2.5vw] md:text-xs lg:text-sm xl:text-sm textarea-bordered" placeholder="ex. ให้อาหาร 3 เวลา, การแปลงขนทุกวัน เป็นต้น"></textarea>
+                            <input className="textarea w-full min-h-[20vw] max-h-[20vw] md:min-h-32 md:max-h-48 lg:min-h-44 lg:max-h-80 text-[2.5vw] md:text-xs lg:text-sm xl:text-sm textarea-bordered" placeholder="ex. ให้อาหาร 3 เวลา, การแปลงขนทุกวัน เป็นต้น" />
+
                         </div>
                         <div className="flex items-center justify-between mt-9">
                             <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-3">โปรดเช็คข้อมูลให้ถูกต้องก่อนทำการจอง</p>
@@ -368,11 +371,11 @@ function RoomsBooking() {
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ประเภท</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>ห้องนาดทั่วไป</div>
+                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.roomTypeName}</div>
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ประเภทสัตว์ที่รับ</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>แมว</div>
+                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.petAllowedType}</div>
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ราคา</div>
