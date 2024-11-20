@@ -177,6 +177,7 @@ function Home() {
                 const currentPage = pageselect || 0; // Default to page 0 if pageselect is not set
                 const paginatedData = pageSelection(fetchedData, currentPage); // Get the sliced data for the current page
             
+                console.log("Fetched")
                 setPagedata(paginatedData);
             } catch (error) {
                 console.error(error);
@@ -291,6 +292,20 @@ function Home() {
     useEffect(()=> {
         console.log(isFetch)
     }, [hotelResult])
+
+
+    useEffect(() => {
+        if (filter.checkIn == null || filter.checkOut == null) {
+            return; 
+        }
+        
+        setSearchCounter(prevCount => prevCount + 1); 
+        const query = new URLSearchParams({...filter, searchCounter}).toString();
+        setIsFetch(0)
+        navigate(`/pethub-website/home?${query}`)
+
+
+    }, [filter.checkIn, filter.checkOut])
 
     const districts = [
         "เขตพระนคร", "เขตดุสิต", "เขตหนองจอก", "เขตบางรัก", "เขตบางเขน",
