@@ -3,10 +3,11 @@ import {
   getProfilebyUserID,
   updateProfilebyUserID,
 } from "../controllers/user.controller.js";
+import { verifyRole } from "../middleware/authVerify.js";
 
 const router = express.Router();
 
-router.get('/getProfilebyUserID',getProfilebyUserID,);
-router.put('/updateProfilebyUserID',updateProfilebyUserID,);
+router.get('/getProfilebyUserID', verifyRole("Client"), getProfilebyUserID,);
+router.put('/updateProfilebyUserID', verifyRole("Client"), updateProfilebyUserID,);
 
 export default router;

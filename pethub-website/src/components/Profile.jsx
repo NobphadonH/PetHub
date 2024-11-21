@@ -2,38 +2,86 @@ import Navbar from "./Utils/Navbar"
 import { useEffect, useState } from "react"
 import Cookies from 'js-cookie';
 import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
 
 
 function Profile() {
   const [isClick, setIsClick] = useState(Array(3).fill(false));
+  // const [loading, setLoading] = useState(true);
+  const [userData, setuserData] = useState([]);
+  const [petData, setpetData] = useState([]);
   const navigate = useNavigate()
+
+  const calculatePetAge = (dob) => {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    const years = today.getFullYear() - birthDate.getFullYear();
+    const months = today.getMonth() - birthDate.getMonth();
+    return months < 0 
+      ? `${years - 1} ปี ${12 + months} เดือน` 
+      : `${years} ปี ${months} เดือน`;
+  };
 
   function handleClick(index) {
     setIsClick((prev) =>
       prev.map((value, i) => (i === index ? !value : false))
     );
   }
+  const fetchUserProfile = async () => {
+    try {
+        const response = await axios.get(`http://localhost:5000/api/user/getProfilebyUserID`, { 
+          withCredentials: true, 
+        }); 
+        console.log('User Profile:', response.data);
+        setuserData(response.data);
+    } catch (error) {
+        console.error('Error fetching user profile:', error.response?.data || error.message);
+    }
+  };
+
+  const fetchPets = async () => {
+    try {
+        const response = await axios.get(`http://localhost:5000/api/pet/getAllPetsByUserID`, { 
+          withCredentials: true, 
+        }); 
+        console.log('Pet data:', response.data);
+        setpetData(response.data);
+    } catch (error) {
+        console.error('Error fetching pet data:', error.response?.data || error.message);
+    }
+  };
   
   useEffect(() => {
     const role = Cookies.get('user-role'); // Retrieve the role from cookies
-    console.log(role)
+    console.log(role);
 
     // Check if the required cookie is missing
-    if (!role) {
+    if (!role ) {
       navigate(`/pethub-website/signin`); // Redirect to sign-in if no role is found
-    } else {
-      // If role is 'client', redirect to profile
-      if (role === 'client') {
+
+    } else if (role === "client") {
         navigate(`/pethub-website/profile`);
+
       }else if(role === 'host') {
         navigate(`/pethub-website/hostprofile`);
         
       }
-    }
   }, [Cookies]);
+
+  useEffect(() => { 
+    fetchUserProfile(); 
+  },[]);
+
+  useEffect(() => { 
+    fetchPets(); 
+  },[]);
+
+
+  console.log(userData);
+  console.log(petData);
+  // console.log(isClick);
   
-  
-  console.log(isClick)
+  // if (loading) return <div>Loading...</div>;
 
   return (
     <>
@@ -137,23 +185,34 @@ function Profile() {
         <div className="w-full flex justify-between items-center">
           <div className="text-[3vw] md:text-lg lg:text-2xl xl:text-3xl font-bold text-pethub-color6">สัตว์เลี้ยง<span className="text-pethub-color1">ของฉัน</span></div>
         </div>
-        {Array.from({ length: 3 }).map((_, index) => (
-        <div key={index} className="my-[4vw] md:my-5 lg:my-10 max-h-[300px] md:max-h-[500px] overflow-y-scroll hide-scrollbar flex flex-col gap-5">
+        {petData.map((pet, index) => (
+        <div 
+          key={pet.petID} 
+          className="my-[4vw] md:my-5 lg:my-10 max-h-[300px] md:max-h-[500px] overflow-y-scroll hide-scrollbar flex flex-col gap-5"
+        >
           <div className="w-full h-[26vw] md:h-52 lg:h-60 xl:h-72 rounded-md p-[1vw] md:p-3 border-[1px] flex gap-[1vw] md:gap-5">
             <div className="w-[240px] lg:w-[300px] xl:w-[350px] h-full bg-slate-100 rounded-md overflow-hidden">
-              <img src="https://s.isanook.com/ca/0/ui/285/1425207/staywithnoppo-20240522_152537-446114668_721839553257673_573084092354014144_n.jpeg" className="object-cover" alt="" />
+              <img 
+                src={pet.petPhoto} 
+                alt={pet.petName} 
+                className="object-cover" 
+              />
             </div>
             <div className="w-[600px] lg:grow flex flex-col p-[1vw] md:p-3 lg:p-5 pb-0 justify-between">
               <div className="flex flex-wrap justify-between text-[2vw] md:text-base lx:text-lg font-semibold text-pethub-color6">
-                <div>ชื่อ: <span className="text-pethub-color1">นปโปะ</span></div>
-                <div>อายุ: <span className="text-pethub-color1">1 ปี 2 เดือน</span></div>
-                <div>ประเภท: <span className="text-pethub-color1">สุนัข</span></div>
-                <div>เพศ: <span className="text-pethub-color1">เพศผู้</span></div>
+                <div>ชื่อ: <span className="text-pethub-color1">{pet.petName}</span></div>
+                <div>อายุ: 
+                  <span className="text-pethub-color1">
+                    {calculatePetAge(pet.petDOB)}
+                  </span>
+                </div>
+                <div>ประเภท: <span className="text-pethub-color1">{pet.petType}</span></div>
+                <div>เพศ: <span className="text-pethub-color1">{pet.petSex}</span></div>
               </div>
               <div>
                 <p className="text-start font-semib text-[2vw] md:text-xs xl:text-sm my-1 lg:my-3">คำอธิบายลักษณะเพิ่มเติม</p>
                 <p className="overflow-y-scroll hide-scrollbar rounded-md w-full h-[15vw] md:h-20 lg:h-28 xl:h-36 bg-slate-100 p-[1vw] md:p-2 lg:p-4 round-md text-start text-[2vw] md:text-xs xl:text-sm my-1 lg:my-3">
-                  นปโปะหม่ำๆ หม่ำๆ กู๊ดบอย กู๊ดบอยหม่ำๆ หม่ำๆ เก่งมาก นปโปะหม่ำๆ หม่ำๆ กู๊ดบอย กู๊ดบอยหม่ำๆ หม่ำๆ เก่งมาก
+                  {pet.petDetail || "ไม่มีคำอธิบายเพิ่มเติม"}
                 </p>
               </div>
             </div>
