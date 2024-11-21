@@ -3,7 +3,7 @@ import { connectToDatabase } from "../utils/dbConnection.js";
 export const getProfilebyUserID = async (req, res) => {
     try {
         // Extract userID from the request body
-        const { userID } = req.body;
+        const userID = req.user.userID;
 
         // Connect to the database and SSH client
         const { dbpool, sshClient } = await connectToDatabase();
