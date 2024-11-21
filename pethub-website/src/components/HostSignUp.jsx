@@ -129,12 +129,12 @@ function HostSignUp() {
                 placeholder="ยืนยันรหัสผ่าน"
                 className="input input-bordered w-full bg-gray-100 mb-6"
               />
-              <button
+              <a href="/listhost"
                 type="submit"
                 className="btn w-full mt-10 bg-pethub-color1 text-white text-base font-normal"
               >
-                เข้าสู่ระบบ
-              </button>
+                ขั้นตอนถัดไป
+              </a>
               <p className="mt-8 text-gray-500">
                 Already have an account?{" "}
                 <span>

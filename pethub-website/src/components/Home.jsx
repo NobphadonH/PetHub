@@ -94,6 +94,8 @@ function Home() {
 
     const handleSearchClick = (e) => {
         e.preventDefault();
+        setPagedata([])
+        setHotelResult([])
         // const queryParams = new URLSearchParams();
         // if (filter.petType) queryParams.set("petType", filter.petType);
         // if (filter.hotelName) queryParams.set("hotelName", filter.hotelName);
@@ -367,12 +369,12 @@ function Home() {
             <div className="hidden md:block col-span-1"></div>
             <div className="col-span-6 md:col-span-3">
                 <label className="input w-[40vw] h-[10vw] max-h-12 max-w-full text-[3vw] sm:text-sm input-bordered flex items-center gap-2 input-shadow">
-                    <input type="date" min={currentDate} name = "checkIn" value = {filter.checkIn} onChange={handleInputChange} className="grow" />
+                    <input type="text" min={currentDate} name = "checkIn" value = {filter.checkIn} onChange={handleInputChange} onFocus={(e) => e.target.type = 'date'} onBlur={(e) => e.target.type = 'text'} placeholder="Check-in" className="grow" />
                 </label>
             </div>
             <div className="col-span-6 md:col-span-3">
                 <label className="input w-[40vw] h-[10vw] max-h-12 max-w-full text-[3vw] sm:text-sm input-bordered flex items-center gap-2 input-shadow">
-                    <input type="date" min={getMinCheckOutDate()} name = "checkOut" value = {filter.checkOut} onChange={handleInputChange} className="grow" />
+                    <input type="text" min={getMinCheckOutDate()} name = "checkOut" value = {filter.checkOut} onChange={handleInputChange} onFocus={(e) => e.target.type = 'date'} onBlur={(e) => e.target.type = 'text'} placeholder="Check-out" className="grow" />
                 </label>
             </div>
             <div className="max-md:row-start-2 col-span-12 md:col-span-4">

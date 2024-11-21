@@ -137,7 +137,7 @@ function Profile() {
         <div className="w-full flex justify-between items-center">
           <div className="text-[3vw] md:text-lg lg:text-2xl xl:text-3xl font-bold text-pethub-color6">สัตว์เลี้ยง<span className="text-pethub-color1">ของฉัน</span></div>
         </div>
-        {Array.from({ length: 3 }).map((_, index) => (
+        {Array.from({ length: 1 }).map((_, index) => (
         <div key={index} className="my-[4vw] md:my-5 lg:my-10 max-h-[300px] md:max-h-[500px] overflow-y-scroll hide-scrollbar flex flex-col gap-5">
           <div className="w-full h-[26vw] md:h-52 lg:h-60 xl:h-72 rounded-md p-[1vw] md:p-3 border-[1px] flex gap-[1vw] md:gap-5">
             <div className="w-[240px] lg:w-[300px] xl:w-[350px] h-full bg-slate-100 rounded-md overflow-hidden">

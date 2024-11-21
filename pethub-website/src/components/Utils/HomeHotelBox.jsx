@@ -34,7 +34,7 @@ function HomeHotelBox({
     }
 
     return (
-      <div className="bg-white mx-auto w-full md:w-[350px] lg:w-[940px] xl:w-[1040px] h-[60vw] md:h-[480px] lg:h-[320px] border-2 lg:mx-auto rounded-md p-2 md:p-4 lg:p-8 flex lg:gap-10 flex-col lg:flex-row">
+      <div className="bg-white mx-auto w-full md:w-[350px] lg:w-[940px] xl:w-[1040px] h-[70vw] md:h-[480px] lg:h-[320px] border-2 lg:mx-auto rounded-md p-2 md:p-4 lg:p-8 flex lg:gap-10 flex-col lg:flex-row">
         <div className="w-full lg:w-[340px] h-[260px] bg-slate-200 rounded-md flex justify-center items-center text-gray-400">
             <img src={imageUrl} alt="hotel-image" className="w-full h-full object-cover rounded-md" />
         </div>

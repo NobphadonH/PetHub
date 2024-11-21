@@ -19,8 +19,8 @@ function ListHost() {
                         </div>
                     </div>
                 </div>
-                <div className="grid grid-cols-8 gap-4 mt-8">
-                    <div className="col-start-2 col-span-3 bg-neutral-50 drop-shadow-xl p-8 rounded-lg">
+                <div className="mx-10 lg:grid grid-cols-8 gap-4 mt-8">
+                    <div className="my-4 col-start-2 col-span-3 bg-neutral-50 drop-shadow-xl p-8 rounded-lg">
                         <div className="flex flex-col justify-between h-full">
                             <div className="flex text-black text-left font-bold text-3xl mb-2">บ้าน</div>
                             <div className="grid grid-cols-4">
@@ -34,7 +34,7 @@ function ListHost() {
                             </div>
                         </div>
                     </div>
-                    <div className="col-start-5 col-span-3 bg-neutral-50 drop-shadow-xl p-8 rounded-lg">
+                    <div className="my-4 col-start-5 col-span-3 bg-neutral-50 drop-shadow-xl p-8 rounded-lg">
                         <div className="flex flex-col justify-between h-full">
                             <div className="flex text-black text-left font-bold text-3xl mb-2">โรงแรม</div>
                             <div className="grid grid-cols-4">
@@ -44,7 +44,7 @@ function ListHost() {
                                 </div>
                             </div>
                             <div className="flex justify-start">
-                                <button className="bg-black text-white border border-black btn btn-xs sm:btn-xs md:btn-sm lg:btn-md mt-4">ลงทะเบียนโรงแรมของคุณ</button>
+                                <a href="/pethub-website/basics" className="bg-black text-white border border-black btn btn-xs sm:btn-xs md:btn-sm lg:btn-md mt-4">ลงทะเบียนโรงแรมของคุณ</a>
                             </div>
                         </div>
                     </div>
