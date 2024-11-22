@@ -8,10 +8,11 @@ function Confirm() {
     const navigate = useNavigate();
 
     const [hotelAndRoomFormData]= useState(location.state);
+
+    console.log(hotelAndRoomFormData)
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(hotelAndRoomFormData)
 
         const hotelData = new FormData()
         const hotelFormData = hotelAndRoomFormData.hotelFormData;
@@ -74,8 +75,8 @@ function Confirm() {
         }
     }
 
-    const goBack = (e) => {
-        navigate("/pethub-website/rooms", {state: hotelAndRoomFormData.hotelFormData})
+    const goPreviousPage = () => {
+        navigate("/pethub-website/rooms", {state: hotelAndRoomFormData})
     }
 
     return (
@@ -109,7 +110,7 @@ function Confirm() {
                     
                 </div>
                 <div className="flex justify-between items-center w-full max-w-3xl -mt-4 mb-4 p-6 mx-auto">
-                    <button onClick={goBack} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
+                    <button onClick={goPreviousPage} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
                         ขั้นตอนก่อนหน้า
                     </button>
                     <button onClick={handleSubmit} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">

@@ -1,8 +1,10 @@
 import { useEffect, useRef } from 'react';
 
+
 // eslint-disable-next-line react/prop-types
-function PointerLocation({ pointerLocation, setPointerLocation }) {
+function PointerLocation({ pointerLocation, setPointerLocation}) {
   const mapRef = useRef(null);
+
 
   useEffect(() => {
     const loadScript = () => {

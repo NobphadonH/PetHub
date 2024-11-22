@@ -1,17 +1,31 @@
 import Navbar from "./Utils/Navbar";
 import AddRoomsForm from "./Utils/AddRoomsForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Rooms() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [hotelFormData] = useState(location.state);
+    const [hotelFormData] = useState(location.state.hotelFormData);
+
+    console.log(location.state)
 
     const [forms, setForms] = useState([{ id: 1, image: null }]);
     const [formData, setFormData] = useState();
-    const [roomFormArray, setRoomFormArray] = useState([]);
+    const [roomFormArray, setRoomFormArray] = useState([{
+        numberOfRoom: "",
+        petAllowedType: "",
+        pricePerNight: "",
+        roomCapacity: "",
+        roomDetail: "",
+        roomSize: "",
+        roomTypeName: "",
+        selectedImage: null,
+    }]);
+
+    // console.log(forms)
 
     const addForm = () => {
         setForms([...forms, { id: forms.length + 1, image: null }]);
@@ -76,15 +90,103 @@ function Rooms() {
         });
     };
 
-    const goConfirmPage = async () => {
-        const readyRoomFormArray = await prepareRoomFormArrayForNavigation();
-
-        const hotelAndRoomFormData = {
-            hotelFormData,
-            readyRoomFormArray,
-        };
-        navigate("/pethub-website/confirm", { state: hotelAndRoomFormData });
+    const validateRoomFormArray = (roomFormArray) => {
+        const errors = {};
+    
+        // For each room, check all fields and return the first missing field error.
+        roomFormArray.forEach((room, index) => {
+            if (!room.roomTypeName || room.roomTypeName.trim() === "") {
+                errors[index] = { field: "roomTypeName", message: "กรุณากรอกประเภทห้อง" };
+            } else if (!room.petAllowedType || room.petAllowedType.trim() === "") {
+                errors[index] = { field: "petAllowedType", message: "กรุณากรอกประเภทสัตว์" };
+            } else if (!room.numberOfRoom || isNaN(room.numberOfRoom) || room.numberOfRoom <= 0) {
+                errors[index] = { field: "numberOfRoom", message: "กรุณากรอกจำนวนห้อง" };
+            } else if (!room.roomCapacity || isNaN(room.roomCapacity) || room.roomCapacity <= 0) {
+                errors[index] = { field: "roomCapacity", message: "กรุณาจำนวนของสัตว์ในห้อง" };
+            } else if (!room.roomSize || isNaN(room.roomSize) || room.roomSize <= 0) {
+                errors[index] = { field: "roomSize", message: "กรุณากรอกขนาดห้อง" };
+            } else if (!room.pricePerNight || isNaN(room.pricePerNight) || room.pricePerNight <= 0) {
+                errors[index] = { field: "pricePerNight", message: "กรุณากรอกราคาห้อง" };
+            } else if (!room.roomDetail || room.roomDetail.trim() === "") {
+                errors[index] = { field: "roomDetail", message: "กรุณากรอกรายละเอียดห้อง" };
+            } else if (!room.selectedImage) {
+                errors[index] = { field: "selectedImage", message: "กรุณาใส่รูปภาพ" };
+            }
+        });
+    
+        return Object.keys(errors).length > 0 ? errors : null; // Return error object or null if no errors
     };
+    
+    
+    
+    // console.log(roomFormArray)
+    
+
+    const goConfirmPage = async () => {
+        const validationErrors = validateRoomFormArray(roomFormArray);
+    
+        if (validationErrors) {
+            let step = 0;
+    
+            // Sequentially show errors for each room, one at a time
+            const roomIndices = Object.keys(validationErrors);
+    
+            const showNextError = () => {
+                if (step < roomIndices.length) {
+                    const roomIndex = roomIndices[step];
+                    const roomError = validationErrors[roomIndex];
+    
+                    // Show a single toast for each room's first error
+                    toast.error(`ห้องที่ ${parseInt(roomIndex) + 1}: ${roomError.message}`, {
+                        autoClose: 1000, // Adjust auto close timing here
+                        onClose: () => {
+                            step++; // Move to the next room's error
+                            showNextError(); // Show the next error recursively
+                        },
+                    });
+                }
+            };
+    
+            // Start the error notification sequence
+            showNextError();
+    
+            return; // Stop further processing until validation is done
+        } else {
+            try {
+                const readyRoomFormArray = await prepareRoomFormArrayForNavigation();
+    
+                const hotelAndRoomFormData = {
+                    hotelFormData,
+                    readyRoomFormArray,
+                };
+    
+                navigate("/pethub-website/confirm", { state: hotelAndRoomFormData });
+            } catch (error) {
+                toast.error("An error occurred while processing the forms.");
+            }
+        }
+    };
+    
+
+    const goPreviousPage = () => {
+        navigate("/pethub-website/basics", { state: { hotelFormData: hotelFormData, readyRoomFormArray: location.state?.readyRoomFormArray || null } });
+    };
+
+    useEffect(() => {
+        if (location.state?.readyRoomFormArray) {
+            setRoomFormArray(() => [
+                ...location.state.readyRoomFormArray
+            ]);
+    
+            setForms(location.state.readyRoomFormArray.map((_, index) => ({
+                id: index + 1,
+                image: null,   
+            })));
+    
+            // console.log(location.state.readyRoomFormArray);
+        }
+    }, []);
+    
 
     return (
         <div>
@@ -123,6 +225,7 @@ function Rooms() {
                                 onDataChange={(data) => handleChange(index, data)}
                                 image={roomFormArray[index]?.image || null}
                                 onImageChange={(newImage) => updateImage(index, newImage)}
+                                initialData={roomFormArray[index]}
                             />
                             <button
                                 onClick={() => removeForm(index)}
@@ -139,8 +242,8 @@ function Rooms() {
                         เพิ่มห้องพัก
                     </button>
                 </div>
-                <div className="flex justify-between items-center w-full max-w-3xl -mt-4 mb-4 p-6 mx-auto">
-                    <button className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
+                <div  className="flex justify-between items-center w-full max-w-3xl -mt-4 mb-4 p-6 mx-auto">
+                    <button onClick={goPreviousPage} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
                         ขั้นตอนก่อนหน้า
                     </button>
                     <button

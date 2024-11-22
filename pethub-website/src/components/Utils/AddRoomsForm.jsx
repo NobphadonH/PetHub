@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function PictureUpload({onImageSelected}) {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -56,24 +56,29 @@ function PictureUpload({onImageSelected}) {
     );
 }
 
-export default function AddRoomsForm({onDataChange, image, onImageChange, index}) {
+export default function AddRoomsForm({onDataChange, image, onImageChange, index, initialData}) {
 
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState(initialData || {}); // Initialize with passed data
+
+    useEffect(() => {
+        if (initialData) {
+            setFormData(initialData);
+        }
+    }, [initialData]); // Update when `initialData` changes
 
     const handleImageChange = (img) => {
-        const updatedImgFormData = {...formData, selectedImage: img}
+        const updatedImgFormData = { ...formData, selectedImage: img };
         setFormData(updatedImgFormData);
         onDataChange(updatedImgFormData);
-
     };
 
     const handleChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         const updatedFormData = { ...formData, [name]: value };
         setFormData(updatedFormData);
-        onDataChange(updatedFormData); 
-        //console.log(updatedFormData);
-    }
+        onDataChange(updatedFormData);
+    };
+
 
     return (
         <div >

@@ -1,13 +1,15 @@
 import Navbar from "./Utils/Navbar"
-import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from "react-router-dom";
 import PointerLocation from "./Utils/PointerLocation";
 import axios from 'axios'
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 
 function PictureUpload({onImageSelected}) {
     const [selectedImage, setSelectedImage] = useState(null);
+
 
     const handleImageChange = (event) => {
         const file = event.target.files[0];
@@ -62,7 +64,7 @@ function PictureUpload({onImageSelected}) {
     );
 }
 
-function TypeChoiceBoxes({onSelectType}) {
+function TypeChoiceBoxes({onSelectType, selectedType}) {
     const [selected, setSelected] = useState(null);
 
     const options = [
@@ -92,6 +94,12 @@ function TypeChoiceBoxes({onSelectType}) {
         setSelected(optionTitle);
         onSelectType(optionTitle);
     };
+
+    useEffect(() => {
+        if (selectedType) {
+            setSelected(selectedType);
+        }
+    }, [selectedType]);
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -123,7 +131,11 @@ function TypeChoiceBoxes({onSelectType}) {
 function Basics() {
 
     const navigate = useNavigate();
+    const location = useLocation();
     const [pointerLocation, setPointerLocation] = useState({ lon: 100.56, lat: 13.74 });
+    const [hotelFormData] = useState(location.state);
+
+    console.log(hotelFormData)
    
     const [formData, setFormData] = useState({
         hotelName: "",
@@ -170,22 +182,53 @@ function Basics() {
         }));
     };
 
+    // console.log(formData)
 
-
-    const goAddRoomsPage = async () => {
-        // Prepare hotelFormData with base64 if selectedImage is present
-        console.log(formData);
-        const hotelFormData = {
-            ...formData,
-            mapLat: pointerLocation.lat,
-            mapLong: pointerLocation.lon,
-            selectedImage: formData.selectedImage 
-                ? await convertFileToBase64(formData.selectedImage) 
-                : null,
-        };
+    const validateForm = () => {
+        const requiredFields = [
+            { field: "hotelName", label: "ชื่อที่พัก" },
+            { field: "hotelDescription", label: "รายละเอียดที่พัก" },
+            { field: "hotelPolicy", label: "ข้อกำหนด" },
+            { field: "hotelAddress", label: "ที่อยู่" },
+            { field: "district", label: "เขต" },
+            { field: "hotelType", label: "ประเภทโรงแรม" },
+        ];
     
-        // Navigate to the next page with hotelFormData
-        navigate("/pethub-website/rooms", { state: hotelFormData });
+        for (const { field, label } of requiredFields) {
+            if (!formData[field] || formData[field] === "") {
+                toast.error(`ยังไม่ได้ใส่ข้อมูล${label}.`);
+                return false;
+            }
+        }
+    
+        if (!formData.selectedImage) {
+            toast.error("กรุณา Upload รูปโรงแรม");
+            return false;
+        }
+    
+        return true; 
+    };
+    
+    const goAddRoomsPage = async () => {
+        if (!validateForm()) {
+            return; 
+        }
+    
+        try {
+            const hotelFormData = {
+                ...formData,
+                mapLat: pointerLocation.lat,
+                mapLong: pointerLocation.lon,
+                selectedImage: formData.selectedImage 
+                    ? await convertFileToBase64(formData.selectedImage) 
+                    : null,
+            };
+    
+            navigate("/pethub-website/rooms", { state: { hotelFormData:hotelFormData, readyRoomFormArray: location.state?.readyRoomFormArray || null } });
+        } catch (error) {
+            console.error("Error preparing data:", error);
+            toast.error("เลือกรูปภาพใหม่อีกครั้ง");
+        }
     };
 
 
@@ -231,6 +274,40 @@ function Basics() {
         "เขตทวีวัฒนา", "เขตทุ่งครุ", "เขตบางบอน"
     ];
 
+    useEffect(() => {
+        if (hotelFormData) {
+            setFormData((prevFormData) => ({
+                selectedImage: null,
+                ...prevFormData,
+                ...hotelFormData.hotelFormData,
+            }));
+    
+            const timeoutId = setTimeout(() => {
+                if (hotelFormData.mapLat && hotelFormData.mapLong) {
+                    setPointerLocation({
+                        lat: hotelFormData.mapLat,
+                        lon: hotelFormData.mapLong,
+                    });
+                } else {
+                    setPointerLocation({ lon: 100.56, lat: 13.74 });
+                }
+            }, 100);
+    
+            return () => clearTimeout(timeoutId);
+        }
+    }, []);
+    
+    
+
+    useEffect(() => {
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            mapLat: pointerLocation.lat,
+            mapLong: pointerLocation.lon,
+
+        }));
+    }, [pointerLocation])
+
     return (
         <div>
             <Navbar />
@@ -264,7 +341,7 @@ function Basics() {
                         </label>
                         <div className="text-left text-black font-bold text-xl mt-12">เลือกประเภทโรงแรมสัตว์เลี้ยงของคุณ</div>
                         <div className="text-left text-gray-600 text-sm mt-2">เลือกหนึ่งจากตัวเลือกด้านล่าง</div>
-                        <TypeChoiceBoxes onSelectType={handleTypeChange}/>
+                        <TypeChoiceBoxes onSelectType={handleTypeChange} selectedType={formData.hotelType||""} />
                         <div className="text-left text-black font-bold text-xl mt-12">รายละเอียดที่พักของคุณ</div>
                         <div className="text-left text-gray-600 text-sm mt-2">ให้ข้อมูลภาพรวมเพื่อให้ลูกค้าเข้าใจรายละเอียดของที่พัก</div>
                         <input name="hotelDescription" value = {formData.hotelDescription||""} onChange={handleChange} type="text" placeholder="อธิบายสถานที่ของคุณ" className="input input-bordered drop-shadow-sm w-full focus:outline-none focus:border-pethub-color4"/>

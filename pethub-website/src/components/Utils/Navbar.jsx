@@ -12,7 +12,6 @@ export default function Navbar() {
   const [username, setUsername] = useState('');
   const [role, setRole] = useState('');
 
-  console.log(username)
 
   // Function to toggle dropdown visibility
   const toggleDropdown = () => {
@@ -26,7 +25,6 @@ export default function Navbar() {
     }
   };
 
-  console.log(username)
 
   // Check for the 'user-auth' cookie to determine if the user is logged in
   useEffect(() => {
@@ -130,7 +128,7 @@ export default function Navbar() {
               <ul className="flex gap-10 px-1 items-center">
                 <div className="cursor-pointer flex items-center gap-4 max-md:hidden">
                     {role == "Host" ? 
-                    <li><a href="/pethub-website/hostsignup" className="text-pethub-color6 hidden xl:block">สมัครเป็น partner (ทำต่อ) </a></li>
+                    <li><a href="/pethub-website/hostsignup" className="text-pethub-color6">สมัครเป็น partner (ทำต่อ) </a></li>
                     :
                     <div className='flex items-center gap-4'>
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-person-circle" viewBox="0 0 16 16">
