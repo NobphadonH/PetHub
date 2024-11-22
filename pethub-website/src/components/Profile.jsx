@@ -10,7 +10,8 @@ function Profile() {
   // const [loading, setLoading] = useState(true);
   const [userData, setuserData] = useState([]);
   const [petData, setpetData] = useState([]);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const user = userData[0] || {};
 
   const calculatePetAge = (dob) => {
     const birthDate = new Date(dob);
@@ -144,7 +145,7 @@ function Profile() {
             <div className="w-full h-[30vw] bg-[rgb(214,214,214)]">
               <img src="https://media.istockphoto.com/id/1341046662/vector/picture-profile-icon-human-or-people-sign-and-symbol-for-template-design.jpg?s=612x612&w=0&k=20&c=A7z3OK0fElK3tFntKObma-3a7PyO8_2xxW0jtmjzT78=" alt="" />
             </div>
-            <div className="text-center text-[2.5vw] md:text-xs lg:text-sm xl:text-sm mt-[3vw] md:my-3">คุณ ชัชนันท์ บุญพา</div>
+            <div className="text-center text-[2.5vw] md:text-xs lg:text-sm xl:text-sm mt-[3vw] md:my-3">{`คุณ ${user.fName || "ชื่อผู้ใช้"} ${user.lName || ""}`}</div>
           </div>
           <div className="w-[53vw] h-full grid grid-cols-12 gap-[2vw] md:gap-x-5">
             <div className=" col-span-6">
@@ -153,6 +154,7 @@ function Profile() {
                   type="text"
                   name="email"
                   placeholder="เบอร์โทร"
+                  value={user.phone || "เบอร์โทร"}
                   className="input input-bordered w-full h-[8vw] max-h-10 shadow-md text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm md:mb-3"
               />
             </div>
@@ -171,6 +173,7 @@ function Profile() {
                   type="text"
                   name="email"
                   placeholder="ที่อยู่"
+                  value={user.address || "ที่อยู่"}
                   className="input input-bordered w-full h-[8vw] max-h-10 shadow-md text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm md:mb-3"
               />
 
