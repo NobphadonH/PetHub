@@ -18,6 +18,8 @@ function Register() {
     address: '',
     userRole: 'Client'
   });
+
+  console.log(formData)
  
 
   const handleChange = (e) => {

@@ -59,10 +59,10 @@ function Profile() {
     if (!role ) {
       navigate(`/pethub-website/signin`); // Redirect to sign-in if no role is found
 
-    } else if (role === "client") {
+    } else if (role === "Client") {
         navigate(`/pethub-website/profile`);
 
-      }else if(role === 'host') {
+      }else if(role === 'Host') {
         navigate(`/pethub-website/hostprofile`);
         
       }

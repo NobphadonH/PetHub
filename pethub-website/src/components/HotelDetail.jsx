@@ -4,6 +4,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import Cookies from 'js-cookie';
 import { motion } from 'framer-motion'
+import { toast } from "react-toastify";
 
 function HotelDetail() {
     let param = useParams()
@@ -110,22 +111,28 @@ function HotelDetail() {
     const checkOut = hotelData.checkOut
     const hotelPhoto = hotelData.hotelPhoto
     const goBooking = (room) => {
-        const token = Cookies.get("user-auth");
-      
-        if (!token) {
-          navigate("/pethub-website/signin");
-          return;
-        }
-
         const roomData = {
             ...room,
             checkIn,
             checkOut,
             hotelPhoto
         }
+        const token = Cookies.get("user-auth");
+        const role = Cookies.get("user-role")
       
-        console.log(hotelData);
-        navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData, hotelState: hotelData });
+        if (!token) {
+          navigate("/pethub-website/signin");
+          return;
+        }else{
+            if (role != "Client"){
+                toast.error("Account นี้ไม่สามารถจองห้องพักได้");
+            }else{
+                console.log(hotelData);
+                navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData, hotelState: hotelData });
+
+            }
+        }
+
       };
       
     function mapHotelType(typeNumber) {

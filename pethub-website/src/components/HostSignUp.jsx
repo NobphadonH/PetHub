@@ -1,19 +1,41 @@
 import Navbar from "./Utils/Navbar";
 import logo from "../../public/logo.svg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import Cookies from 'js-cookie';
+
 
 function HostSignUp() {
   const [formData, setFormData] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-    Address: "",
-    password: "",
-    confirmPassword: ""
+    fName: '',
+    lName: '',
+    email: '',
+    phone: '',
+    password: '',
+    confirmPassword: '',
+    address: '',
+    userRole: 'Host'
   });
+
+  const navigate = useNavigate()
+
+  console.log(formData)
+
+  useEffect(() => {
+    const role = Cookies.get('user-role'); // Retrieve the role from cookies
+    console.log(role);
+
+    // Check if the required cookie is missing
+    if (role === "Host"){
+      navigate(`/pethub-website/listhost`);
+    }else if(role === "Client"){
+      navigate('/pethub-website/home');
+    }
+
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,10 +45,10 @@ function HostSignUp() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
-    if (!formData.email || !formData.password || !formData.firstName || !formData.lastName || !formData.confirmPassword) {
+    if (!formData.email || !formData.password || !formData.fName || !formData.lName || !formData.confirmPassword || !formData.phone || !formData.address) {
       toast.error("Please fill in all fields.");
       return;
     }
@@ -42,10 +64,36 @@ function HostSignUp() {
       return;
     }
 
-    
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/auth/signup', formData, { withCredentials: true });
+      toast.success("Signup successful");
+      console.log("Response:", response.data);
+      const loginres = await axios.post("http://localhost:5000/api/auth/signin",{ email: formData.email, password: formData.password }, { withCredentials: true });
+      if (loginres.status === 200) {
+        // Set cookies with user information
+        const { token, userRole, fName, lName } = response.data;
+        Cookies.set("user-auth", token, { secure: true, sameSite: "Strict" });
+        Cookies.set("user-fName", fName, { secure: true, sameSite: "Strict" });
+        Cookies.set("user-lName", lName, { secure: true, sameSite: "Strict" });
+        Cookies.set("user-role", userRole, { secure: true, sameSite: "Strict" });
+  
+        toast.success("Signin successful");
+        navigate('/pethub-website/listhost');
+      }
+      
+    } catch (error) {
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.error || "Signup failed");
+      } else {
+        toast.error("An unexpected error occurred");
+      }
+    }
 
     console.log("Submitted data:", formData);
   };
+
+
 
   return (
     <div>
@@ -78,36 +126,36 @@ function HostSignUp() {
               <p className="text-start text-sm my-3">ชื่อ</p>
               <input
                 type="text"
-                name="firstName"
+                name="fName"
                 onChange={handleChange}
-                value={formData.firstName}
+                value={formData.fName}
                 placeholder="ชื่อ"
                 className="input input-bordered w-full bg-gray-100 mb-3"
               />
               <p className="text-start text-sm my-3">นามสกุล</p>
               <input
                 type="text"
-                name="lastName"
+                name="lName"
                 onChange={handleChange}
-                value={formData.lastName}
+                value={formData.lName}
                 placeholder="นามสกุล"
                 className="input input-bordered w-full bg-gray-100 mb-3"
               />
               <p className="text-start text-sm my-3">เบอร์โทรศัพท์</p>
               <input
                 type="number"
-                name="phoneNumber"
+                name="phone"
                 onChange={handleChange}
-                value={formData.phoneNumber}
+                value={formData.phone}
                 placeholder="เบอร์โทรศัพท์"
                 className="input input-bordered w-full bg-gray-100 mb-3"
               />
               <p className="text-start text-sm my-3">ที่อยู่</p>
               <input
                 type="text"
-                name="Address"
+                name="address"
                 onChange={handleChange}
-                value={formData.Address}
+                value={formData.address}
                 placeholder="ที่อยู่"
                 className="input input-bordered w-full bg-gray-100 mb-3"
               />
@@ -129,12 +177,12 @@ function HostSignUp() {
                 placeholder="ยืนยันรหัสผ่าน"
                 className="input input-bordered w-full bg-gray-100 mb-6"
               />
-              <a href="/listhost"
+              <button
                 type="submit"
                 className="btn w-full mt-10 bg-pethub-color1 text-white text-base font-normal"
               >
                 ขั้นตอนถัดไป
-              </a>
+              </button>
               <p className="mt-8 text-gray-500">
                 Already have an account?{" "}
                 <span>

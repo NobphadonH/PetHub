@@ -1,429 +1,389 @@
-import { useParams, useLocation, useNavigate } from "react-router-dom";
-import Navbar from "./Utils/Navbar";
-import { useState, useEffect, useRef } from 'react';
-import PictureUpload from "./Utils/PictureUpload";
-import Cookies from "js-cookie"
-import axios from "axios";
+import Navbar from "./Utils/Navbar"
+import CalendarComponent from "./Utils/CalendarComponent"
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-function RoomsBooking() {
-  const param = useParams();
-  const [currentDate, setCurrentDate] = useState('');
-  const [addbut, setAddbut] = useState(false)
-  const [myPet, setMyPet] = useState([false, false])
-  const [customPet, setCustomPet] = useState(0)
-  const elementRef = useRef(null);
-  const [imageFile, setImageFile] = useState(null);
+function RoomManagement() {
+    const [roomDetails, setRoomDetails] = useState(null);
+    const [bookingDetails, setBookingDetails] = useState({});
+    const [selectedBooking, setSelectedBooking] = useState({});
+    const [allDatesBetweenBookings, setAllDatesBetweenBookings] = useState(null)
+    const { roomID } = useParams();
+    const roomTypeID = roomID;
+    const navigate = useNavigate();
 
-  const [bookingData, setBookingData] = useState({});
+    console.log(selectedBooking)
 
-  const [petData, setPetData] = useState([]);
+    const handleAddRoomClick = () => {
+        navigate('/pethub-website/addrooms'); // Navigate to the add rooms page
+      };
 
-  const navigate = useNavigate();
-  const location = useLocation();
+    const formatDate = (date) => {
+        if (!date) return ''; // Handle null or undefined date
+        
+        const dateObj = new Date(date);
+        const day = String(dateObj.getDate()).padStart(2, '0'); // Get day and pad with leading 0 if needed
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Get month (0-indexed, so add 1)
+        const year = dateObj.getFullYear(); // Use AD (Gregorian calendar year)
+        
+        return `${day}/${month}/${year}`; // Return formatted date in AD
+      };
 
-  const roomData = location.state;
-  const hotelData = location.hotelState;
-  console.log("ROOMDATA");
-  console.log(location);
-
-//   const cookie  = Cookies.get("jwt");
-
-
-  useEffect(() => {
-    // Get today's date in the format YYYY-MM-DD
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const day = String(today.getDate()).padStart(2, '0');
-    setCurrentDate(`${year}-${month}-${day}`);
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+    const calculateNights = (checkIn, checkOut) => {
+        return Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24));
     };
 
-  }, []);
-
-  const numberOfDate = (checkIn, checkOut) => {
-    const checkInDate = new Date(checkIn);
-    const checkOutDate = new Date(checkOut);
-    const timeDifference = checkOutDate - checkInDate;
-    const dayDifference = timeDifference / (1000 * 60 * 60 * 24);
-    return dayDifference
-  }
-  useEffect(() => {
-    const fetchData = async () => {
-        try {
-            const res = await axios.get("http://localhost:5000/api/pet/getMatchingPets", {
-                params:{ petAllowedType: roomData.petAllowedType}, 
-                withCredentials: true, 
-              });            
-              setPetData(res.data);
-            console.log(res.data);
-
-        } catch (err) {
-            console.log(err);
+    const calculateAge = (dob) => {
+        if (!dob) return 'ไม่ระบุ';
+        
+        const birthDate = new Date(dob);
+        const today = new Date();
+        
+        let years = today.getFullYear() - birthDate.getFullYear();
+        let months = today.getMonth() - birthDate.getMonth();
+        
+        if (months < 0) {
+            years--;
+            months += 12;
         }
-    }
+        
+        if (years === 0) {
+            return `${months} เดือน`;
+        } else if (months === 0) {
+            return `${years} ปี`;
+        } else {
+            return `${years} ปี ${months} เดือน`;
+        }
+    };
 
-    fetchData()
-  }, [])
-
-  
-  
-  const countPrice = (checkIn, checkOut, pricePerNight) => {
-    const date1 = new Date(checkIn);
-    const date2 = new Date(checkOut);
+    function getDatesBetween(start, end) {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        const dates = [];
     
-    const diffTime = Math.abs(date2 - date1);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  
-    const totalPrice = (diffDays) * parseFloat(pricePerNight);
-  
-    return totalPrice.toFixed(2);
-  }
-
-  const handleToggleAdd = () => {
-    setAddbut(e => !e)
-}
-
-  const handleAddCustom = () => {
-    setCustomPet((e) => (e < 3 ? e + 1 : e));
-    setAddbut(false)
-  };
-  
-  const handleRemoveCustom = () => {
-    setCustomPet((e) => (e > 0 ? e - 1 : e));
-  };
-
-  const handleAddMyPet = (id) => {
-    setMyPet((prevMyPet) => {
-      const updatedMyPet = [...prevMyPet];
-      updatedMyPet[id] = true;
-      return updatedMyPet;
-    });
-  };
-  
-  const handleRemoveMyPet = (id) => {
-    setMyPet((prevMyPet) => {
-      const updatedMyPet = [...prevMyPet];
-      updatedMyPet[id] = false; 
-      return updatedMyPet;
-    });
-  };
-  
-
-  const handleClickOutside = (event) => {
-    if (elementRef.current && !elementRef.current.contains(event.target)) {
-      setAddbut(false); // Hide the element when clicking outside
+        // Loop through each date between start and end
+        while (startDate <= endDate) {
+            // Format the date as dd/mm/yyyy
+            const day = String(startDate.getDate()).padStart(2, '0'); // Day with leading 0
+            const month = String(startDate.getMonth() + 1).padStart(2, '0'); // Month with leading 0
+            const year = startDate.getFullYear(); // Full year
+    
+            // Push the formatted date into the dates array
+            dates.push(`${day}/${month}/${year}`);
+    
+            // Move to the next date
+            startDate.setDate(startDate.getDate() + 1);
+        }
+    
+        return dates;
     }
-  };
+      
+    const handleBookingClick = (booking) => {
+        setSelectedBooking(booking);
+        setAllDatesBetweenBookings(getDatesBetween(booking.checkInDate, booking.checkOutDate))}
 
-  const handleImageSelected = (file) => {
-    setImageFile(file);
-    if (file) {
-      console.log("Selected image file:", file.name);
-    } else {
-      console.log("Image file removed");
-    }
-  };
+    const handleApproveBooking = async (bookingID) => {
+        try {
+            // Updated API endpoint to match the backend route
+            const response = await axios.put(`http://localhost:5000/api/roomManage/bookings/${bookingID}/status`, {status: 'Waiting for payment'});
+                
+            if (response.status === 200) {
+                // Update the local state to reflect the change
+                setBookingDetails(prevBookings => 
+                    prevBookings.map(booking => 
+                        booking.bookingID === bookingID 
+                            ? {...booking, bookingStatus: 'Waiting for payment'}
+                            : booking
+                    )
+                );
+        
+                // Update selectedBooking if it's the one being modified
+                if (selectedBooking?.bookingID === bookingID) {
+                    setSelectedBooking(prev => ({...prev, bookingStatus: 'Waiting for payment'}));
+                }
+        
+                // Optional: Show success message
+                alert('Booking has been approved successfully');
+                    
+                // Optionally refresh the data
+                const refreshResponse = await axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`);
+                if (refreshResponse.data) {
+                    setRoomDetails(refreshResponse.data);
+                    setBookingDetails(refreshResponse.data.bookings || []);
+                    if (refreshResponse.data.bookings && refreshResponse.data.bookings.length > 0) {
+                        setSelectedBooking(refreshResponse.data.bookings[0]);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Error updating booking status:", error);
+            alert(`Failed to approve booking: ${error.message}`);
+        }
+    };
 
-  console.log(customPet)
+    const handleRejectBooking = async (bookingID) => {
+        try {
+            // Send a request to update the booking status to "Canceled"
+            const response = await axios.put(`http://localhost:5000/api/roomManage/bookings/${bookingID}/status`, {status: 'Canceled'});
+    
+            if (response.status === 200) {
+                // Update the local state to reflect the change
+                setBookingDetails(prevBookings => 
+                    prevBookings.map(booking => 
+                        booking.bookingID === bookingID 
+                            ? {...booking, bookingStatus: 'Canceled'}
+                            : booking
+                    )
+                );
+    
+                // Update selectedBooking if it's the one being modified
+                if (selectedBooking?.bookingID === bookingID) {
+                    setSelectedBooking(prev => ({...prev, bookingStatus: 'Canceled'}));
+                }
+    
+                // Optional: Show success message
+                alert('Booking has been rejected successfully.');
+    
+                // Optionally refresh the data
+                const refreshResponse = await axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`, {status: 'Canceled'});
+                if (refreshResponse.data) {
+                    setRoomDetails(refreshResponse.data);
+                    setBookingDetails(refreshResponse.data.bookings || []);
+                    if (refreshResponse.data.bookings && refreshResponse.data.bookings.length > 0) {
+                        setSelectedBooking(refreshResponse.data.bookings[0]);
+                    }
+                }
+            }
+        } catch (error) {
+            console.error("Error updating booking status:", error);
+            alert(`Failed to reject booking: ${error.message}`);
+        }
+    };
+
+    useEffect(() => {
+        console.log("roomTypeID:", roomTypeID);
+        // Fetch room details from the backend
+        axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`)
+          .then(response => {
+            console.log("API response:", response.data);
+            // Destructure the response data correctly
+          const {roomTypeID, roomTypeName, roomCapacity, numberOfRoom, roomSize, roomDetail, roomPhoto, pricePerNight, petAllowedType, bookings } = response.data;
+    
+          // Update state based on the API response
+          setRoomDetails({
+            roomTypeID,
+            roomTypeName,
+            roomCapacity,
+            numberOfRoom,
+            roomSize,
+            roomDetail,
+            roomPhoto,
+            pricePerNight,
+            petAllowedType
+          });
+    
+          setBookingDetails(bookings || []);  // Set the bookings data
+          if (bookings && bookings.length > 0) {
+            setSelectedBooking(bookings[0]);
+            }
+          })
+          .catch(error => {
+            console.error("There was an error fetching the data!", error);
+          });
+      }, [roomTypeID]);
+    
+      if (!roomDetails || !bookingDetails) {
+        return <div>Loading...</div>;
+      }
 
   return (
     <>
-        <Navbar />
-        <div className='mt-20 md:mt-28 w-[96vw] lg:w-11/12 xl:w-11/12 2xl:w-[1280px] grid grid-cols-12 grid-rows-2 max-lg:h-[35vw] lg:h-[300px] mx-auto gap-1 lg:gap-3 xl:gap-5'>
-
-            <div className='row-start-1 rounded-md col-span-5 row-span-2 bg-gray-300'>
-                <img src={roomData.roomPhoto} className="w-full h-full object-cover rounded-md" />
-            </div>
-            <div className='col-start-6 rounded-md col-span-5 row-span-2 bg-gray-300'>
-                <img src={roomData.roomPhoto} className="w-full h-full object-cover rounded-md" />
-            </div>
-            <div className='col-start-11 rounded-md col-span-2 row-span-2 bg-gray-300'>
-                <img src={roomData.roomPhoto} className="w-full h-full object-cover rounded-md" />
-            </div>
-
+     <Navbar /> 
+     <div className="text-start mt-20 lg:mt-32 w-11/12 xl:w-10/12 max-w-[1200px] h-[35vw] md:h-[270px] lg:h-[350px] mx-auto rounded-md overflow-hidden border-[1px] p-[2vw] md:p-5 relative flex">
+        <div className="absolute top-0 h-[1vw] md:h-2 w-full bg-pethub-color1 right-0"></div>
+        <div className="w-[35vw] md:w-[270px] lg:w-[350px] xl:w-[400px] h-full bg-slate-200 rounded-sm overflow-hidden relative">
+            <img className="absolute bottom-0" src="https://temporary-cdn.wezhan.net/contents/sitefiles3603/18016482/images/7480295.jpg" alt="" />
         </div>
-        <div className='w-full h-full bg-[#F4F4F4] mt-10'>
-        <div className="w-[90vw] lg:w-11/12 xl:w-10/12 2xl:w-[1280px] h-full mx-auto py-[1vw] lg:py-10 grid grid-cols-12 gap-x-[3%] md:gap-4">
-            <div className='max-md:basis-full col-span-12 md:col-span-8 max-md:py-[2vw] max-lg:py-5 flex flex-col gap-[5vw] md:gap-10'>
-                <div>
-
-                    <h1 className='text-start text-[5vw] md:text-2xl lg:text-3xl xl:text-5xl uppercase font-bold transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>{param.hotelName} <span className="font-normal text-[3vw] md:text-lg lg:text-1xl xl:text-3xl text-gray-500">{roomData.roomTypeName}({roomData.petAllowedType})</span></h1>
-                    <div className="flex my-[1vw] md:my-3 lg:my-4 gap-1 items-center">
-
-                        {Array.from({ length: 5 }).map((_, index) => (
-                        <svg key={index} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-star-fill w-[8px] sm:w-[12px] lg:w-[16px] text-yellow-400" viewBox="0 0 16 16">
-                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                        </svg>
-                        ))}
-                    </div> 
-                    <div className='flex gap-3 items-center justify-start text-gray-400'>
-                        <div className=' text-start text-[10px] sm:text-[2vw] md:text-xs xl:text-sm  transition-all duration-300 ease-in-out max-lg:line-clamp-3 max-lg:overflow-hidden'>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Labore sed enim illum, nulla error, consectetur sequi rem delectus reiciendis accusamus doloremque alias ipsa impedit minima beatae aperiam amet accusantium quia? Tempore, obcaecati id cum at fugit enim quia reiciendis eius animi similique? Dignissimos amet nam, aperiam soluta perferendis laboriosam quidem.</div>
-                    </div>
+        <div className="h-full flex flex-col justify-between grow p-[2vw] md:p-4 lg:p-7">
+            <div className="flex flex-col gap-[1vw] md:gap-3">
+                <div className="flex justify-between items-center">
+                    <div className="text-[2.5vw] md:text-lg lg:text-2xl">ประเภทห้อง: <span className="text-gray-400">{roomDetails.roomTypeName}</span></div>
+                    <div className="hidden md:block text-[1.5vw] md:text-xs lg:text-lg">{roomDetails.roomTypeID}</div>
                 </div>
-                <div className="md:hidden w-full h-[35vw] bg-white rounded-lg overflow-hidden flex">
-                    <div className="relative w-[40%] h-full bg-slate-400">
-                        <img className="absolute bottom-0" src={roomData.roomPhoto} alt="" />
-                    </div>
-                
-                <div className="w-[60%] h-full p-[3vw] flex flex-col justify-between">
-                    <div>
-                        <div className='flex justify-between items-end'>
-                            <div className='font-semibold text-[2.5vw] md:text-base lg:text-xl xl:text-2xl'>รายละเอียดของห้องพัก</div>   
-                        </div>
-                        <div className='flex justify-between items-end'>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ขนาดห้อง</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.roomSize} ตรม.</div>
-                        </div>
-                        <div className='flex justify-between items-end'>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ประเภท</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.roomTypeName} </div>
-                        </div>
-                        <div className='flex justify-between items-end'>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ประเภทสัตว์ที่รับ</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.perAllowedType}</div>
-                        </div>
-                        <div className='flex justify-between items-end'>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ราคา</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.pricePerNight} บาท</div>
-                        </div>
-                    </div>
-                    <div>
-                        <div className='flex justify-between items-end'>
-                            <div className='text-[2.5vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ราคาจองรวม</div>
-                            <div className='text-[2.5vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{countPrice(roomData.checkIn, roomData.checkOut, roomData.pricePerNight)} บาท</div>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-                <div className="max-md:w-full  overflow-y-hidden bg-white rounded-md max-md:p-[3vw] max-lg:px-8 max-lg:py-4 py-12 px-10 text-start">
-                    <div className={`text-[4vw] md:text-xl lg:text-xl xl:text-2xl font-semibold mb-[1vw] md:mb-3 lg:mb-6 overflow-y `}>จองห้องพักสัตว์เลี้ยง</div>
-                    <div className={`text-[2vw] md:text-sm lg:px-4 scrollbar-hidden `}>
-                        <p className="font-semibold text-[3vw] md:text-sm lg:text-lg xl:text-xl">วันที่เช็คอิน-เช็คเอาท์</p>
-                        <div className="flex items-end gap-4 lg:gap-8">
-                            <div>
-                                <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-3">เช็คอิน</p>
-                                <input
-                                    type="date"
-                                    name="email"
-                                    min={currentDate}
-                                    placeholder=""
-                                    value={roomData.checkIn}
-                                    disabled={true} 
-                                    className="input input-bordered w-[35vw] sm:w-44 h-[8vw] max-h-10  text-[3vw] sm:h-10 xl:h-12 xl:w-64 sm:text-xs lg:text-sm bg-gray-100 mb-3"
-                                />
-                            </div>
-                            <div className="text-[2.5vw] md:text-sm lg:text-lg py-5">ถึง</div>
-                            <div>
-                                <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-3">เช็คเอาท์</p>
-                                <input
-                                    type="date"
-                                    name="email"
-                                    min={currentDate}
-                                    placeholder=""
-                                    value={roomData.checkOut}
-                                    disabled={true} 
-                                    className="input input-bordered w-[35vw] sm:w-44 h-[8vw] max-h-10  text-[3vw] sm:h-10 xl:h-12 xl:w-64 sm:text-xs lg:text-sm bg-gray-100 mb-3"
-                                />
-                            </div>
-                        </div>
-                        <p className="font-semibold text-[3vw] md:text-sm lg:text-lg xl:text-xl  my-[3vw] md:my-3 lg:my-6 ">ข้อมูลสัตว์เลี้ยง</p>
-                        <div className="relative">
-                            <div onClick={handleToggleAdd} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white max-sm:text-[2.5vw] h-[7vw] w-[20vw] sm:w-32 md:w-36 font-medium text-xs lg:text-sm xl:text-base">เพิ่มสัตว์เลี้ยง +</div>
-                            <div ref={elementRef} className={` z-50 absolute bg-white rounded-sm w-[70%] max-h-64 border-[1px] top-14 overflow-y-hidden ${addbut ? '' : 'hidden'}`}>
-                                <div className="w-full h-12 lg:h-16 bg-gray-100 flex items-center px-5 justify-between cursor-pointer">
-                                    <p className="text-[3vw] md:text-xs lg:text-lg">สัตว์เลี้ยงของฉัน</p>
-                                </div>
-                                <div className="h-24 w-full overflow-y-scroll hide-scrollbar">
-                                    {petData.map((_, index) => {
-                                        return (
-                                            <div key={index} className="w-full h-8 lg:h-16 flex items-center justify-between px-5 bg-gray-white">
-                                                <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-3">นปโปะ</p>
-                                                <div className="hover:scale-110">
-                                                    <svg onClick={() => handleAddMyPet(index)} xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" className="text-pethub-color3 max-lg:w-6 max-lg:h-6 bi bi-plus-square-fill" viewBox="0 0 16 16">
-                                                    <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0"/>
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                        )
-                                    })}
-                                </div>
-                                {/* <div className="w-full h-12 lg:h-16 bg-gray-100 flex items-center px-5 justify-between cursor-pointer">
-                                    <p className="text-[3vw] md:text-xs lg:text-lg">เพิ่มสัตว์เลี้ยง</p>
-                                    <div  onClick={handleAddCustom} className="hover:scale-110">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" className="text-gray-500 max-lg:w-6 max-lg:h-6 bi bi-plus-square-fill" viewBox="0 0 16 16">
-                                        <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0"/>
-                                        </svg>
-                                    </div>
-                                </div> */}
-                            </div>
-                            {Array.from({ length: 2}).map((_, index) => (
-                                <div id={index} key={index} className={`${myPet[index] ? "" : "hidden"} w-full relative h-28 sm:h-36 lg:h-40 xl:h-44 border-[1px] my-3 rounded-md p-1 flex`}>
-                                    <div className="absolute right-1 top-1">
-                                        <svg onClick={() => handleRemoveMyPet(index)} xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="text-gray-400 cursor-pointer max-lg:w-4 max-lg:h-4 bi bi-trash3-fill" viewBox="0 0 16 16">
-                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-                                        </svg>
-                                    </div>
-                                    <div className="w-[200px] lg:w-[230px] xl:w-[250px] h-full rounded bg-slate-300 overflow-hidden">
-                                        <img src="https://s.isanook.com/ca/0/ui/285/1425207/staywithnoppo-20240522_152537-446114668_721839553257673_573084092354014144_n.jpeg" className=" object-cover" alt="" />
-                                    </div>
-                                    <div className="w-full overflow-y-hide hide-scrollbar h-full pr-7 xl:pr-12 px-2 py-3 xl:p-5 flex flex-col justify-between">
-                                        <div className="flex justify-between flex-wrap text-[2vw] md:text-[1.2vw] xl:text-xs">
-                                            <div>ชื่อ: นปโปะ</div>
-                                            <div>อายุ:1 ปี 2 เดือน</div>
-                                            <div>ประเภท: สุนัข</div>
-                                            <div>เพศ: เพศผู้</div>
-                                        </div>
-                                        <p className="text-start md:text-[1.2vw] xl:text-sm my-1 lg:my-3">คำอธิบายลักษณะเพิ่มเติม</p>
-                                        <textarea className="textarea w-full max-h-12 min-h-12 lg:min-h-16 lg:max-h-16 textarea-bordered hide-scrollbar text-[2vw] md:text-[1vw] xl:text-sm text-gray-600" value={"นปโปะหม่ำๆ หม่ำๆ กู๊ดบอย กู๊ดบอยหม่ำๆ หม่ำๆ เก่งมาก  "}></textarea>
-                                    </div>
-                                </div>
-                            ))}
-                            {Array.from({ length: customPet }).map((_, index) => (
-                                <div  key={index} className="my-5">
-                                    
-                                    <p className="font-semibold text-[3vw] md:text-xs lg:text-sm xl:text-xl my-3">สัตว์เลี้ยงตัวที่ {index + 1}</p>
-                                    <div className="relative w-full border-[1px] rounded-md p-3">
-                                        <div className="absolute right-1 top-1">
-                                            <svg onClick={handleRemoveCustom} xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="text-gray-400 max-lg:w-4 max-lg:h-4 cursor-pointer bi bi-trash3-fill" viewBox="0 0 16 16">
-                                            <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
-                                            </svg>
-                                        </div>
-
-                                        <div className="flex gap-[5vw] sm:gap-5 md:gap-8 lg:gap-10">
-                                            <div>
-                                                <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-3">ประเภท</p>
-                                                <select className="select bg-gray-100 min-h-0 h-[8vw] sm:h-10 xl:h-12 xl:w-64 text-xs lg:text-sm select-bordered  w-[35vw] sm:w-36 max-w-xs mb-3">
-                                                    <option disabled selected>ประเภทสัตว์</option>
-                                                    <option>สุนัข</option>
-                                                    <option>แมว</option>
-                                                </select>
-                                            </div>
-                                            <div>
-                                                <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-3">ชื่อน้องๆ</p>
-                                                <input
-                                                    type="text"
-                                                    name="email"
-                                                    placeholder="ชื่อของน้องๆ"
-                                                    className="input input-bordered w-[35vw] sm:w-44 h-[8vw] max-h-10  text-[3vw] sm:h-10 xl:h-12 xl:w-64 sm:text-xs lg:text-sm bg-gray-100 mb-3"
-                                                />
-
-                                            </div>
-                                        </div>
-                                        <div className="flex gap-[5vw] sm:gap-5 md:gap-8 lg:gap-10 items-end">
-                                        <div>
-                                            <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-3">วันเกิดสัตว์เลี้ยง</p>
-                                            <input
-                                                type="date"
-                                                name="email"
-                                                placeholder=""
-                                                className="input input-bordered w-[35vw] sm:w-32 h-[8vw] max-h-10  text-[3vw] sm:h-10 xl:h-12 xl:w-44 sm:text-xs lg:text-sm bg-gray-100 mb-3"
-                                            />
-                                            </div>
-                                            <select className="select bg-gray-100 min-h-0 h-[8vw] sm:h-10 xl:h-12 xl:w-64 text-xs lg:text-sm select-bordered  w-[35vw] sm:w-36 max-w-xs mb-3">
-                                                <option disabled selected>เพศ</option>
-                                                <option>เพศผู้</option>
-                                                <option>เพศเมีย</option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-3">คำอธิบายลักษณะเพิ่มเติม</p>
-                                            <textarea className="textarea w-full min-h-32 lg:max-h-48 textarea-bordered text-[2.5vw] md:text-xs lg:text-sm xl:text-sm" placeholder="ex. สายพันธุ์, ลักษณะเฉพาะ, สีขน หรือ นิสัย"></textarea>
-                                            <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-3">*แนะนำให้บอกถึงลักษณะของสัตว์เลี้ยงเพื่อป้องกันในกรณีเกิดเหตุฉุกเฉิน</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-3">Upload รูปของสัตว์เลี้ยงของคุณ</p>
-                                            <PictureUpload onImageSelected={handleImageSelected} />
-                                            {imageFile && <p>Selected Image: {imageFile.name}</p>}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="z-10">
-                            <p className="font-semibold  text-[3vw] md:text-xs lg:text-sm xl:text-sm my-[3vw] md:my-3 lg:my-6">ข้อมูลสัตว์การดูแลสัตว์เลี้ยง</p>
-                            <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-3">ข้อมูลสำคัญของน้องๆ ของคุณ เช่น โรคประจำตัว หรือความจำเป็นในการดูแลเป็นพิเศษต่างๆ แนะนำให้แจ้งให้ทางโรงแรมทราบถึงการปฎิบัติดูแลต่างๆ</p>
-                            <input className="textarea w-full min-h-[20vw] max-h-[20vw] md:min-h-32 md:max-h-48 lg:min-h-44 lg:max-h-80 text-[2.5vw] md:text-xs lg:text-sm xl:text-sm textarea-bordered" placeholder="ex. ให้อาหาร 3 เวลา, การแปลงขนทุกวัน เป็นต้น" />
-
-                        </div>
-                        <div className="flex items-center justify-between mt-9">
-                            <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-3">โปรดเช็คข้อมูลให้ถูกต้องก่อนทำการจอง</p>
-                            <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white max-sm:text-[2.5vw] h-[7vw] w-[20vw] sm:w-32 md:w-28 font-medium text-xs lg:text-sm xl:text-base">จองห้องพัก</div>
-                        </div>
-                    </div>
-                </div>
+                <div className="text-[2vw] md:text-sm lg:text-lg">ขนาดห้อง: <span className="text-gray-400">{roomDetails.roomSize} ตร.ม.</span></div>
+                <div className="text-[2vw] md:text-sm lg:text-lg">ราคา: <span className="text-gray-400">{roomDetails.pricePerNight} บาท</span></div>
+                <div className="text-[2vw] md:text-sm lg:text-lg">ประเภทสัตว์: <span className="text-gray-400">{roomDetails.petAllowedType}</span></div>
             </div>
-            <div className='max-md:hidden max-md:w-full max-md:h-[40vw] max-md:my-[2vw] h-[320px] lg:h-[400px] xl:h-[500px] bg-white rounded-md col-span-4'>
-                <div className='w-[45vw] md:w-full h-full bg-white rounded-lg overflow-hidden'>
-                    <div className='relative w-full h-[55%] overflow-hidden bg-slate-200'>
-                        <img className="absolute bottom-0" src={roomData.roomPhoto} alt="" />
-                    </div>
-                    <div className='w-full h-[45%] p-[2vw] md:p-4 text-start'>
-                        <div className='flex justify-between items-end'>
-                            <div className='text-[2.5vw] md:text-base lg:text-xl xl:text-2xl'>รายระเอียดของห้องพัก</div>
-                        </div>
-                        <div className='flex justify-between items-end'>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ขนาดห้อง</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.roomSize} ตรม.</div>
-                        </div>
-                        <div className='flex justify-between items-end'>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ประเภท</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.roomTypeName}</div>
-                        </div>
-                        <div className='flex justify-between items-end'>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ประเภทสัตว์ที่รับ</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.petAllowedType}</div>
-                        </div>
-                        <div className='flex justify-between items-end'>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ราคา</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.pricePerNight} บาท</div>
-                        </div>
-                    </div>
-                </div>
-                <div className="w-full h-[250px] lg:h-[300px] xl:h-[350px] mt-6 rounded-lg overflow-hidden bg-white">
-                    <div className="w-full h-[20%] bg-pethub-color6 flex items-center p-5 justify-start text-white text-xl text-[2.5vw] md:text-base lg:text-xl xl:text-2xl">ราคาการจอง</div>
-                    <div className="w-full h-[55%] bg-white px-5 py-3 lg:py-5 flex flex-col gap-3 text-[1.8vw] md:text-xs lg:text-sm xl:text-base md:my-1 lg:my-1">
-                        <div className="flex items-center justify-between ">
-                            <div>การจอง {numberOfDate(roomData.checkIn, roomData.checkOut)} คืน</div>
-                            <div className=" text-gray-400">{countPrice(roomData.checkIn, roomData.checkOut, roomData.pricePerNight)}</div>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <div>สัตว์เลี้ยงที่เข้าพัก 2 ตัว</div>
-                            <div className=" text-gray-400">0.00</div>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <div>ค่าบริการ</div>
-                            <div className=" text-gray-400">0.00</div>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <div>ค่าอาหาร</div>
-                            <div className=" text-gray-400">0.00</div>
-                        </div>
-                    </div>
-                    <div className="w-full h-[25%] bg-white px-5 flex flex-col lg:gap-3 ">
-                        <hr />
-                        <div className="flex items-center justify-between h-[70%] text-[1.8vw] md:text-base lg:text-lg xl:text-xl">
-                            <div>ทั้งหมด</div>
-                            <div>{countPrice(roomData.checkIn, roomData.checkOut, roomData.pricePerNight)} บาท</div>
-                        </div>
-                    </div>
-                </div>
+            <div className="flex justify-between items-center">
+                <div className="text-[2.5vw] md:text-base lg:text-xl">สถานะ: <span className=" text-red-500">Not Avalaible</span></div>
+                <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-24 sm:h-10 md:w-28 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base"
+                    onClick={handleAddRoomClick}>
+                    แก้ไขข้อมูล</div>
             </div>
-            <div className={``}>
-                
-
-                
-            </div>
-
         </div>
      </div>
-     {/* <Footer /> */}
-    
+     <div className="text-start my-8 lg:my-16 w-11/12 xl:w-10/12 max-w-[1200px] lg:h-full mx-auto rounded-md overflow-hidden border-[1px] p-[5vw] md:p-10 flex flex-col gap-4 ">
+        <div className="font-bold text-[3vw] md:text-lg lg:text-2xl">รายการจองของ <span className="text-gray-400 font-light"> {roomDetails.roomTypeName}</span></div>
+        <div className="w-full h-[300px] md:h-[350px] flex gap-5">
+            <div className="w-full md:w-[50%] lg:w-[40%] flex items-center justify-center">
+                <CalendarComponent key={JSON.stringify(allDatesBetweenBookings)} bookedDates={allDatesBetweenBookings} />
+            </div>
+            <div className="max-md:hidden border-[1px] grow rounded-md overflow-hidden">
+                <div className="w-full h-14 bg-pethub-color6 flex items-center justify-start px-6 text-white">
+                    <div className="text-[2.5vw] md:text-lg lg:text-xl">การจองทั้งหมด {bookingDetails.length} รายการ</div>
+                </div>
+                <div className="w-full h-[290px] overflow-scroll hide-scrollbar bg-gray-200">
+                    {bookingDetails.map((booking, index) => (
+                    <div key={index} className={`${selectedBooking && selectedBooking.bookingID === booking.bookingID ? ' bg-gray-200' : 'bg-white hover:bg-gray-100'} text-xs lg:text-base my-[2px] w-full h-16 lg:h-20  flex flex-col justify-between px-5 p-2 cursor-pointer `}
+                        onClick={() => handleBookingClick(booking)}>
+                        <div className="flex justify-between">
+                            <div>
+                                <span className="max-md:hidden">เลขที่การจอง : </span>
+                                <span>{booking.bookingID}</span>
+                                 
+                            </div>
+                            <div>วันที่จอง: {formatDate(booking.paymentDate) || '-'}</div>
+                        </div>
+                        <div className="flex justify-start gap-5">
+                            <div>สถานะ: <span className={`font-normal ${booking.bookingStatus === 'confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{booking.bookingStatus}</span></div>
+                            <div>การจอง: <span className="text-gray-400 font-light">{calculateNights(booking.checkInDate, booking.checkOutDate)} คืน</span></div>
+                        </div>
+                    </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+        <div className="md:hidden border-[1px] grow rounded-md overflow-hidden">
+                <div className="w-full h-[12vw] md:h-14 bg-pethub-color6 flex items-center justify-start px-6 text-white">
+                    <div className="text-[3vw] md:text-lg lg:text-xl">การจองทั้งหมด {bookingDetails.length} รายการ</div>
+                </div>
+                <div className="w-full h-[200px] overflow-scroll hide-scrollbar bg-gray-200">
+                    {bookingDetails.map((booking, index) => (
+                    <div key={index} className={`${selectedBooking && selectedBooking.bookingID === booking.bookingID ? ' bg-gray-200' : 'bg-white hover:bg-gray-100'} text-[2.5vw] md:text-xs lg:text-base my-[2px] w-full h-[10vw] md:h-16 lg:h-20  flex flex-col justify-between px-5 p-2 cursor-pointer `}
+                        onClick={() => handleBookingClick(booking)}>
+                        <div className="flex justify-between">
+                            <div>
+                                <span className="max-md:hidden">เลขที่การจอง : </span>
+                                <span>{booking.bookingID}</span>
+                                 
+                            </div>
+                            <div>วันที่จอง: {formatDate(booking.paymentDate) || 'ยังไม่จ่าย'}</div>
+                        </div>
+                        <div className="flex justify-start gap-5">
+                            <div>สถานะ: <span className={`font-normal ${booking.bookingStatus === 'confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{booking.bookingStatus}</span></div>
+                            <div>การจอง: <span className="text-gray-400 font-light">{calculateNights(booking.checkInDate, booking.checkOutDate)} คืน</span></div>
+                        </div>
+                    </div>
+                    ))}
+                </div>
+            </div>
+        <div className="w-full h-full border-[1px] rounded-md relative max-md:py-[4vw] p-[3vw] md:p-4 lg:p-8 flex flex-col">
+            <div className="absolute top-0 h-[1vw] md:h-2 w-4/12 bg-pethub-color1 left-4"></div>
+            <div className="flex flex-wrap gap-[2vw] md:gap-2 lg:gap-5">
+                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">การจองเลขที่: <span className="text-gray-ุ00 font-light">{selectedBooking?.bookingID || '-'}</span></div>
+                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">สถานะ: <span className={`font-normal ${selectedBooking.bookingStatus === 'confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{selectedBooking?.bookingStatus || '-'}</span></div>
+                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">การจอง: <span className="text-gray-400 font-light">{calculateNights(selectedBooking.checkInDate, selectedBooking.checkOutDate) || '-'} คืน</span></div>
+            </div>
+            <div className="my-[2vw] md:my-4 text-[1.5vw] md:text-xs lg:text-sm">จองวันที่ {formatDate(selectedBooking.paymentDate)|| 'ยังไม่จ่าย'}</div>
+            <div className="font-semibold text-[2vw] md:text-base lg:text-xl">ข้อมูลทั่วไป</div>
+            <div className="flex w-full justify-start lg:justify-between flex-wrap gap-[3vw] md:gap-5">
+                <div className="grow">
+                    <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-3">เช็คอิน</p>
+                    <input
+                        type="text"
+                        name="email"
+                        placeholder=""
+                        value={formatDate(selectedBooking.checkInDate)}
+                        className="input input-bordered w-full h-[8vw] max-h-10  text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm bg-gray-100 md:mb-3"
+                    />
+                </div>
+                <div className="grow">
+                    <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-3">เช็คเอาท์</p>
+                    <input
+                        type="text"
+                        name="email"
+                        placeholder=""
+                        value={formatDate(selectedBooking.checkOutDate) || '-'}
+                        className="input input-bordered w-full h-[8vw] max-h-10  text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm bg-gray-100 md:mb-3"
+                    />
+                </div>
+                <div className="grow">
+                    <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-3">ชื่อผู้จอง</p>
+                    <input
+                        type="text"
+                        name="email"
+                        placeholder=""
+                        value={selectedBooking?.bookerFirstName && selectedBooking?.bookerLastName
+                            ? `${selectedBooking.bookerFirstName} ${selectedBooking.bookerLastName}`
+                            : '-'}
+                        className="input input-bordered w-full h-[8vw] max-h-10  text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm bg-gray-100 md:mb-3"
+                    />
+                </div>
+                <div className="grow">
+                    <p className=" text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-3">โทรศัพท์</p>
+                    <input
+                        type="text"
+                        name="email"
+                        placeholder=""
+                        value={selectedBooking.bookerPhone || '-'}
+                        className="input input-bordered w-full h-[8vw] max-h-10  text-[2vw] sm:h-10 xl:h-12 max-w-64 sm:text-xs lg:text-sm bg-gray-100 md:mb-3"
+                    />
+                </div>
+            </div>
+            <div className="font-semibold text-[2vw] md:text-base lg:text-xl my-[2vw] md:my-4">ข้อมูลสัตว์เลี้ยงที่เข้าพัก</div>
+            <div>
+            {selectedBooking && selectedBooking.pets && selectedBooking.pets.map((pet, index) => (
+                <div key={pet.petID} id={index} className={` w-full relative h-28 sm:h-36 lg:h-40 xl:h-44 border-[1px] my-[2vw] md:my-3 rounded-md p-1 flex overflow-y-scroll hide-scrollbar`}>
+                    <div className="absolute right-1 top-1">
+                        {/* <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="text-gray-400 cursor-pointer max-lg:w-4 max-lg:h-4 bi bi-trash3-fill" viewBox="0 0 16 16">
+                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                        </svg> */}
+                    </div>
+                    <div className="w-[200px] lg:w-[230px] xl:w-[250px] h-full rounded bg-slate-300 overflow-hidden">
+                    <img 
+                        src={`http://localhost:5000/${pet.petPhoto}`} 
+                        className="object-cover w-full h-full" 
+                        alt={pet.petName} 
+                        onError={(e) => {
+                        e.target.src = "https://placehold.co/200x200?text=No+Image";
+                        }}
+                    />
+                    </div>
+                    <div className="w-full overflow-y-hide hide-scrollbar h-full px-2 py-[2vw] md:py-3 xl:p-5 flex flex-col justify-between">
+                        <div className="flex justify-between flex-wrap text-[2vw] md:text-[1.2vw] xl:text-xs">
+                            <div>ชื่อ: {pet.petName}</div>
+                            <div>อายุ:{calculateAge(pet.petDOB)}</div>
+                            <div>ประเภท: {pet.petType}</div>
+                            <div>เพศ: {pet.petSex || 'ไม่ระบุ'}</div>
+                        </div>
+                        <p className="text-start text-[2vw] md:text-[1.2vw] xl:text-sm my-1 lg:my-3">คำอธิบายลักษณะเพิ่มเติม</p>
+                        <textarea className="textarea w-full max-md:p-[1vw] max-h-8 min-h-8 md:max-h-12 md:min-h-12 lg:min-h-16 lg:max-h-16 textarea-bordered hide-scrollbar text-[1.5vw] md:text-[1vw] xl:text-sm text-gray-600" 
+                        value={pet.petDetail || ''}></textarea>
+                    </div>
+                </div>
+            ))}
+            </div>
+            <div className="my-[2vw] md:my-4 w-full flex justify-end gap-5">
+                <div className="my-[2vw] md:my-4 w-full flex justify-end gap-5">
+                    {selectedBooking?.bookingStatus?.toLowerCase() === 'Pending'.toLowerCase() && (
+                        <>
+                            <div  
+                            onClick={() => handleRejectBooking(selectedBooking?.bookingID)}
+                            className="flex justify-center items-center rounded-md md:btn bg-pethub-color6 md:bg-pethub-color6 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-40 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">
+                            ปฎิเสธการอนุมัติ</div>
+                            <div 
+                            onClick={() => handleApproveBooking(selectedBooking?.bookingID)}
+                            className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-24 sm:h-10 md:w-28 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base cursor-pointer"
+                            >อนุมัติ</div>
+                    </>
+                    )}</div>
+            </div>
+        </div>
+     </div>
     </>
-  );
+  )
 }
 
-export default RoomsBooking;
+export default RoomManagement

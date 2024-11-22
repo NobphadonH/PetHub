@@ -327,7 +327,6 @@ function Home() {
   return (
     <div>
       <Navbar />
-      <ToastContainer position="top-center" autoClose={1000} hideProgressBar />
       {/* section1 */}
       <div className="text-start mt-20 lg:mt-32 bg-pethub-color1 w-11/12 xl:w-10/12 max-w-[1200px] h-[270px] md:h-full mx-auto p-8 md:py-10 md:px-12 xl:px-28 relative rounded-md overflow-hidden z-10 opacity-80">
         <div className="absolute top-0 right-0 left-0 md:bottom-0 z-0">

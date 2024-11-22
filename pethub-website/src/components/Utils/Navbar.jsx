@@ -10,6 +10,7 @@ export default function Navbar() {
   const dropdownRef = useRef(null); // Ref to track dropdown element
   const [isLogin, setIsLogin] = useState(false);
   const [username, setUsername] = useState('');
+  const [role, setRole] = useState('');
 
   console.log(username)
 
@@ -25,6 +26,8 @@ export default function Navbar() {
     }
   };
 
+  console.log(username)
+
   // Check for the 'user-auth' cookie to determine if the user is logged in
   useEffect(() => {
     const cookie = Cookies.get('user-auth');
@@ -36,6 +39,7 @@ export default function Navbar() {
 
     const firstName = Cookies.get('user-fName') || '';
     const lastName = Cookies.get('user-lName') || '';
+    setRole(Cookies.get('user-role') || '')
     setUsername(`${firstName} ${lastName}`);
   }, []);
 
@@ -70,9 +74,10 @@ export default function Navbar() {
     };
   }, []);
 
+
   return (
     <>
-    <ToastContainer />
+    <ToastContainer position="top-center" />
     <div className="fixed top-0 left-0 right-0 dropdown z-50">
       <div className="navbar border-b-2 bg-white px-4 md:px-20 xl:px-40">
         {/* Mobile Navbar Toggle */}
@@ -124,14 +129,18 @@ export default function Navbar() {
             <div>
               <ul className="flex gap-10 px-1 items-center">
                 <div className="cursor-pointer flex items-center gap-4 max-md:hidden">
-                  <div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-person-circle" viewBox="0 0 16 16">
-                      <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                      <path fillRule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-                    </svg>
+                    {role == "Host" ? 
+                    <li><a href="/pethub-website/hostsignup" className="text-pethub-color6 hidden xl:block">สมัครเป็น partner (ทำต่อ) </a></li>
+                    :
+                    <div className='flex items-center gap-4'>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-person-circle" viewBox="0 0 16 16">
+                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                        <path fillRule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                      </svg>
+                      <div>{username}</div>
+                    </div>
+                    }
                   </div>
-                  <div>{username}</div>
-                </div>
                 <div className="cursor-pointer flex" onClick={logout}>
                   <div className="md:text-sm">logout</div>
                 </div>
