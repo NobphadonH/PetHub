@@ -64,9 +64,10 @@ export const getHotelReviewByHotelID = async (req, res) => {
       }
 
       const query = `
-        SELECT r.reviewID, r.reviewScore, r.reviewDetail, r.userID, h.hotelName
+        SELECT r.reviewID, r.reviewScore, r.reviewDetail, r.userID, h.hotelName, u.fName
         FROM Reviews r
         JOIN Hotels h ON r.hotelID = h.hotelID
+        JOIN Users u ON u.userID = r.userID
         WHERE r.hotelID = ?
       `;
 

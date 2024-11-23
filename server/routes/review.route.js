@@ -9,6 +9,6 @@ const router = express.Router();
 
 router.post("/createReview", verifyRole("Client"), createReview);
 
-router.get("/hotel/:hotelID/reviews", getHotelReviewByHotelID);
+router.get("/getReview/:hotelID", getHotelReviewByHotelID);
 
 export default router;
