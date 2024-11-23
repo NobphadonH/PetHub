@@ -145,12 +145,19 @@ function HotelDetail() {
     const checkIn = hotelData.checkIn
     const checkOut = hotelData.checkOut
     const hotelPhoto = hotelData.hotelPhoto
+    const hotelName = hotelData.hotelName
+    const reviewScore = hotelData.avgReviewScore
+    const reviewCount = hotelData.reviewCount
+
     const goBooking = (room) => {
         const roomData = {
             ...room,
             checkIn,
             checkOut,
-            hotelPhoto
+            hotelPhoto,
+            hotelName,
+            reviewScore,
+            reviewCount
         }
         const token = Cookies.get("user-auth");
         const role = Cookies.get("user-role")
@@ -161,7 +168,7 @@ function HotelDetail() {
           return;
         } else {
             console.log(hotelData);
-            navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData, hotelState: hotelData });
+            navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData});
 
             // if (role != "Client"){
             //     toast.error("Account นี้ไม่สามารถจองห้องพักได้");
@@ -189,9 +196,7 @@ function HotelDetail() {
     }
     }
       
-    const handelReviewChange = (e) => {
 
-    }
 
   return (
     <>

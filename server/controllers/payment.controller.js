@@ -8,7 +8,8 @@ export const createPayment = async (req, res) => {
 
   const { dbpool, sshClient } = await connectToDatabase();
 
-  const token = await bcrypt.hash("userID" + "bookingID", 10);
+  // Generate a dummy token, to be replaced with the actual token from the payment gateway in real-world scenarios.
+  const token = await bcrypt.hash("userID" + "bookingID", 10);    
 
   let query = `INSERT INTO Payments (bookingID, amount, paymentMethod, paymentToken, paymentStatus, paymentDate)
     VALUES (?, ?, ?, ?, ?, ?)`;

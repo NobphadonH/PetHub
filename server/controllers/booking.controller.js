@@ -3,7 +3,7 @@ import { updatePayment } from "./payment.controller.js";
 
 export const createBooking = async (req, res) => {
   try {
-    const { petID, roomTypeID, checkInDate, checkOutDate } = req.body;
+    const { petID, roomTypeID, checkInDate, checkOutDate, bookingDetail } = req.body;
     const { dbpool, sshClient } = await connectToDatabase();
     const userID = req.user.userID;
 
@@ -49,8 +49,8 @@ export const createBooking = async (req, res) => {
         // Step 2: Insert booking details into the Bookings table
         const bookingDate = new Date(); // Current timestamp
         const bookingQuery = `
-          INSERT INTO Bookings (userID, petID, roomTypeID, checkInDate, checkOutDate, bookingStatus, bookingDate)
-          VALUES (?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO Bookings (userID, petID, roomTypeID, checkInDate, checkOutDate, bookingStatus, bookingDate, bookingDetail)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `;
         const bookingValues = [
           userID,
@@ -60,6 +60,7 @@ export const createBooking = async (req, res) => {
           checkOutDate,
           bookingStatus,
           bookingDate,
+          bookingDetail
         ];
 
         connection.query(bookingQuery, bookingValues, (err, result) => {
