@@ -2,10 +2,13 @@ import { connectToDatabase } from "../utils/dbConnection.js";
 
 // Get Hotel Profile with User Details
 export const getHotelProfile = async (req, res) => {
-    const { fName, lName } = req.params
-    console.log(req.params);
+    const { fName, lName } = req.params;
+    console.log(req.cookies);
     console.log(fName);
     console.log(lName);
+    if (!fName || !lName) {
+        return res.status(400).json({ error: "Missing user information in cookies" });
+      }
     
     const { dbpool, sshClient } = await connectToDatabase();
     dbpool.getConnection((err, connection) => {

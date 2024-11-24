@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import TextEditor from "./Utils/TextEditor";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import Cookies from "js-cookie";
 
 function HostProfile() {
     const containerRef = useRef(null);
@@ -39,9 +40,15 @@ function HostProfile() {
     const fetchHotelProfile = async () => {
       try {
 
-        //const hotelID = "1"; // Example hotelID, replace dynamically as needed
-        const fName = "Doggy"; // Retrieve this from cookies or state
-        const lName = "Den";   // Retrieve this from cookies or state
+        // Retrieve fName and lName from cookies
+        const fName = Cookies.get('user-fName');
+        const lName = Cookies.get('user-lName');
+
+        if (!fName || !lName) {
+          setError("Missing user information in cookies. Please log in again.");
+          setLoading(false);
+          return;
+      }
 
         const response = await axios.get(`http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`);
         console.log(`URL: http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`);
