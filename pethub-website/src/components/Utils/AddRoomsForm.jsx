@@ -91,11 +91,11 @@ export default function AddRoomsForm({onDataChange, image, onImageChange, index,
                     </label>
                     <label className="form-control w-full">
                         <div className="text-left text-black text-base mb-2">ประเภทสัตว์เลี้ยง</div>
-                        <select name="petAllowedType" value = {formData.petAllowedType} onChange={handleChange} className="select select-bordered drop-shadow-sm w-full focus:outline-none focus:border-pethub-color4" style={{ color: 'black' }}>
-                            <option disabled selected style={{ color: 'gray' }}>ประเภทสัตว์</option>
-                            <option style={{ color: 'black' }}>สุนัข</option>
-                            <option style={{ color: 'black' }}>แมว</option>
-                            <option style={{ color: 'black' }}>อื่น ๆ</option>
+                        <select name="petAllowedType" value = {formData.petAllowedType|| ""} onChange={handleChange} className="select select-bordered drop-shadow-sm w-full focus:outline-none focus:border-pethub-color4" style={{ color: 'black' }}>
+                            <option  value="" disabled selected={!formData.petAllowedType} style={{ color: 'gray' }}>ประเภทสัตว์</option>
+                            <option value="สุนัข" style={{ color: 'black' }}>สุนัข</option>
+                            <option  value="แมว" style={{ color: 'black' }}>แมว</option>
+                            <option value="อื่น ๆ" style={{ color: 'black' }}>อื่น ๆ</option>
                         </select>
                     </label>
                 </div>
@@ -110,17 +110,6 @@ export default function AddRoomsForm({onDataChange, image, onImageChange, index,
                         </div>
                     </label>
                     <label className="form-control w-full">
-                        <div className="text-left text-black text-base mb-2">ความจุห้อง</div>
-                        <div className="relative w-full">
-                            <input name="roomCapacity" value = {formData.roomCapacity||""} onChange={handleChange} type="text" placeholder="ใส่ความจุห้องของคุณที่นี่" className="input input-bordered drop-shadow-sm w-full focus:outline-none focus:border-pethub-color4" />
-                            <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none">
-                                ตัว
-                            </span>
-                        </div>
-                    </label>
-                </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-                    <label className="form-control w-full">
                         <div className="text-left text-black text-base mb-2">ขนาดห้อง</div>
                         <div className="relative w-full">
                             <input name="roomSize" type="text" value = {formData.roomSize||""} onChange={handleChange}  placeholder="ใส่ขนาดห้องของคุณที่นี่" className="input input-bordered drop-shadow-sm w-full focus:outline-none focus:border-pethub-color4" />
@@ -129,6 +118,9 @@ export default function AddRoomsForm({onDataChange, image, onImageChange, index,
                             </span>
                         </div>
                     </label>
+
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
                     <label className="form-control w-full">
                         <div className="text-left text-black text-base mb-2">ราคาต่อคืน</div>
                         <div className="relative w-full">

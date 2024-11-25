@@ -2,6 +2,8 @@ import Navbar from "./Utils/Navbar";
 import { useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from 'axios'
+import { toast } from "react-toastify";
+
 
 function Confirm() {
     const location = useLocation();
@@ -40,6 +42,7 @@ function Confirm() {
             console.log(res.data)
             hotelID = res.data.hotelID
             console.log(res.status)
+            toast.success("ลงทะเบียนสำเร็จ กรุณารอการยืนยัน")
         } catch(error) {
             console.error(error);
         }

@@ -53,7 +53,11 @@ function Login() {
         Cookies.set("user-role", userRole, { secure: true, sameSite: "Strict" });
   
         toast.success("Signin successful");
-        navigate("/pethub-website/Home");
+        if (userRole == "Host") {
+          navigate("/pethub-website/listhost")
+        } else {
+          navigate("/pethub-website/Home");
+        }
       }
     } catch (error) {
       if (error.response && error.response.data) {

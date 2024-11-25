@@ -98,7 +98,7 @@ function RoomsBooking() {
   };
 
   const handleAddMyPet = (newPet) => {
-    console.log(chosenPet)
+    console.log(newPet)
     setChosenPet(newPet)
 //     if (chosenPet) {
 //         const petExists = chosenPet.some((pet) => pet.petName === newPet.petName);
@@ -255,7 +255,7 @@ function RoomsBooking() {
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ขนาดห้อง</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.roomSize} ตรม.</div>
+                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.roomSize} ตร.ม.</div>
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ประเภท</div>
@@ -391,11 +391,11 @@ function RoomsBooking() {
                     </div>
                     <div className='w-full h-[45%] p-[2vw] md:p-4 text-start'>
                         <div className='flex justify-between items-end'>
-                            <div className='text-[2.5vw] md:text-base lg:text-xl xl:text-2xl'>รายระเอียดของห้องพัก</div>
+                            <div className='text-[2.5vw] md:text-base lg:text-xl xl:text-2xl'>รายละเอียดของห้องพัก</div>
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ขนาดห้อง</div>
-                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.roomSize} ตรม.</div>
+                            <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-lg md:my-1 lg:my-1'>{roomData.roomSize} ตร.ม.</div>
                         </div>
                         <div className='flex justify-between items-end'>
                             <div className='text-[1.8vw] md:text-xs lg:text-sm xl:text-sm md:my-1 lg:my-1'>ประเภท</div>
