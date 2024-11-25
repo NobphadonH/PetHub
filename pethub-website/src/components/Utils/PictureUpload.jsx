@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // eslint-disable-next-line react/prop-types
-function PictureUpload({ onImageSelected }) {
-  const [selectedImage, setSelectedImage] = useState(null);
+function PictureUpload({ onImageSelected, initialImage }) {
+  const [selectedImage, setSelectedImage] = useState(initialImage);
+
+  // Sync initialImage with selectedImage if it changes
+  useEffect(() => {
+    setSelectedImage(initialImage);
+  }, [initialImage]);
 
   // Function to handle image selection
   const handleImageChange = (event) => {

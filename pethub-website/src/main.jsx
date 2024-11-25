@@ -24,6 +24,8 @@ import RoomManagement from './components/RoomManagement.jsx';
 import Payment from './components/Payment.jsx';
 import HostProfile from './components/HostProfile.jsx';
 import HotelApprove from './components/HotelApprove.jsx';
+import PetEdit from './components/PetEdit.jsx';
+
 
 
 const router = createBrowserRouter([
@@ -42,6 +44,7 @@ const router = createBrowserRouter([
   {path: "/pethub-website/confirm", element: <Confirm />,},  //need responsive กัน
   {path: "/pethub-website/finish", element: <Finish />,}, //need responsive กัน
   {path: "/pethub-website/petregister", element: <PetRegister />,},
+  {path: "/pethub-website/petedit", element: <PetEdit />,},
   {path: "/pethub-website/hotel-profile", element: <HotelProfileManagement /> }, 
   {path: "/pethub-website/addrooms", element: <AddRooms />,},  //need responsive โต้
   {path: "/pethub-website/hostprofile/:roomID", element: <RoomManagement />,}, 

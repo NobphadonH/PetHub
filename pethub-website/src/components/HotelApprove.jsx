@@ -19,11 +19,12 @@ function HotelApprove() {
             {/* head */}
             <thead className="text-[2.5vw] sm:text-xs lg:text-sm xl:text-base">
               <tr>
-                <th>หมายเลขการจอง</th>
-                <th className="max-md:hidden">เช็คอิน</th>
-                <th className="max-md:hidden">เช็คเอาท์</th>
+                <th>หมายเลขโรงแรม</th>
+                {/* <th className="max-md:hidden">เช็คอิน</th>
+                <th className="max-md:hidden">เช็คเอาท์</th> */}
                 <th className="max-sm:hidden">โรงแรม</th>
-                <th>สถานะการจอง</th>
+                <th>ประเภท</th>
+                <th>สถานะ</th>
                 <th></th>
               </tr>
             </thead>
@@ -37,17 +38,20 @@ function HotelApprove() {
                       <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">B-123-4567890</div>
                     </div>
                   </td>
-                  <td  className="max-md:hidden">
+                  {/* <td  className="max-md:hidden">
                     <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">10/10/2567</div>
                   </td>
                   <td  className="max-md:hidden">
                     <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">10/10/2567</div>
-                  </td>
+                  </td> */}
                   <td className="max-sm:hidden">
                     <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">Pet Bangmod hotel, soi 45</div>
                   </td>
+                  <td className="max-sm:hidden">
+                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">โรงแรมสัตว์เลี้ยงระดับมืออาชีพ</div>
+                  </td>
                   <td className="max-md:pr-0">
-                    <span className="badge badge-ghost badge-sm bg-green-100 text-[2.5vw] sm:text-xs lg:text-sm xl:text-base">ชำระเงินแล้ว</span>
+                    <span className="badge badge-ghost badge-sm bg-green-100 text-[2.5vw] sm:text-xs lg:text-sm xl:text-base">อนุมัติแล้วแล้ว</span>
                   </td>
                   <th>
                     <button onClick={() => handleClick(index)} className="btn btn-ghost btn-xs"><span className="max-lg:hidden ">รายละเอียด</span>

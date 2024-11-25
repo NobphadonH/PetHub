@@ -346,7 +346,7 @@ function RoomsBooking() {
                                         </svg>
                                     </div>
                                     <div className="w-[200px] lg:w-[230px] xl:w-[250px] h-full rounded bg-slate-300 overflow-hidden">
-                                        <img src={chosenPet.petPhoto} className="object-cover" alt="" />
+                                        <img src={chosenPet.petPhoto} className="object-cover w-full h-full" alt="" />
                                     </div>
                                     <div className="w-full overflow-y-hide hide-scrollbar h-full pr-7 xl:pr-12 px-2 py-3 xl:p-5 flex flex-col justify-between">
                                         <div className="flex justify-between flex-wrap text-[2vw] md:text-[1.2vw] xl:text-xs">

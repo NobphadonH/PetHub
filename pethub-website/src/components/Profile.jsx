@@ -51,6 +51,10 @@ function Profile() {
         console.error('Error fetching pet data:', error.response?.data || error.message);
     }
   };
+
+  const handlePetEdit = (petState) => {
+    navigate("/pethub-website/petedit", {state: petState})
+  }
   
   useEffect(() => {
     const role = Cookies.get('user-role'); // Retrieve the role from cookies
@@ -191,7 +195,8 @@ function Profile() {
         {petData.map((pet, index) => (
         <div 
           key={pet.petID} 
-          className="my-[4vw] md:my-5 lg:my-10 max-h-[300px] md:max-h-[500px] overflow-y-scroll hide-scrollbar flex flex-col gap-5"
+          onClick={() => handlePetEdit(pet)}
+          className="my-[4vw] cursor-pointer md:my-5 lg:my-10 max-h-[300px] md:max-h-[500px] overflow-y-scroll hide-scrollbar flex flex-col gap-5"
         >
           <div className="w-full h-[26vw] md:h-52 lg:h-60 xl:h-72 rounded-md p-[1vw] md:p-3 border-[1px] flex gap-[1vw] md:gap-5">
             <div className="w-[240px] lg:w-[300px] xl:w-[350px] h-full bg-slate-100 rounded-md overflow-hidden">
