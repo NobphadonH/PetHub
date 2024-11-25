@@ -516,10 +516,10 @@ function Home() {
         </div>
       </div>
       {/* section3 */}
-      <div ref={parentRef} className="mt-10 w-11/12 xl:w-8/12 overflow-hidden mx-auto relative h-[83vw] md:h-[590px]">
+      {/* <div ref={parentRef} className="mt-10 w-11/12 xl:w-8/12 overflow-hidden mx-auto relative h-[83vw] md:h-[590px]">
         <motion.div ref={containerRef} className="absolute h-[80vw] md:h-[570px] rounded-md mx-auto p-5 flex gap-5" drag="x" dragConstraints={{ left: -totalWidth, right: 0 }} animate={{ x }} transition={{ type: "spring", stiffness: 300, damping: 30 }}>
-            <HotelRecommendLoading />
-            {hotelData.map((hotel, index) => (
+            {hotelResult ? <div></div> : <HotelRecommendLoading />}
+            {hotelResult.map((hotel, index) => (
                 <HotelRecommend
                     key={index} // It's good practice to use a unique key for each mapped component
                     hotelName={hotel.hotelName}
@@ -533,7 +533,7 @@ function Home() {
             ))}
 
         </motion.div>
-      </div>
+      </div> */}
       <Footer />
     </div>
   )
