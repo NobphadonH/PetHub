@@ -1,6 +1,7 @@
 import Navbar from "./Utils/Navbar"
 import { useEffect, useState } from "react"
 import Cookies from 'js-cookie';
+import { ToastContainer, toast } from "react-toastify";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
@@ -77,17 +78,15 @@ function Profile() {
 
   const handleCancelBooking = async (bookingID) => {
     try{
-      const response = await axios.post("http://localhost:5000/api/booking/cancelBooking", 
-                                        { bookingID }
-                                       );
-      toast.success("Cancellation successful");
+      const response = await axios.post("http://localhost:5000/api/booking/cancelBooking", {"bookingID": bookingID}, { 
+        withCredentials: true, 
+      });
       console.log("Response:", response.data);
+      toast.success("Cancellation successful");
       setShouldFetch(true);
     } catch(err){
       console.error('Error to cancel:', err.response?.data || err.message);
     }
-    // ฟังก์ชันที่จะทำงานเมื่อคลิกปุ่ม
-    //alert("คุณได้ยกเลิกการจองเรียบร้อยแล้ว!");
   }
   
   
@@ -316,7 +315,7 @@ function Profile() {
             {/* row 1 */}
             {bookingStatus.map((booking, index) => (
             //{Array.from({length: 3}).map((_, index) => (
-              <tbody  key={booking.bookingID}>
+              <tbody  key={index}>
                 <tr className="text-xs lg:text-sm xl:text-base">
                   <td>
                     <div className="flex items-center gap-4">
@@ -409,13 +408,13 @@ function Profile() {
                               <div>เพศ: {booking.petSex}</div>
                           </div>
                           <p className="text-start text-[2vw] md:text-[1.2vw] xl:text-sm my-1 lg:my-3">คำอธิบายลักษณะเพิ่มเติม</p>
-                          <textarea className="textarea w-full max-md:p-[1vw] max-h-8 min-h-8 md:max-h-12 md:min-h-12 lg:min-h-16 lg:max-h-16 textarea-bordered hide-scrollbar text-[1.5vw] md:text-[1vw] xl:text-sm text-gray-600" value={"นปโปะหม่ำๆ หม่ำๆ กู๊ดบอย กู๊ดบอยหม่ำๆ หม่ำๆ เก่งมาก  "}></textarea>
+                          <textarea className="textarea w-full max-md:p-[1vw] max-h-8 min-h-8 md:max-h-12 md:min-h-12 lg:min-h-16 lg:max-h-16 textarea-bordered hide-scrollbar text-[1.5vw] md:text-[1vw] xl:text-sm text-gray-600" value={booking.petDetail}></textarea>
                       </div>
       
                   </div>
                     <div className="my-[2vw] md:my-4 w-full flex justify-between gap-5 items-center">
                         <div className="text-[2vw] md:text-xs lg:text-sm">ติดต่อสอบถาม: {booking.hotelName}, 094-XXX-XXXX</div>
-                      <div className="flex justify-center items-center rounded-md md:btn bg-red-600 md:bg-red-600 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-40 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base" onClick={() => handleCancelBooking(booking.bookingID)}>ยกเลิกการจอง</div>
+                      <div onClick={() => handleCancelBooking(booking.bookingID)} className="flex justify-center items-center rounded-md md:btn bg-red-600 md:bg-red-600 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-40 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">ยกเลิกการจอง</div>
                     </div>
                   </td>
                 </tr>

@@ -150,8 +150,8 @@ export const cancelBooking = async (req, res) => {
 
 export const updateBooking = async (req, res) => {
   try {
-    const { bookingID } = req.body; // Assume bookingID is sent in the request body
     const { dbpool, sshClient } = await connectToDatabase();
+    const { bookingID } = req.body; // Assume bookingID is sent in the request body
 
     dbpool.getConnection((err, connection) => {
       if (err) {
