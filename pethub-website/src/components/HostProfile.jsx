@@ -2,6 +2,7 @@ import Navbar from "./Utils/Navbar"
 import { motion } from "framer-motion"
 import { useState, useRef, useEffect } from "react";
 import TextEditor from "./Utils/TextEditor";
+import ReadOnlyToggleButton from "./Utils/SaveButton";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import Cookies from "js-cookie";
@@ -14,6 +15,14 @@ function HostProfile() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+
+    const [readOnly, setReadOnly] = useState(true); // State for read-only mode
+    const [textContent, setTextContent] = useState(null)
+
+    // Function to toggle the read-only state
+    const toggleReadOnly = () => {
+      setReadOnly((prevReadOnly) => !prevReadOnly);
+    };
 
     const formatDate = (date) => {
       if (!date) return ''; // Handle null or undefined date
@@ -118,8 +127,11 @@ function HostProfile() {
      </div>
      <div className="lg:px-14 text-[4vw] md:text-2xl lg:text-3xl text-start mt-[6vw] md:mt-10 lg:mt-16 w-11/12 xl:w-10/12 max-w-[1200px] mx-auto font-semibold">รายละเอียดโรงแรม</div>
      <div className="lg:px-20 my-2 md:my-5 w-11/12 xl:w-10/12 max-w-[1200px] mx-auto">
-        <div className="md:mb-5 text-start text-[3vw] md:text-sm lg:text-base">คำอธิบายโรงแรม (Overview) & ข้อกำหนด</div>
-        <TextEditor />
+        <div className="md:mb-5 text-start text-[3vw] md:text-sm lg:text-base">คำอธิบายโรงแรม (Overview) </div>
+          <TextEditor readOnly={readOnly} toggleReadOnly={toggleReadOnly} />
+        <div className="md:my-5 text-start text-[3vw] md:text-sm lg:text-base">ข้อกำหนดของโรงแรม (Policy)</div>
+          <TextEditor readOnly={readOnly} toggleReadOnly={toggleReadOnly} />
+          <ReadOnlyToggleButton readOnly={readOnly} toggleReadOnly={toggleReadOnly} />
 
      </div>
      <div className=" text-[3vw] md:text-2xl lg:text-3xl text-start mt-[6vw] md:mt-10 lg:mt-16 w-11/12 xl:w-10/12 max-w-[1200px] mx-auto font-semibold">
