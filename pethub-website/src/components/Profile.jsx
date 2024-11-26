@@ -6,10 +6,14 @@ import axios from "axios";
 
 
 function Profile() {
-  const [isClick, setIsClick] = useState(Array(3).fill(false));
+  const [isClick, setIsClick] = useState(Array(0).fill(false));
+
   // const [loading, setLoading] = useState(true);
   const [userData, setuserData] = useState([]);
   const [petData, setpetData] = useState([]);
+  const [bookingStatus, setBookingStatus] = useState([]);
+  const [shouldFetch, setShouldFetch] = useState(true);
+  
   const navigate = useNavigate();
   const user = userData[0] || {};
 
@@ -28,6 +32,7 @@ function Profile() {
       prev.map((value, i) => (i === index ? !value : false))
     );
   }
+
   const fetchUserProfile = async () => {
     try {
         const response = await axios.get(`http://localhost:5000/api/user/getProfilebyUserID`, { 
@@ -39,7 +44,7 @@ function Profile() {
         console.error('Error fetching user profile:', error.response?.data || error.message);
     }
   };
-
+  
   const fetchPets = async () => {
     try {
         const response = await axios.get(`http://localhost:5000/api/pet/getAllPetsByUserID`, { 
@@ -47,14 +52,44 @@ function Profile() {
         }); 
         console.log('Pet data:', response.data);
         setpetData(response.data);
+        
     } catch (error) {
         console.error('Error fetching pet data:', error.response?.data || error.message);
+    }
+  };
+
+  const fetchbookingStatus = async () => {
+    try {
+        const response = await axios.get(`http://localhost:5000/api/booking/getBookingStatusbyUserID`, { 
+          withCredentials: true, 
+        }); 
+        console.log('Booking Status:', response.data);
+        setBookingStatus(response.data);
+        console.log('length', bookingStatus.length);
+    } catch (error) {
+        console.error('Error fetching Booking Status:', error.response?.data || error.message);
     }
   };
 
   const handlePetEdit = (petState) => {
     navigate("/pethub-website/petedit", {state: petState})
   }
+
+  const handleCancelBooking = async (bookingID) => {
+    try{
+      const response = await axios.post("http://localhost:5000/api/booking/cancelBooking", 
+                                        { bookingID }
+                                       );
+      toast.success("Cancellation successful");
+      console.log("Response:", response.data);
+      setShouldFetch(true);
+    } catch(err){
+      console.error('Error to cancel:', err.response?.data || err.message);
+    }
+    // ฟังก์ชันที่จะทำงานเมื่อคลิกปุ่ม
+    //alert("คุณได้ยกเลิกการจองเรียบร้อยแล้ว!");
+  }
+  
   
   useEffect(() => {
     const role = Cookies.get('user-role'); // Retrieve the role from cookies
@@ -73,13 +108,36 @@ function Profile() {
       }
   }, [Cookies]);
 
-  useEffect(() => { 
-    fetchUserProfile(); 
-  },[]);
+  useEffect(() => {
+    const fetchAllData = async () => {
+      try {
+        await Promise.all([fetchUserProfile(), fetchPets()]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchAllData();
+  }, []);
 
-  useEffect(() => { 
-    fetchPets(); 
-  },[]);
+  useEffect(() => {
+    const fetchbooking = async () => {
+      try {
+        await fetchbookingStatus();
+        setShouldFetch(false);
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      }
+    };
+    if (shouldFetch) {
+      fetchbooking();
+    }
+  }, [shouldFetch]);
+
+  useEffect(() => {
+    if (bookingStatus.length > 0) {
+      setIsClick(Array(bookingStatus.length).fill(false));
+    }
+  }, [bookingStatus]);
 
 
   console.log(userData);
@@ -105,7 +163,7 @@ function Profile() {
             <div className="w-full h-[30vw] max-h-[250px] bg-[rgb(214,214,214)] rounded-sm">
               <img src="https://media.istockphoto.com/id/1341046662/vector/picture-profile-icon-human-or-people-sign-and-symbol-for-template-design.jpg?s=612x612&w=0&k=20&c=A7z3OK0fElK3tFntKObma-3a7PyO8_2xxW0jtmjzT78=" alt="" />
             </div>
-            <div className="text-center text-xl mt-5">คุณ ชัชนันท์ บุญพา</div>
+            <div className="text-center text-xl mt-5">{`คุณ ${user.fName || "ชื่อผู้ใช้"} ${user.lName || ""}`}</div>
           </div>
           <div className=" lg:w-[700px] xl:w-[780px] pt-20">
             <div className="grid grid-cols-12 gap-x-10">
@@ -115,6 +173,7 @@ function Profile() {
                     type="text"
                     name="email"
                     placeholder="เบอร์โทร"
+                    value={user.phone || "เบอร์โทร"}
                     className="input input-bordered w-full h-[8vw] max-h-10 shadow-md text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm md:mb-3"
                 />
               </div>
@@ -133,6 +192,7 @@ function Profile() {
                     type="text"
                     name="email"
                     placeholder="ที่อยู่"
+                    value={user.address || "ที่อยู่"}
                     className="input input-bordered w-full h-[8vw] max-h-10 shadow-md text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm md:mb-3"
                 />
               </div>
@@ -192,7 +252,10 @@ function Profile() {
         <div className="w-full flex justify-between items-center">
           <div className="text-[3vw] md:text-lg lg:text-2xl xl:text-3xl font-bold text-pethub-color6">สัตว์เลี้ยง<span className="text-pethub-color1">ของฉัน</span></div>
         </div>
-        {petData.map((pet, index) => (
+        {petData.length === 0 ? (
+          <p className="text-center text-gray-500">ไม่มีข้อมูลสัตว์เลี้ยง</p>
+        ) : (
+        petData.map((pet, index) => (
         <div 
           key={pet.petID} 
           onClick={() => handlePetEdit(pet)}
@@ -226,7 +289,7 @@ function Profile() {
             </div>
           </div>
         </div>
-      ))}
+      )))}
 
         <div className="w-full flex justify-end">
           <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-28 lg:w-32 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">เพิ่มสัตว์เลี้ยง</div>
@@ -251,26 +314,45 @@ function Profile() {
               </tr>
             </thead>
             {/* row 1 */}
-            {Array.from({length: 3}).map((_, index) => (
-              <tbody  key={index}>
+            {bookingStatus.map((booking, index) => (
+            //{Array.from({length: 3}).map((_, index) => (
+              <tbody  key={booking.bookingID}>
                 <tr className="text-xs lg:text-sm xl:text-base">
                   <td>
                     <div className="flex items-center gap-4">
                       <div className="w-2 h-8 lg:h-10 xl:h-14 bg-green-500"></div>
-                      <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">B-123-4567890</div>
+                      <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">B-{booking.bookingID}</div>
                     </div>
                   </td>
                   <td  className="max-md:hidden">
-                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">10/10/2567</div>
+                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">
+                      {new Date(booking.checkInDate).toLocaleDateString("th-TH", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })}
+                    </div>
                   </td>
                   <td  className="max-md:hidden">
-                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">10/10/2567</div>
+                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">
+                      {new Date(booking.checkOutDate).toLocaleDateString("th-TH", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })}
+                    </div>
                   </td>
                   <td className="max-sm:hidden">
-                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">Pet Bangmod hotel, soi 45</div>
+                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">{booking.hotelName}, {booking.hotelAddress}</div>
                   </td>
                   <td className="max-md:pr-0">
-                    <span className="badge badge-ghost badge-sm bg-green-100 text-[2.5vw] sm:text-xs lg:text-sm xl:text-base">ชำระเงินแล้ว</span>
+                    <span className={`badge badge-ghost badge-sm text-[2.5vw] sm:text-xs lg:text-sm xl:text-base ${
+                          booking.bookingStatus === "Confirmed"
+                          ? "bg-green-100 text-green-700" // สีเขียวเมื่อ Confirmed
+                          : "bg-red-100 text-red-700" // สีแดงเมื่อ Cancel
+                          }`}>
+                          {booking.bookingStatus === "Confirmed" ? "ชำระเงินแล้ว" : "ยกเลิก"}
+                    </span>
                   </td>
                   <th>
                     <button onClick={() => handleClick(index)} className="btn btn-ghost btn-xs"><span className="max-lg:hidden ">รายละเอียด</span>
@@ -287,28 +369,44 @@ function Profile() {
                   <td colSpan={6} className="text-sm">
                     <div className="flex justify-between items-center text-[2.5vw] md:text-xs lg:text-sm">
                       <div className="flex max-md:justify-between gap-y-[2vw] gap-x-[4vw] md:gap-x-10 my-3 font-semibold flex-wrap">
-                        <div>โรงแรม: <span className="font-normal">Pet Bangmod hotel, soi 45</span></div>
-                        <div>ประเภทห้อง: <span className="font-normal">ห้องขนาดทั่วไป</span></div>
-                        <div>ตำแหน่งที่ต้้ง: <span className="font-normal">ถ.ประชาอุทิศ 45 กรุงเทพ</span></div>
+                        <div>โรงแรม: <span className="font-normal">{booking.hotelName}, {booking.hotelAddress}</span></div>
+                        <div>ประเภทห้อง: <span className="font-normal">{booking.roomTypeName}</span></div>
+                        <div>ตำแหน่งที่ต้้ง: <span className="font-normal">{booking.hotelAddress}</span></div>
                       </div>
                       <div className="max-lg:hidden">วันที่จอง: <span className="font-normal">13/10/2567</span></div>
                     </div>
                     <div className="flex gap-[3vw] md:gap-10 my-[1vw] md:my-3 font-semibold ">
                       <div className="badge badge-ghost badge-md font-normal text-[2.5vw] md:text-xs lg:text-sm">การจอง: <span>2 คืน</span></div>
-                      <div className="badge badge-ghost badge-md font-normal text-[2.5vw] md:text-xs lg:text-sm">เช็คอิน: <span className="font-normal">10/10/2567</span></div>
-                      <div className="badge badge-ghost badge-md font-normal text-[2.5vw] md:text-xs lg:text-sm">เช็คเอาท์: <span className="font-normal">10/10/2567</span></div>
+                      <div className="badge badge-ghost badge-md font-normal text-[2.5vw] md:text-xs lg:text-sm">เช็คอิน: <span className="font-normal">
+                          {new Date(booking.checkInDate).toLocaleDateString("th-TH", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          })}
+                        </span></div>
+                      <div className="badge badge-ghost badge-md font-normal text-[2.5vw] md:text-xs lg:text-sm">เช็คเอาท์: <span className="font-normal">
+                          {new Date(booking.checkOutDate).toLocaleDateString("th-TH", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                          })}
+                        </span></div>
                     </div>
                     <div className="mt-[2vw] text-[3vw] md:text-sm md:mt-6 font-semibold">ข้อมูลสัตว์เลี้ยงที่เข้าพัก</div>
                     <div className={`bg-white w-full relative h-28 sm:h-36 lg:h-40 xl:h-44 border-[1px] my-[2vw] md:my-3 rounded-md p-1 flex overflow-y-scroll hide-scrollbar`}>
                       <div className="w-[200px] lg:w-[230px] xl:w-[250px] h-full rounded bg-slate-300 overflow-hidden">
-                          <img src="https://s.isanook.com/ca/0/ui/285/1425207/staywithnoppo-20240522_152537-446114668_721839553257673_573084092354014144_n.jpeg" className=" object-cover" alt="" />
+                      <img 
+                        src={booking.petPhoto} 
+                        alt={booking.petName} 
+                        className="w-full h-full object-cover" 
+                      />
                       </div>
                       <div className="w-full overflow-y-hide hide-scrollbar h-full px-2 py-[2vw] md:py-3 xl:p-5 flex flex-col justify-between">
                           <div className="flex justify-between flex-wrap text-[2vw] md:text-[1.2vw] xl:text-xs">
-                              <div>ชื่อ: นปโปะ</div>
-                              <div>อายุ:1 ปี 2 เดือน</div>
-                              <div>ประเภท: สุนัข</div>
-                              <div>เพศ: เพศผู้</div>
+                              <div>ชื่อ: {booking.petName} </div>
+                              <div>อายุ: {calculatePetAge(booking.petDOB)}</div>
+                              <div>ประเภท: {booking.petType}</div>
+                              <div>เพศ: {booking.petSex}</div>
                           </div>
                           <p className="text-start text-[2vw] md:text-[1.2vw] xl:text-sm my-1 lg:my-3">คำอธิบายลักษณะเพิ่มเติม</p>
                           <textarea className="textarea w-full max-md:p-[1vw] max-h-8 min-h-8 md:max-h-12 md:min-h-12 lg:min-h-16 lg:max-h-16 textarea-bordered hide-scrollbar text-[1.5vw] md:text-[1vw] xl:text-sm text-gray-600" value={"นปโปะหม่ำๆ หม่ำๆ กู๊ดบอย กู๊ดบอยหม่ำๆ หม่ำๆ เก่งมาก  "}></textarea>
@@ -316,8 +414,8 @@ function Profile() {
       
                   </div>
                     <div className="my-[2vw] md:my-4 w-full flex justify-between gap-5 items-center">
-                        <div className="text-[2vw] md:text-xs lg:text-sm">ติดต่อสอบถาม: Pet Bangmod hotel, 094-XXX-XXXX</div>
-                      <div className="flex justify-center items-center rounded-md md:btn bg-red-600 md:bg-red-600 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-40 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">ยกเลิกการจอง</div>
+                        <div className="text-[2vw] md:text-xs lg:text-sm">ติดต่อสอบถาม: {booking.hotelName}, 094-XXX-XXXX</div>
+                      <div className="flex justify-center items-center rounded-md md:btn bg-red-600 md:bg-red-600 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-40 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base" onClick={() => handleCancelBooking(booking.bookingID)}>ยกเลิกการจอง</div>
                     </div>
                   </td>
                 </tr>

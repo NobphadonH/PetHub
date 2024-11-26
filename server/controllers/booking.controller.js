@@ -1,5 +1,10 @@
 import { connectToDatabase } from "../utils/dbConnection.js";
 import { updatePayment } from "./payment.controller.js";
+import {
+  uploadFileToS3,
+  downloadFileFromS3,
+  deleteFileFromS3,
+} from "../utils/s3FileTransfer.js";
 
 export const createBooking = async (req, res) => {
   try {
@@ -194,4 +199,92 @@ export const updateBooking = async (req, res) => {
     console.error("Error in updateBooking controller:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
+
+export const getBookingStatusbyUserID = async (req, res) => {
+  try {
+    // Connect to the database and SSH client
+    const { dbpool, sshClient } = await connectToDatabase();
+    // Extract userID from the request body
+    const userID = req.user.userID;
+
+    // Get a connection from the database pool
+    dbpool.getConnection((err, connection) => {
+        if (err) {
+            // Log error and close SSH if connection fails
+            console.error("Error getting connection:", err);
+            sshClient.end();
+            return res.status(500).json({ error: "Database connection failed" });
+        }
+
+        // Query to fetch user data by userID
+        const query = `SELECT B.bookingID, 
+                              B.roomTypeID,
+                              B.checkInDate,
+                              B.checkOutDate,
+                              B.bookingStatus,
+                              R.roomTypeName,
+                              H.hotelName,
+                              H.hotelAddress,
+                              P.petName,
+                              P.petDOB,
+                              P.petDetail,
+                              P.petType,
+                              P.petSex,
+                              P.petPhoto
+                        FROM 
+                          Bookings B 
+                        JOIN 
+                          RoomTypes R ON B.roomTypeID = R.roomTypeID 
+                        JOIN 
+                          Hotels H ON R.hotelID = H.hotelID
+                        JOIN 
+                          Users U ON B.userID = U.userID
+                        JOIN 
+                          Pets P ON B.petID = P.petID
+                        WHERE 
+                          U.userID=?;`;
+        connection.query(query, [userID], async (err, results) => {
+            if (err) {
+                // Log error if query fails
+                console.error("Query error:", err);
+                return res.status(500).json({ error: "Query execution failed" });
+            }
+            
+            const petsWithPhotos = await Promise.all(
+              results.map(async (pet) => {
+                try {
+                  const photoData = await downloadFileFromS3(pet.petPhoto);
+                  const petPhotoBuffer = photoData.Body;
+                  return {
+                    ...pet,
+                    petPhoto: `data:${
+                      photoData.ContentType
+                    };base64,${petPhotoBuffer.toString("base64")}`,
+                  };
+                } catch (error) {
+                  console.error(
+                    `Failed to download photo for petID ${pet.petID}:`,
+                    error
+                  );
+                  // If download fails, include the pet data without the photo
+                  return { ...pet, petPhoto: null };
+                }
+              })
+            );
+            // Return results on success
+            console.log(petsWithPhotos);
+            res.status(200).json(petsWithPhotos);
+  
+            // Release connection and close SSH
+            connection.release();
+            sshClient.end();
+            console.log("Connections closed.");
+        });
+    });
+} catch (error) {
+    // Log unexpected errors
+    console.error("Error in getฺBookingStatusbyUserID:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+}
 };
