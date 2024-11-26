@@ -52,6 +52,9 @@ function EditPetProfile() {
     event.preventDefault();
   };
 
+  console.log(formData)
+
+
   const handleSubmit = async () => {
     // Validate required fields
     // if (
@@ -73,26 +76,27 @@ function EditPetProfile() {
     petData.append("petDetail", formData.petDetail);
 
     //Append the pet's photo
-    if (formData.selectedImage) {
-      petData.append(
-        "selectedImage",
-        formData.selectedImage,
-        formData.selectedImage.name
-      ); // Use original file name
-    } else {
-      alert("Please upload a photo of your pet.");
-      return;
-    }
+    // if (formData.selectedImage) {
+    //   petData.append(
+    //     "selectedImage",
+    //     formData.selectedImage,
+    //     formData.selectedImage.name
+    //   ); // Use original file name
+    // } else {
+    //   alert("Please upload a photo of your pet.");
+    //   return;
+    // }
+
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/pet/createPet",
-        petData,
+        "http://localhost:5000/api/pet/updatePetByPetID",
+        formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
+          withCredentials: true,  // To handle authentication cookies, if needed
         }
       );
+      
       console.log("Pet data submitted successfully:", res.data);
       console.log(res.status);
       alert("Pet profile created successfully!");

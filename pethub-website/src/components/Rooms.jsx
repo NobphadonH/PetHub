@@ -101,8 +101,8 @@ function Rooms() {
                 errors[index] = { field: "petAllowedType", message: "กรุณากรอกประเภทสัตว์" };
             } else if (!room.numberOfRoom || isNaN(room.numberOfRoom) || room.numberOfRoom <= 0) {
                 errors[index] = { field: "numberOfRoom", message: "กรุณากรอกจำนวนห้อง" };
-            } else if (!room.roomCapacity || isNaN(room.roomCapacity) || room.roomCapacity <= 0) {
-                errors[index] = { field: "roomCapacity", message: "กรุณาจำนวนของสัตว์ในห้อง" };
+            // } else if (!room.roomCapacity || isNaN(room.roomCapacity) || room.roomCapacity <= 0) {
+            //     errors[index] = { field: "roomCapacity", message: "กรุณาจำนวนของสัตว์ในห้อง" };
             } else if (!room.roomSize || isNaN(room.roomSize) || room.roomSize <= 0) {
                 errors[index] = { field: "roomSize", message: "กรุณากรอกขนาดห้อง" };
             } else if (!room.pricePerNight || isNaN(room.pricePerNight) || room.pricePerNight <= 0) {
@@ -169,7 +169,7 @@ function Rooms() {
     
 
     const goPreviousPage = () => {
-        navigate("/pethub-website/basics", { state: { hotelFormData: hotelFormData, readyRoomFormArray: location.state?.readyRoomFormArray || null } });
+        navigate("/pethub-website/basics", { state: { hotelFormData: hotelFormData, readyRoomFormArray: location.state?.readyRoomFormArray || roomFormArray } });
     };
 
     useEffect(() => {
