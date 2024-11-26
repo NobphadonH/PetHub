@@ -148,9 +148,11 @@ function HostProfile() {
      <div className="w-11/12 xl:w-10/12 max-w-[1200px] mx-auto">
         <div ref={parentRef} className="md:mt-4 lg:mt-8 xl:mt-10 w-full overflow-hidden mx-auto relative h-[70vw] md:h-[550px]  lg:h-[650px]">
             <motion.div ref={containerRef} className="absolute h-[60vw] md:h-[500px] lg:h-[600px] rounded-md mx-auto md:py-5 flex gap-3 lg:gap-5" drag="x" dragConstraints={{ left: -totalWidth, right: 0 }} transition={{ type: "spring", stiffness: 300, damping: 30 }}>
-              {rooms.map((room, index) => (
+              {rooms?.map((room, index) => (
                     <div key={room.roomTypeID} className='w-[45vw] md:w-[350px] xl:w-[400px] bg-white rounded-lg overflow-hidden'>
-                        <div className='w-full h-[50%] bg-slate-200'></div>
+                        <div className='w-full h-[50%] bg-slate-200'>
+                        {/* <img className="absolute w-full h-full object-cover" src={room.roomPhoto} alt="" /> */}
+                        </div>
                         <div className='w-full h-[50%] p-[2vw] md:p-6 text-start'>
                             <div className='flex justify-between items-end'>
                                 <div className='text-[2.5vw] md:text-lg lg:text-xl xl:text-2xl'>{room.roomTypeName}</div>
@@ -189,7 +191,7 @@ function HostProfile() {
               </tr>
             </thead>
             {/* row 1 */}
-            {bookings.map((booking) => (
+            {bookings?.map((booking) => (
               <tbody  key={booking.bookingID}>
                 <tr className="text-xs lg:text-sm xl:text-base">
                   <td>
