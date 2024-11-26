@@ -1,7 +1,7 @@
 import axios from "axios";
 import Navbar from "./Utils/Navbar";
 import { useState } from 'react';
-
+import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
 
 
@@ -13,6 +13,7 @@ function Payment() {
     const [cardData, setCardData] = useState({});
 
     const location = useLocation()
+    const navigate = useNavigate()
     console.log(location.state);
 
     const bookingData = location.state;
@@ -102,8 +103,11 @@ function Payment() {
             if (res.status==201) {
                 if (bookingData.petAllowedType != 'อื่น ๆ') {
                     toast.success("ดำเนินการจองสำเร็จ")
+                    navigate("/pethub-website/Home");
+                    
                 } else {
                     toast.success("กรุณารอการตอบกลับจากโรงแรม")
+                    navigate("/pethub-website/Home");
                 }
             }
         } catch (err) {
@@ -207,7 +211,7 @@ function Payment() {
                                 ข้อมูลสำคัญเกี่ยวกับการจองของคุณ
                             </div>
                         </div>
-                        <ul className="ml-4 lg:ml-10 mt-4 lg:mt-6 text-sm lg:text-base text-black">
+                        <ul className="ml-4 lg:ml-10 mt-4 lg:my-6 text-sm lg:text-base text-black">
                             <li>การขยายเวลาการเข้าพักจะต้องทำการจองใหม่</li>
                             <li>พนักงานต้อนรับจะรอต้อนรับคุณเมื่อมาถึง</li>
                             <li>จะไม่มีการคืนเงินหากคุณเช็คอินล่าช้าหรือเช็คเอาท์ก่อนเวลา</li>
@@ -234,7 +238,7 @@ function Payment() {
                     </div>
 
 
-                    <button onClick={handleSubmit} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white max-sm:text-[2.5vw] h-[7vw] w-[20vw] sm:w-32 md:w-28 font-medium text-xs lg:text-sm xl:text-base"> ยืนยันการจอง </button>
+                    <button onClick={handleSubmit} className="my-8 flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white max-sm:text-[2.5vw] h-[7vw] w-[20vw] sm:w-32 md:w-32 font-medium text-xs lg:text-sm xl:text-base"> ยืนยันการจอง </button>
 
 
                 </div>

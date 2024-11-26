@@ -368,7 +368,7 @@ function RoomsBooking() {
                         <div className="z-10">
                             <p className="font-semibold  text-[3vw] md:text-xs lg:text-sm xl:text-sm my-[3vw] md:my-3 lg:my-6">ข้อมูลการดูแลสัตว์เลี้ยง</p>
                             <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-3">ข้อมูลสำคัญของน้องๆ ของคุณ เช่น โรคประจำตัว หรือความจำเป็นในการดูแลเป็นพิเศษต่างๆ แนะนำให้แจ้งให้ทางโรงแรมทราบถึงการปฎิบัติดูแลต่างๆ</p>
-                            <input 
+                            <textarea 
                             name = "bookingDetail"
                             onChange = {handleChange}
                             value = {bookingData.bookingDetail || ""}
@@ -379,7 +379,7 @@ function RoomsBooking() {
                             <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-3">โปรดเช็คข้อมูลให้ถูกต้องก่อนทำการจอง</p>
                             <button 
                             onClick={handleSubmitBooking}
-                            className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white max-sm:text-[2.5vw] h-[7vw] w-[20vw] sm:w-32 md:w-28 font-medium text-xs lg:text-sm xl:text-base">ดำเนินการต่อ</button>
+                            className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white max-sm:text-[2.5vw] h-[7vw] w-[20vw] sm:w-32 md:w-32 font-medium text-xs lg:text-sm xl:text-base">ดำเนินการต่อ</button>
                         </div>
                     </div>
                 </div>

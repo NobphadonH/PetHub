@@ -167,16 +167,16 @@ function HotelDetail() {
           navigate("/pethub-website/signin");
           return;
         } else {
-            console.log(hotelData);
-            navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData});
+            // console.log(hotelData);
+            // navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData});
 
-            // if (role != "Client"){
-            //     toast.error("Account นี้ไม่สามารถจองห้องพักได้");
-            // }else{
-            //     console.log(hotelData);
-            //     navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData, hotelState: hotelData });
+            if (role == "Client" || role == "Dev"){
+                console.log(hotelData);
+                navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData, hotelState: hotelData });
+            }else{
+                toast.error("Account นี้ไม่สามารถจองห้องพักได้");
 
-            // }
+            }
         }
 
       };
