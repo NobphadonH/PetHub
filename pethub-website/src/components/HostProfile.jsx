@@ -1,8 +1,6 @@
 import Navbar from "./Utils/Navbar"
 import { motion } from "framer-motion"
 import { useState, useRef, useEffect } from "react";
-import TextEditor from "./Utils/TextEditor";
-import ReadOnlyToggleButton from "./Utils/SaveButton";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import Cookies from "js-cookie";
@@ -15,14 +13,41 @@ function HostProfile() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-
-    const [readOnly, setReadOnly] = useState(true); // State for read-only mode
-    const [textContent, setTextContent] = useState(null)
-
-    // Function to toggle the read-only state
-    const toggleReadOnly = () => {
-      setReadOnly((prevReadOnly) => !prevReadOnly);
+    const [content, setContent] = useState({
+      content1: "", // First textarea content
+      content2: "", // Second textarea content
+      merge_content: "", // Merged content of both textareas
+    });
+  
+    const [readOnly, setReadOnly] = useState(false); // State for readonly toggle
+  
+    // Function to handle changes in the textareas
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setContent((prevContent) => {
+        // Update the specific content based on which textarea is changed
+        const newContent = { ...prevContent, [name]: value };
+        // Merge both contents to update merge_content
+        newContent.merge_content = newContent.content1 + "\n" + newContent.content2;
+        return newContent;
+      });
     };
+  
+    // Function to toggle the readonly state
+    const handleReadOnly = () => {
+      setReadOnly((prevReadOnly) => {
+        const newReadOnly = !prevReadOnly;
+        if (newReadOnly) {
+          // When switching to readOnly, update merge_content to include both text areas' values
+          setContent((prevContent) => ({
+            ...prevContent,
+            merge_content: prevContent.content1 + "\n" + prevContent.content2,
+          }));
+        }
+        return newReadOnly;
+      });
+    };
+
 
     const formatDate = (date) => {
       if (!date) return ''; // Handle null or undefined date
@@ -95,6 +120,8 @@ function HostProfile() {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
   
+    console.log(content)
+
     const { hotelID, hotelPhoto, hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, fName, lName, phone, rooms, bookings } = hotelData;
 
   return (
@@ -127,22 +154,46 @@ function HostProfile() {
      </div>
      <div className="lg:px-14 text-[4vw] md:text-2xl lg:text-3xl text-start mt-[6vw] md:mt-10 lg:mt-16 w-11/12 xl:w-10/12 max-w-[1200px] mx-auto font-semibold">รายละเอียดโรงแรม</div>
      <div className="lg:px-20 my-2 md:my-5 w-11/12 xl:w-10/12 max-w-[1200px] mx-auto">
-        <div className="md:mb-5 text-start text-[3vw] md:text-sm lg:text-base">คำอธิบายโรงแรม (Overview) </div>
-          <TextEditor readOnly={readOnly} toggleReadOnly={toggleReadOnly} />
-        <div className="md:my-5 text-start text-[3vw] md:text-sm lg:text-base">ข้อกำหนดของโรงแรม (Policy)</div>
-          <TextEditor readOnly={readOnly} toggleReadOnly={toggleReadOnly} />
-          <ReadOnlyToggleButton readOnly={readOnly} toggleReadOnly={toggleReadOnly} />
+      <div className="md:mb-5 text-start text-[3vw] md:text-sm lg:text-base">
+        คำอธิบายโรงแรม (Overview)
+      </div>
+      <textarea
+        className="textarea w-full max-h-36 min-h-36 md:max-h-72 md:min-h-72 lg:min-h-96 lg:max-h-96 textarea-bordered hide-scrollbar text-[2vw] md:text-[1.4vw] xl:text-lg text-gray-600 p-[2vw] md:p-5"
+        name="content1"
+        placeholder="ข้อกำหนดของโรงแรม..."
+        value={content.content1}
+        onChange={handleChange}
+        readOnly={readOnly}
+      ></textarea>
+      <div className="md:my-5 text-start text-[3vw] md:text-sm lg:text-base">
+        ข้อกำหนดของโรงแรม (Policy)
+      </div>
+      <textarea
+        className="textarea w-full max-h-36 min-h-36 md:max-h-72 md:min-h-72 lg:min-h-96 lg:max-h-96 textarea-bordered hide-scrollbar text-[2vw] md:text-[1.4vw] xl:text-lg text-gray-600 p-[2vw] md:p-5"
+        name="content2"
+        placeholder="ข้อกำหนดของโรงแรม..."
+        value={content.content2}
+        onChange={handleChange}
+        readOnly={readOnly}
+      ></textarea>
+      <button
+        className={`${readOnly ? "bg-pethub-color6 md:bg-pethub-color6": "bg-pethub-color1 md:bg-pethub-color1"} flex justify-center items-center rounded-md md:btn  text-white md:text-white h-[7vw] w-[15vw] sm:w-24 sm:h-10 md:w-28 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base`}
+        onClick={handleReadOnly} // Toggles readOnly state
+      >
+        {readOnly ? "แก้ไขข้อมูล" : "บันทึก"}
+      </button>
 
-     </div>
+      {/* Optionally, you can render merged content here for testing */}
+    </div>
      <div className=" text-[3vw] md:text-2xl lg:text-3xl text-start mt-[6vw] md:mt-10 lg:mt-16 w-11/12 xl:w-10/12 max-w-[1200px] mx-auto font-semibold">
     <div className="my-[2vw] md:my-4 w-full flex justify-between gap-5">
         <div>จัดการห้องพัก</div>
         <button
-      className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-24 sm:h-10 md:w-28 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base"
-      onClick={handleAddRoomClick} // Handle click to navigate
-    >
-      เพิ่มห้องพัก
-    </button>
+        className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-24 sm:h-10 md:w-28 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base"
+        onClick={handleAddRoomClick} // Handle click to navigate
+      >
+        เพิ่มห้องพัก
+      </button>
     </div>
      </div>
      <div className="w-11/12 xl:w-10/12 max-w-[1200px] mx-auto">

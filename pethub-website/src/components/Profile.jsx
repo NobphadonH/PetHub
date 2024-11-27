@@ -292,7 +292,7 @@ function Profile() {
       )))}
 
         <div className="w-full flex justify-end">
-          <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-28 lg:w-32 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">เพิ่มสัตว์เลี้ยง</div>
+          <a href="/pethub-website/petregister" className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-28 lg:w-32 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">เพิ่มสัตว์เลี้ยง</a>
         </div>
 
 
@@ -373,7 +373,7 @@ function Profile() {
                         <div>ประเภทห้อง: <span className="font-normal">{booking.roomTypeName}</span></div>
                         <div>ตำแหน่งที่ต้้ง: <span className="font-normal">{booking.hotelAddress}</span></div>
                       </div>
-                      <div className="max-lg:hidden">วันที่จอง: <span className="font-normal">13/10/2567</span></div>
+                      {/* <div className="max-lg:hidden">วันที่จอง: <span className="font-normal">13/10/2567</span></div> */}
                     </div>
                     <div className="flex gap-[3vw] md:gap-10 my-[1vw] md:my-3 font-semibold ">
                       <div className="badge badge-ghost badge-md font-normal text-[2.5vw] md:text-xs lg:text-sm">การจอง: <span>2 คืน</span></div>
@@ -415,7 +415,7 @@ function Profile() {
                   </div>
                     <div className="my-[2vw] md:my-4 w-full flex justify-between gap-5 items-center">
                         <div className="text-[2vw] md:text-xs lg:text-sm">ติดต่อสอบถาม: {booking.hotelName}, 094-XXX-XXXX</div>
-                      <div onClick={() => handleCancelBooking(booking.bookingID)} className={`${booking.bookingStatus === "Cancelled" ? "hidden" : ""} flex justify-center items-center rounded-md md:btn bg-red-600 md:bg-red-600 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-40 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base`}>ยกเลิกการจอง</div>
+                      <div onClick={() => handleCancelBooking(booking.bookingID)} className={`${booking.bookingStatus === "Cancelled" ? "hidden" : "flex justify-center items-center rounded-md md:btn bg-red-600 md:bg-red-600 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-40 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base"} `}>ยกเลิกการจอง</div>
                     </div>
                   </td>
                 </tr>

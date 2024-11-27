@@ -97,6 +97,8 @@ function Payment() {
                 amount : bookingData.amount
                 
             }, {withCredentials: true});
+            toast.loading("ดำเนินการชำระเงิน")
+
 
             console.log(res);
 

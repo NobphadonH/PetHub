@@ -388,10 +388,10 @@ function HotelDetail() {
                         </div>
                         <div className='w-full h-[50%] p-[2vw] md:p-6 text-start'>
                             <div className='flex justify-between items-end'>
-                                <div className='text-[2.5vw] md:text-lg lg:text-xl xl:text-2xl'>{room.roomTypeName} ({room.petAllowedType})</div>
-                                <div className='text-[2vw] md:text-sm lg:text-base xl:text-lg'>{room.roomSize} ตรม</div>
+                                <div className='text-[2.5vw] md:text-lg lg:text-xl xl:text-2xl transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>{room.roomTypeName} ({room.petAllowedType})</div>
+                                <div className='text-[2vw] md:text-sm lg:text-base xl:text-lg transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden'>{room.roomSize} ตรม</div>
                             </div>
-                            <div className='text-[2vw] md:text-xs lg:text-sm xl:text-base transition-all duration-300 ease-in-out line-clamp-2 overflow-hidden text-gray-400'>
+                            <div className='text-[2vw] md:text-xs lg:text-sm xl:text-base transition-all duration-300 ease-in-out line-clamp-2 overflow-hidden text-gray-400 '>
                                 {room.roomDetail.length > 150 ? room.roomDetail.substring(0, 150) + '...' : room.roomDetail}
                             </div>
                             <div className='text-[2vw] md:text-base my-[1vw] md:my-2 lg:my-5'>{parseFloat(room.pricePerNight).toFixed(0) } บาท/คืน</div>

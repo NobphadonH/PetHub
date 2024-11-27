@@ -3,9 +3,12 @@ import PictureUpload from "./Utils/PictureUpload";
 import { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function AddPetProfile() {
   const [imageFile, setImageFile] = useState(null);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     petName: "",
     petDOB: "",
@@ -46,6 +49,8 @@ function AddPetProfile() {
   const handleDragOver = (event) => {
     event.preventDefault();
   };
+
+  console.log(formData)
 
   const handleSubmit = async () => {
     // Validate required fields
@@ -90,14 +95,15 @@ function AddPetProfile() {
       );
       console.log("Pet data submitted successfully:", res.data);
       console.log(res.status);
-      alert("Pet profile created successfully!");
+      toast.success("Pet profile created successfully!");
+      navigate("/pethub-website/profile")
       // Optionally, reset the form or redirect the user
     } catch (error) {
       console.error(
         "Error submitting pet data:",
         error.response?.data || error.message
       );
-      alert(error.response?.data?.error || "Failed to create pet profile.");
+      toast.error(error.response?.data?.error || "Failed to create pet profile.");
     }
   };
 
