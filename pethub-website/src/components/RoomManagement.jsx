@@ -195,7 +195,12 @@ function RoomManagement() {
       }, [roomTypeID]);
     
       if (!roomDetails || !bookingDetails) {
-        return <div>Loading...</div>;
+        return <>
+            <Navbar />
+            <div className="h-[100vh] w-full flex items-center justify-center">
+                <span className="loading loading-spinner text-error w-8"></span>    
+            </div>
+        </>;
       }
 
   return (

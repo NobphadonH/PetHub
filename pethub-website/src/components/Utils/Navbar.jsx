@@ -58,7 +58,7 @@ export default function Navbar() {
       setUsername('')
   
       console.log('Logged out successfully');
-      toast("Logged out successfully");
+      toast.success("Logged out successfully");
     } catch (error) {
       console.error('Error during logout:', error.message);
     }
@@ -80,7 +80,7 @@ export default function Navbar() {
       <div className="navbar border-b-2 bg-white px-4 md:px-20 xl:px-40">
         {/* Mobile Navbar Toggle */}
         <div className="xl:hidden md:mr-5">
-          <a href="/"><img src={logo} alt="logo" width={40} /></a>
+          <a href="/pethub-website/home"><img src={logo} alt="logo" width={40} /></a>
         </div>
 
         <div ref={dropdownRef}>

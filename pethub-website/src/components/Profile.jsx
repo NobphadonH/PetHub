@@ -8,13 +8,12 @@ import axios from "axios";
 
 function Profile() {
   const [isClick, setIsClick] = useState(Array(0).fill(false));
-
-  // const [loading, setLoading] = useState(true);
   const [userData, setuserData] = useState([]);
   const [petData, setpetData] = useState([]);
   const [bookingStatus, setBookingStatus] = useState([]);
   const [shouldFetch, setShouldFetch] = useState(true);
-  
+  const [loading, setLoading] = useState(true); // Loading state
+
   const navigate = useNavigate();
   const user = userData[0] || {};
 
@@ -36,83 +35,88 @@ function Profile() {
 
   const fetchUserProfile = async () => {
     try {
-        const response = await axios.get(`http://localhost:5000/api/user/getProfilebyUserID`, { 
-          withCredentials: true, 
-        }); 
-        console.log('User Profile:', response.data);
-        setuserData(response.data);
+      setLoading(true); // Set loading to true before fetch
+      const response = await axios.get(`http://localhost:5000/api/user/getProfilebyUserID`, { 
+        withCredentials: true,
+      });
+      console.log('User Profile:', response.data);
+      setuserData(response.data);
     } catch (error) {
-        console.error('Error fetching user profile:', error.response?.data || error.message);
+      console.error('Error fetching user profile:', error.response?.data || error.message);
+    } finally {
+      setLoading(false); // Set loading to false after fetch completion
     }
   };
-  
+
   const fetchPets = async () => {
     try {
-        const response = await axios.get(`http://localhost:5000/api/pet/getAllPetsByUserID`, { 
-          withCredentials: true, 
-        }); 
-        console.log('Pet data:', response.data);
-        setpetData(response.data);
-        
+      setLoading(true); // Set loading to true before fetch
+      const response = await axios.get(`http://localhost:5000/api/pet/getAllPetsByUserID`, { 
+        withCredentials: true,
+      });
+      console.log('Pet data:', response.data);
+      setpetData(response.data);
     } catch (error) {
-        console.error('Error fetching pet data:', error.response?.data || error.message);
+      console.error('Error fetching pet data:', error.response?.data || error.message);
+    } finally {
+      setLoading(false); // Set loading to false after fetch completion
     }
   };
 
   const fetchbookingStatus = async () => {
     try {
-        const response = await axios.get(`http://localhost:5000/api/booking/getBookingStatusbyUserID`, { 
-          withCredentials: true, 
-        }); 
-        console.log('Booking Status:', response.data);
-        setBookingStatus(response.data);
-        console.log('length', bookingStatus.length);
+      setLoading(true); // Set loading to true before fetch
+      const response = await axios.get(`http://localhost:5000/api/booking/getBookingStatusbyUserID`, { 
+        withCredentials: true,
+      });
+      console.log('Booking Status:', response.data);
+      setBookingStatus(response.data);
     } catch (error) {
-        console.error('Error fetching Booking Status:', error.response?.data || error.message);
+      console.error('Error fetching Booking Status:', error.response?.data || error.message);
+    } finally {
+      setLoading(false); // Set loading to false after fetch completion
     }
   };
 
   const handlePetEdit = (petState) => {
-    navigate("/pethub-website/petedit", {state: petState})
-  }
+    navigate("/pethub-website/petedit", { state: petState });
+  };
 
   const handleCancelBooking = async (bookingID) => {
-    try{
-      const response = await axios.post("http://localhost:5000/api/booking/cancelBooking", {"bookingID": bookingID}, { 
+    try {
+      const response = await axios.post("http://localhost:5000/api/booking/cancelBooking", { bookingID }, { 
         withCredentials: true, 
       });
       console.log("Response:", response.data);
       toast.success("Cancellation successful");
       setShouldFetch(true);
-    } catch(err){
+    } catch (err) {
       console.error('Error to cancel:', err.response?.data || err.message);
     }
-  }
-  
-  
+  };
+
   useEffect(() => {
     const role = Cookies.get('user-role'); // Retrieve the role from cookies
     console.log(role);
 
-    // Check if the required cookie is missing
-    if (!role ) {
-      navigate(`/pethub-website/signin`); // Redirect to sign-in if no role is found
-
+    if (!role) {
+      navigate(`/pethub-website/signin`);
     } else if (role === "Client") {
-        navigate(`/pethub-website/profile`);
-
-      }else if(role === 'Host') {
-        navigate(`/pethub-website/hostprofile`);
-        
-      }
+      navigate(`/pethub-website/profile`);
+    } else if (role === 'Host') {
+      navigate(`/pethub-website/hostprofile`);
+    }
   }, [Cookies]);
 
   useEffect(() => {
     const fetchAllData = async () => {
       try {
+        setLoading(true); // Set loading true before data fetch
         await Promise.all([fetchUserProfile(), fetchPets()]);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetch completion
       }
     };
     fetchAllData();
@@ -138,13 +142,21 @@ function Profile() {
     }
   }, [bookingStatus]);
 
-
   console.log(userData);
   console.log(petData);
   console.log(bookingStatus);
-  // console.log(isClick);
-  
-  // if (loading) return <div>Loading...</div>;
+
+  // Show loading indicator while data is fetching
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div className="h-[100vh] w-full flex items-center justify-center">
+          <span className="loading loading-spinner text-error w-8"></span>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

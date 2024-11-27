@@ -117,7 +117,12 @@ function HostProfile() {
         };
     }, [])
     
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <>
+      <Navbar />
+      <div className="h-[100vh] w-full flex items-center justify-center">
+          <span className="loading loading-spinner text-error w-8"></span>    
+      </div>
+    </>;
     if (error) return <div>{error}</div>;
   
     console.log(content)
@@ -160,7 +165,7 @@ function HostProfile() {
       <textarea
         className="textarea w-full max-h-36 min-h-36 md:max-h-72 md:min-h-72 lg:min-h-96 lg:max-h-96 textarea-bordered hide-scrollbar text-[2vw] md:text-[1.4vw] xl:text-lg text-gray-600 p-[2vw] md:p-5"
         name="content1"
-        placeholder="ข้อกำหนดของโรงแรม..."
+        placeholder="คำอธิบายโรงแรม..."
         value={content.content1}
         onChange={handleChange}
         readOnly={readOnly}
