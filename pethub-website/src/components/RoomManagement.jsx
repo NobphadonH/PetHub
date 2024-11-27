@@ -3,7 +3,7 @@ import CalendarComponent from "./Utils/CalendarComponent"
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function RoomManagement() {
     const [roomDetails, setRoomDetails] = useState(null);
@@ -13,6 +13,9 @@ function RoomManagement() {
     const { roomID } = useParams();
     const roomTypeID = roomID;
     const navigate = useNavigate();
+    const location = useLocation()
+
+    console.log(location)
 
     console.log(selectedBooking)
 
@@ -203,13 +206,15 @@ function RoomManagement() {
         </>;
       }
 
+      console.log(roomDetails)
+
   return (
     <>
      <Navbar /> 
      <div className="text-start mt-20 lg:mt-32 w-11/12 xl:w-10/12 max-w-[1200px] h-[35vw] md:h-[270px] lg:h-[350px] mx-auto rounded-md overflow-hidden border-[1px] p-[2vw] md:p-5 relative flex">
         <div className="absolute top-0 h-[1vw] md:h-2 w-full bg-pethub-color1 right-0"></div>
         <div className="w-[35vw] md:w-[270px] lg:w-[350px] xl:w-[400px] h-full bg-slate-200 rounded-sm overflow-hidden relative">
-            <img className="absolute bottom-0" src="https://temporary-cdn.wezhan.net/contents/sitefiles3603/18016482/images/7480295.jpg" alt="" />
+            <img className="absolute w-full h-full bottom-0" src={location.state} alt="" />
         </div>
         <div className="h-full flex flex-col justify-between grow p-[2vw] md:p-4 lg:p-7">
             <div className="flex flex-col gap-[1vw] md:gap-3">

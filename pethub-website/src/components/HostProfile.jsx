@@ -60,9 +60,10 @@ function HostProfile() {
       return `${day}/${month}/${year}`; // Return formatted date in AD
     };
 
-    const handleDetailClick = (roomID) => {
+
+    const handleDetailClick = (roomID, index) => {
       // Navigate to the specified route with the roomID
-      navigate(`/pethub-website/hostprofile/${roomID}`);
+      navigate(`/pethub-website/hostprofile/${roomID}`, {state : hotelData.rooms[index].roomPhoto});
     };
 
     const handleAddRoomClick = () => {
@@ -125,9 +126,9 @@ function HostProfile() {
     </>;
     if (error) return <div>{error}</div>;
   
-    console.log(content)
-
+    
     const { hotelID, hotelPhoto, hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, fName, lName, phone, rooms, bookings } = hotelData;
+    
 
   return (
     <>
@@ -206,8 +207,8 @@ function HostProfile() {
             <motion.div ref={containerRef} className="absolute h-[60vw] md:h-[500px] lg:h-[600px] rounded-md mx-auto md:py-5 flex gap-3 lg:gap-5" drag="x" dragConstraints={{ left: -totalWidth, right: 0 }} transition={{ type: "spring", stiffness: 300, damping: 30 }}>
               {rooms?.map((room, index) => (
                     <div key={room.roomTypeID} className='w-[45vw] md:w-[350px] xl:w-[400px] bg-white rounded-lg overflow-hidden'>
-                        <div className='w-full h-[50%] bg-slate-200'>
-                        {/* <img className="absolute w-full h-full object-cover" src={room.roomPhoto} alt="" /> */}
+                        <div className='w-full h-[50%] bg-slate-200 relative overflow-hidden'>
+                          <img className="absolute w-full h-full object-cover" src={room.roomPhoto} alt="" />
                         </div>
                         <div className='w-full h-[50%] p-[2vw] md:p-6 text-start'>
                             <div className='flex justify-between items-end'>
@@ -220,7 +221,7 @@ function HostProfile() {
                             <div className='text-[2vw] md:text-base my-[1vw] md:my-2 lg:my-5'>{room.pricePerNight} บาท/คืน</div>
                             <button
                               className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white w-full max-md:text-[2vw] h-[7vw] font-medium"
-                              onClick={() => handleDetailClick(room.roomTypeID)}>
+                              onClick={() => handleDetailClick(room.roomTypeID, index)}>
                               จัดการห้องพัก
                             </button>
                         </div>
