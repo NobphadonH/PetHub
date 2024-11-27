@@ -60,7 +60,8 @@ export const getHotelByID = async (req, res) => {
 
 export const getHotelByVerification = async (req, res) => {
   try {
-    const { verification } = req.body;
+    const { verification } = req.params;
+    console.log(req.params)
     const { dbpool, sshClient } = await connectToDatabase();
 
     dbpool.getConnection(async (err, connection) => {

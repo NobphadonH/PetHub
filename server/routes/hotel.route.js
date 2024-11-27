@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.get("/getHotelByID", getHotelByID);
 
-router.get("/getHotelByVerification", getHotelByVerification);
+router.get("/getHotelByVerification/:verification", verifyRole("Admin"), getHotelByVerification);
 
 router.post(
   "/updateHotelVerification",

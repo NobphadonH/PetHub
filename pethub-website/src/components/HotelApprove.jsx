@@ -1,7 +1,29 @@
 import Navbar from './Utils/Navbar'
 import HotelApproveBox from './Utils/HotelApproveBox'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+
+
+
 
 function HotelApprove() {
+
+  const [hotelData, setHotelData] = useState();
+  const [actionCnt, setActionCnt] = useState(0);
+
+  useEffect(()=> {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/hotel/getHotelByVerification/unverified", { withCredentials:true})
+        console.log(res.data);
+        setHotelData(res.data);
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    fetchData();
+    console.log(hotelData);
+  }, [actionCnt])
 
   return (
     <>
@@ -9,8 +31,21 @@ function HotelApprove() {
       <div className='mx-auto mt-[5vw] md:mt-8 lg:mt-32 w-11/12 xl:w-10/12 max-w-[1200px] p-5'>
         <div className='text-3xl'>Hotel Approvment</div>
         <div className='mt-10 flex flex-col gap-5'>
-          <HotelApproveBox />
-          <HotelApproveBox />
+          {hotelData ? (hotelData.map((hotel, index) => (
+            <HotelApproveBox
+            hotelObj={hotel}
+            hotelName={hotel.hotelName}
+            hotelType ={hotel.hotelType}
+            actionCnt={actionCnt}
+            setActionCnt={setActionCnt}
+            // reviews={hotel.reviewCount}
+            // rating={hotel.avgReviewScore}
+            description={hotel.hotelDescription}
+            // price={hotel.roomsAvailable[0].pricePerNight}
+            imageUrl={hotel.hotelPhoto}
+            // petType={hotel.petTypeArray}
+            
+          />) )): (<div></div>)}
         </div>
         
       </div>

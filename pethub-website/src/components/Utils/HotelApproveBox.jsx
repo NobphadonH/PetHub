@@ -1,33 +1,48 @@
 /* eslint-disable react/prop-types */
+import axios from "axios";
 import { toast } from "react-toastify";
 
 function HotelApproveBox({ 
     hotelObj,
     hotelName, 
+    hotelType,
     reviews, 
     rating, 
     description, 
     price, 
     imageUrl,
-    petType,
-    checkIn,
-    checkOut
+    actionCnt,
+    setActionCnt
   }) {
 
 
     const petIcon = {"สุนัข": "🐶", "แมว":"🐱", "อื่น ๆ":"🫎"}
 
-    const goHotelDetail = () => {
-      if (checkIn && checkOut) {
-        const hotelData = {
-          ...hotelObj,
-          checkIn,
-          checkOut
+  
+    const handleApprove =  async (e) => {
+      e.preventDefault()
+      try {
+        const res = await axios.post("http://localhost:5000/api/hotel/updateHotelVerification", {hotelID: hotelObj.hotelID, verification: "verfify"}, { withCredentials:true})
+        setActionCnt(++actionCnt);
+        console.log(res);
+        if (res.status == 200) {
+          toast.success("ดำเนินการอนุมัติสำเร็จ")
         }
-        navigate(`/pethub-website/home/${hotelName}`, {state: hotelData})
-      } else {
-        console.log("please select check in and check out date")
-        toast.error("กรุณาเลือกวันที่ เช็คอิน - เช็คเอาท์");
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    const handleReject = async (e) => {
+      e.preventDefault()
+      try {
+        const res = await axios.post("http://localhost:5000/api/hotel/updateHotelVerification", {hotelID: hotelObj.hotelID, verification: "rejected"}, { withCredentials:true})
+        setActionCnt(++actionCnt);
+        console.log(res);
+        if (res.status == 200) {
+          toast.success("ดำเนินการปฏิเสธสำเร็จ")
+        }
+      } catch (err) {
+        console.log(err)
       }
     }
 
@@ -49,14 +64,14 @@ function HotelApproveBox({
             <div className="flex gap-3 items-center">
 
               <span className="text-[2vw] md:text-sm transition-all duration-300 ease-in-out max-lg:line-clamp-1 line-clamp-1 max-lg:overflow-hidden">
-                ประเภท : โรงแรมสัตว์เลี้ยงระดับมืออาชีพ
+                ประเภท : {hotelType}
               </span>
             </div>
             <div className="flex items-center gap-3">
-                <button className="flex justify-center items-center rounded-md md:btn bg-red-600 md:bg-red-600 text-white md:text-white w-[17vw] max-md:text-[2vw] h-[7vw] md:w-24 font-medium">
+                <button onClick={handleReject} className="flex justify-center items-center rounded-md md:btn bg-red-600 md:bg-red-600 text-white md:text-white w-[17vw] max-md:text-[2vw] h-[7vw] md:w-24 font-medium">
                 ปฎิเสธ
                 </button>
-                <button className="flex justify-center items-center rounded-md md:btn bg-pethub-color6 md:bg-pethub-color6 text-white md:text-white w-[17vw] max-md:text-[2vw] h-[7vw] md:w-24 font-medium">
+                <button onClick={handleApprove} className="flex justify-center items-center rounded-md md:btn bg-pethub-color6 md:bg-pethub-color6 text-white md:text-white w-[17vw] max-md:text-[2vw] h-[7vw] md:w-24 font-medium">
                 อนุมัติ
                 </button>
 
