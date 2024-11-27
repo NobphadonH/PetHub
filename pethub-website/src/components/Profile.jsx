@@ -141,6 +141,7 @@ function Profile() {
 
   console.log(userData);
   console.log(petData);
+  console.log(bookingStatus);
   // console.log(isClick);
   
   // if (loading) return <div>Loading...</div>;
@@ -350,7 +351,7 @@ function Profile() {
                           ? "bg-green-100 text-green-700" // สีเขียวเมื่อ Confirmed
                           : "bg-red-100 text-red-700" // สีแดงเมื่อ Cancel
                           }`}>
-                          {booking.bookingStatus === "Confirmed" ? "ชำระเงินแล้ว" : "ยกเลิก"}
+                          {booking.bookingStatus === "Confirmed" ? "ชำระเงินแล้ว" : "ยกเลิกแล้ว"}
                     </span>
                   </td>
                   <th>
@@ -414,7 +415,7 @@ function Profile() {
                   </div>
                     <div className="my-[2vw] md:my-4 w-full flex justify-between gap-5 items-center">
                         <div className="text-[2vw] md:text-xs lg:text-sm">ติดต่อสอบถาม: {booking.hotelName}, 094-XXX-XXXX</div>
-                      <div onClick={() => handleCancelBooking(booking.bookingID)} className="flex justify-center items-center rounded-md md:btn bg-red-600 md:bg-red-600 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-40 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">ยกเลิกการจอง</div>
+                      <div onClick={() => handleCancelBooking(booking.bookingID)} className={`${booking.bookingStatus === "Cancelled" ? "hidden" : ""} flex justify-center items-center rounded-md md:btn bg-red-600 md:bg-red-600 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-40 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base`}>ยกเลิกการจอง</div>
                     </div>
                   </td>
                 </tr>

@@ -1,13 +1,15 @@
 import Navbar from "./Utils/Navbar";
 import PictureUpload from "./Utils/PictureUpload";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
 
 function EditPetProfile() {
   const [imageFile, setImageFile] = useState(null);
   const [formData, setFormData] = useState({
+    petID : "",
     petName: "",
     petDOB: "",
     petType: "",
@@ -15,6 +17,7 @@ function EditPetProfile() {
     petDetail: "",
   });
   const location = useLocation()
+  const navigate = useNavigate()
   
   console.log(location)
 
@@ -54,6 +57,28 @@ function EditPetProfile() {
 
   console.log(formData)
 
+  const handleDelete = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/pet/updatePetByPetID",
+        formData.petID,
+        {
+          withCredentials: true,  // To handle authentication cookies, if needed
+        }
+      );
+      
+      console.log("Pet data submitted successfully:", res.data);
+      console.log(res.status);
+      toast.success("Pet deleted!");
+      navigate("/pethub-website/profile")
+    } catch (error) {
+      console.error(
+        "Error submitting pet data:",
+        error.response?.data || error.message
+      );
+      toast.error(error.response?.data?.error || "Failed to create pet profile.");
+    }
+};
 
   const handleSubmit = async () => {
     // Validate required fields
@@ -68,24 +93,6 @@ function EditPetProfile() {
     //   return;
     // }
 
-    const petData = new FormData();
-    petData.append("petName", formData.petName);
-    petData.append("petDOB", formData.petDOB);
-    petData.append("petType", formData.petType);
-    petData.append("petSex", formData.petSex);
-    petData.append("petDetail", formData.petDetail);
-
-    //Append the pet's photo
-    // if (formData.selectedImage) {
-    //   petData.append(
-    //     "selectedImage",
-    //     formData.selectedImage,
-    //     formData.selectedImage.name
-    //   ); // Use original file name
-    // } else {
-    //   alert("Please upload a photo of your pet.");
-    //   return;
-    // }
 
 
     try {
@@ -99,16 +106,19 @@ function EditPetProfile() {
       
       console.log("Pet data submitted successfully:", res.data);
       console.log(res.status);
-      alert("Pet profile created successfully!");
+      toast.success("Pet profile created successfully!");
+      navigate("/pethub-website/profile")
       // Optionally, reset the form or redirect the user
     } catch (error) {
       console.error(
         "Error submitting pet data:",
         error.response?.data || error.message
       );
-      alert(error.response?.data?.error || "Failed to create pet profile.");
+      toast.error(error.response?.data?.error || "Failed to create pet profile.");
     }
   };
+
+  console.log(formData)
 
   useEffect(() => {
     if (location.state) {
@@ -241,7 +251,13 @@ function EditPetProfile() {
               placeholder="ex. สายพันธุ์, ลักษณะเฉพาะ, สีขน หรือ นิสัย"
             ></textarea>
           </div>
-          <div className="w-full flex justify-center">
+          <div className="w-full flex justify-center gap-5">
+            <div
+              onClick={handleSubmit}
+              className="my-8 flex justify-center items-center rounded-md bg-red-600 text-white h-10 lg:h-12 w-36 lg:w-40 font-medium text-sm lg:text-base cursor-pointer"
+            >
+              ลบ
+            </div>
             <div
               onClick={handleSubmit}
               className="my-8 flex justify-center items-center rounded-md bg-pethub-color1 text-white h-10 lg:h-12 w-36 lg:w-40 font-medium text-sm lg:text-base cursor-pointer"
