@@ -61,9 +61,10 @@ function HostProfile() {
     };
 
 
-    const handleDetailClick = (roomID, index) => {
+    const handleDetailClick = (roomID) => {
+      console.log(roomID);
       // Navigate to the specified route with the roomID
-      navigate(`/pethub-website/hostprofile/${roomID}`, {state : hotelData.rooms[index].roomPhoto});
+      navigate(`/pethub-website/hostprofile/${roomID}`);
     };
 
     const handleAddRoomClick = () => {
@@ -264,7 +265,7 @@ function HostProfile() {
                     <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">{formatDate(booking.checkOutDate)}</div>
                   </td>
                   <td className="max-sm:hidden">
-                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">{booking.roomTypeID}</div>
+                    <div className="transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">{booking.roomTypeName}</div>
                   </td>
                   <td className="max-md:pr-0">
                     <span className="badge badge-ghost badge-sm bg-green-100 text-[2.5vw] sm:text-xs lg:text-sm xl:text-base">{booking.bookingStatus}</span>
