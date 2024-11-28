@@ -1,4 +1,4 @@
-import Navbar from "./Utils/Navbar"
+import Navbar from "../Utils/Navbar"
 import { useEffect, useState } from "react"
 import Cookies from 'js-cookie';
 import { toast } from "react-toastify";

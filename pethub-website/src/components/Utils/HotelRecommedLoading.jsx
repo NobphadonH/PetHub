@@ -2,7 +2,6 @@ function HotelRecommendLoading() {
     return (
         <div className="w-[40vw] md:w-[300px] h-full bg-white border-2 rounded-lg p-[2vw] md:p-3 flex flex-col justify-between items-center">
             <div className="w-full relative">
-                {/* Show "Popular" tag if reviews are more than 50 */}
                 
                 {/* Image Section */}
                 <div className="animate-pulses w-full h-[42vw] bg-slate-200 sm:h-[50vw] md:h-[330px] rounded-md overflow-hidden">

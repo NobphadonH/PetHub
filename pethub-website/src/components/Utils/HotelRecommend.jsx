@@ -10,7 +10,6 @@ function HotelRecommend({
     return (
         <div className="w-[40vw] md:w-[300px] h-full bg-white border-2 rounded-lg p-[2vw] md:p-3 flex flex-col justify-between items-center">
             <div className="w-full relative">
-                {/* Show "Popular" tag if reviews are more than 50 */}
                 {reviews > 100 && (
                     <div className="absolute top-[3vw] md:top-6 left-0 w-[17vw] h-[6vw] md:w-28 md:h-10 bg-pethub-color6 opacity-70 rounded-e-full text-center text-white text-[2.5vw] md:text-lg px-4 flex items-center justify-start">
                         Popular

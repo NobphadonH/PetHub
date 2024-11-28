@@ -1,4 +1,4 @@
-import Navbar from "./Utils/Navbar"
+import Navbar from "../../Utils/Navbar"
 
 function ListHost() {
     return (

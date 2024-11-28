@@ -1,7 +1,7 @@
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import Navbar from "./Utils/Navbar";
+import Navbar from "../Utils/Navbar";
 import { useState, useEffect, useRef } from 'react';
-import PictureUpload from "./Utils/PictureUpload";
+import PictureUpload from "../Utils/PictureUpload";
 import Cookies from "js-cookie"
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -147,10 +147,9 @@ function RoomsBooking() {
 
   //page state control
   useEffect(() => {
-    // Get today's date in the format YYYY-MM-DD
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const month = String(today.getMonth() + 1).padStart(2, '0'); 
     const day = String(today.getDate()).padStart(2, '0');
     setCurrentDate(`${year}-${month}-${day}`);
 

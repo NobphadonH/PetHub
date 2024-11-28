@@ -1,6 +1,6 @@
 import React from "react";
-import Navbar from "./Utils/Navbar";
-import Footer from './Utils/Footer'
+import Navbar from "../Utils/Navbar";
+import Footer from '../Utils/Footer'
 
 const HotelProfileManagement = () => {
   return (

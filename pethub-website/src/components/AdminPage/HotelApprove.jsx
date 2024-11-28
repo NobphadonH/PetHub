@@ -1,5 +1,5 @@
-import Navbar from './Utils/Navbar'
-import HotelApproveBox from './Utils/HotelApproveBox'
+import Navbar from '../Utils/Navbar'
+import HotelApproveBox from '../Utils/HotelApproveBox'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 

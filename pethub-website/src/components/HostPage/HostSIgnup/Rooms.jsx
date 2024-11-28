@@ -1,5 +1,5 @@
-import Navbar from "./Utils/Navbar";
-import AddRoomsForm from "./Utils/AddRoomsForm";
+import Navbar from "../../Utils/Navbar";
+import AddRoomsForm from "../../Utils/AddRoomsForm";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";

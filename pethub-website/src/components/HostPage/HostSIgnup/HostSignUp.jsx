@@ -1,5 +1,5 @@
-import Navbar from "./Utils/Navbar";
-import logo from "../../public/logo.svg";
+import Navbar from "../../Utils/Navbar";
+import logo from "../../../../public/logo.svg";
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
