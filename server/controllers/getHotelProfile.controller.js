@@ -33,6 +33,25 @@ export const getHotelProfile = async (req, res) => {
                 SELECT roomTypeID, roomTypeName, roomCapacity, numberOfRoom, roomSize, roomDetail, petAllowedType, pricePerNight, roomPhoto 
                 FROM RoomTypes
                 WHERE hotelID = ?`;
+            
+            const bookingQuery = `
+            SELECT 
+            B.bookingID, B.checkInDate, B.checkOutDate, B.bookingStatus, B.roomTypeID,
+            P.paymentStatus, P.paymentDate, R.roomTypeName,
+            U.fName AS bookerFirstName, U.lName AS bookerLastName, U.phone AS bookerPhone
+            FROM 
+                Bookings B
+            JOIN 
+                RoomTypes R ON B.roomTypeID = R.roomTypeID
+            JOIN 
+                Users U ON B.userID = U.userID
+            LEFT JOIN 
+                Payments P ON B.bookingID = P.bookingID
+            WHERE 
+                R.hotelID = ?
+            ORDER BY 
+                B.bookingID DESC;
+            `;
 
             const hotelResult = await new Promise((resolve, reject) => {
                 connection.query(hotelQuery, [fName, lName], (err, results) => {
@@ -72,9 +91,17 @@ export const getHotelProfile = async (req, res) => {
                 rooms.roomPhoto = roomPhotoFile;
             }
 
+            const bookingResults = await new Promise((resolve, reject) => {
+                connection.query(bookingQuery, [hotelID], (err, results) => {
+                    if (err) reject(err);
+                    else resolve(results);
+                });
+            });
+
             const hotelProfile = {
                 ...hotelResult[0],
                 rooms: roomResults,
+                bookings: bookingResults,
             };
 
             res.status(200).json(hotelProfile);

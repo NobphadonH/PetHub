@@ -1,4 +1,5 @@
 import { connectToDatabase } from "../utils/dbConnection.js";
+import { downloadFileFromS3 } from "../utils/s3FileTransfer.js";
 
 //function for fetching details
 export const getRoomDetails = async (req, res) => {
@@ -39,7 +40,7 @@ export const getRoomDetails = async (req, res) => {
         `;
 
         // Fetch room details
-        connection.query(roomQuery, [roomTypeID], (roomErr, roomResults) => {
+        connection.query(roomQuery, [roomTypeID], async (roomErr, roomResults) => {
             if (roomErr) {
                 console.log(roomErr);
                 res.status(500).json({ message: "Failed to fetch room details" });
@@ -51,6 +52,18 @@ export const getRoomDetails = async (req, res) => {
                 res.status(404).json({ message: "Room not found" });
                 sshClient.end();
                 return;
+            }
+
+            // Fetch and convert the roomPhoto to base64
+            try {
+                const roomPhotoKey = roomResults[0].roomPhoto;
+                const roomPhotoData = await downloadFileFromS3(roomPhotoKey);
+                const roomPhotoBuffer = roomPhotoData.Body;
+                const roomPhotoBase64 = `data:${roomPhotoData.ContentType};base64,${roomPhotoBuffer.toString("base64")}`;
+                roomResults[0].roomPhoto = roomPhotoBase64; // Replace the key with base64 image
+            } catch (s3Error) {
+                console.error("Failed to fetch room photo from S3:", s3Error);
+                roomResults[0].roomPhoto = null; // Set to null if fetching the image fails
             }
 
             // Fetch bookings associated with the room
@@ -78,6 +91,20 @@ export const getRoomDetails = async (req, res) => {
 
                     // Fetch the pet associated with this booking
                     const [petResults] = await connection.promise().query(petQuery, [booking.petID]);
+
+                    // Convert petPhoto to base64 for each pet
+                    for (let pet of petResults) {
+                        try {
+                            const petPhotoKey = pet.petPhoto;
+                            const petPhotoData = await downloadFileFromS3(petPhotoKey);
+                            const petPhotoBuffer = petPhotoData.Body;
+                            const petPhotoBase64 = `data:${petPhotoData.ContentType};base64,${petPhotoBuffer.toString("base64")}`;
+                            pet.petPhoto = petPhotoBase64;
+                        } catch (s3Error) {
+                            console.error("Failed to fetch pet photo from S3:", s3Error);
+                            pet.petPhoto = null;
+                        }
+                    }
 
                     // Add pet to the booking
                     bookingsWithPets.push({
