@@ -227,7 +227,7 @@ function RoomManagement() {
                 <div className="text-[2vw] md:text-sm lg:text-lg">ประเภทสัตว์: <span className="text-gray-400">{roomDetails.petAllowedType}</span></div>
             </div>
             <div className="flex justify-between items-center">
-                <div className="text-[2.5vw] md:text-base lg:text-xl">สถานะ: <span className=" text-red-500">Not Avalaible</span></div>
+                <div className="text-[2.5vw] md:text-base lg:text-xl">สถานะ: <span className="">-------</span></div>
                 <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-24 sm:h-10 md:w-28 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base"
                     onClick={handleAddRoomClick}>
                     แก้ไขข้อมูล</div>

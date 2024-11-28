@@ -259,7 +259,7 @@ function HotelDetail() {
                 <div className={`mb-[2vw] md:mb-5 text-[1.5vw] md:text-xs lg:text-sm xl:text-base text-gray-400 ${barSel == 1 ? '' : 'hidden'}`}></div>
                 <div className={`text-[2vw] md:text-sm max-md:h-[160px] h-[45%] lg:h-[60%] md:px-2 xl:px-4 overflow-y-scroll scrollbar-hidden flex flex-col gap-1 lg:gap-5 ${barSel == 1 ? '' : 'hidden'}`}>
                     { reviewData ? (reviewData.map( (review, index) => (
-                        <div key={index} className='w-full h-28 flex'>
+                        <div key={index} className='w-full h-[10vw] md:h-20 lg:h-28 flex'>
 
                         <div className='h-full w-[80%] md:py-2 px-1 lg:px-5 text-[1.5vw] md:text-xs lg:text-base'>
                             <div>{review.fName}</div>
@@ -319,7 +319,7 @@ function HotelDetail() {
                             name="reviewDetail"
                             placeholder="แสดงความคิดเห็น"
                             value ={newReview.reviewDetail || ""}
-                            className="rounded-none w-full border-b-2 mb-3"
+                            className="rounded-none w-full border-b-2 mb-3 bg-white"
                         />
                         </div>
                         </div>

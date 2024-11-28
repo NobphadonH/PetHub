@@ -7,65 +7,52 @@ import { motion } from "framer-motion";
 import Footer from "./Utils/Footer"
 import { useState, useEffect, useRef } from "react"
 import { useNavigate, useLocation } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { hotelData } from "../assets/dummydata";
+// import { hotelData } from "../assets/dummydata";
 import axios from "axios";
 
 
 function Home() {
+
+    // router state
+    const navigate = useNavigate();
+    const location = useLocation()
+    // router state
+    
+    // search & data state
+    const [filter, setFilter] = useState({})
+    const [searchCounter, setSearchCounter] = useState(0); 
+    const [hotelResult, setHotelResult] = useState([]);
+    const [isFetch, setIsFetch] = useState(0);
+    // search & data state
+
+    // page state
+    const [currentDate, setCurrentDate] = useState('');
     const containerRef = useRef(null);
     const parentRef = useRef(null);
     const [totalWidth, setTotalWidth] = useState(0);
-    const [currentDate, setCurrentDate] = useState('');
-    const fetchCalled = useRef(false);
-
-        
-    const navigate = useNavigate();
-    const location = useLocation()
-
-
-
+    const [x, setX] = useState(0);
+    const [pageselect, setPageselect] = useState(0)
+    const [pagenumber, setPagenumber] = useState(0);
+    const [pagedata, setPagedata] = useState([]);
+    const [loading, setLoading] = useState(true)
+    // page state
+    
+    // page function
     const pageCalculate = (data) => {
         if (!data || !Array.isArray(data) || data.length === 0) {
             return 0;
         }
-        return Math.ceil(data.length / 4); // Use Math.ceil to cover all items
+        return Math.ceil(data.length / 4);
     };
-    
+
     const pageSelection = (data, number) => {
         if (!data || !Array.isArray(data) || number < 0) {
             return [];
         }
-        return data.slice(4 * number, 4 * number + 4); // Slice the data for the current page
+        return data.slice(4 * number, 4 * number + 4);
     };
-    
-    const [hotelResult, setHotelResult] = useState([]);
-    const [isFetch, setIsFetch] = useState(0);
-
-
-    const [x, setX] = useState(0);
-    const [pageselect, setPageselect] = useState(0)
-    const [pagenumber, setPagenumber] = useState(pageCalculate);
-    const [pagedata, setPagedata] = useState([]);
-    const [loading, setLoading] = useState(true)
-    // const [filter, setFilter] = useState({
-    //     petType:null,
-    //     hotelName: "",
-    //     district: null,
-    //     priceRangeLower: null,
-    //     priceRangeUpper: null,
-    //     checkInDate: null,
-    //     checkOutDate: null
-    // })
-    const [filter, setFilter] = useState({})
-
-    console.log(pagedata)
-
-
-    const [searchCounter, setSearchCounter] = useState(0); // counter for unique searches
-
 
     const handleLeftClick = () => {
         setX((prevX) => Math.min(prevX + 300, 0));
@@ -90,20 +77,13 @@ function Home() {
             setPageselect(prev => prev - 1);
         }
     }
+    // page function
     
-
+    // data function
     const handleSearchClick = (e) => {
         e.preventDefault();
         setPagedata([])
         setHotelResult([])
-        // const queryParams = new URLSearchParams();
-        // if (filter.petType) queryParams.set("petType", filter.petType);
-        // if (filter.hotelName) queryParams.set("hotelName", filter.hotelName);
-        // if (filter.district) queryParams.set("district", filter.district);
-        // if (filter.priceRangeLower) queryParams.set("district", filter.priceRangeLower);
-        // if (filter.priceRangeUpper) queryParams.set("district", filter.priceRangeUpper);
-        // if (filter.checkInDate) queryParams.set("district", filter.checkInDate);
-        // if (filter.checkOutDate) queryParams.set("district", filter.checkOutDate);
 
         setSearchCounter(prevCount => prevCount + 1); 
         const query = new URLSearchParams({...filter, searchCounter}).toString();
@@ -126,139 +106,76 @@ function Home() {
     }
 
     const getMinCheckOutDate = () => {
-        if (!filter.checkIn) return currentDate; // Fallback to current date if check-in is not selected
+        if (!filter.checkIn) return currentDate; 
         const checkInDate = new Date(filter.checkIn);
-        checkInDate.setDate(checkInDate.getDate() + 1); // Add one day
-        return checkInDate.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+        checkInDate.setDate(checkInDate.getDate() + 1);
+        return checkInDate.toISOString().split("T")[0]; 
     };
 
-    // const petType = queryParams.get("petType") || null;
-    // const hotelName = queryParams.get("hotelName") || null;
-    // const district = queryParams.get("district") || null;
-    // const priceRangeLower = queryParams.get("priceRangeLower") || null;
-    // const priceRangeUpper = queryParams.get("priceRangeUpper") || null
-    // let checkInDate = queryParams.get("checkInDate") || null;
-    // let checkOutDate = queryParams.get("checkInDate") || null;
-    // if (checkInDate == null || checkOutDate == null) {
-    //     checkInDate = null;
-    //     checkOutDate = null;
-    // }
-
-    // setFilter({petType, hotelName, district, priceRangeLower, priceRangeUpper, checkInDate, checkOutDate})
 
     const queryParams = new URLSearchParams(location.search);
+    // data function
 
+    //API connection
     useEffect(() => {
         const today = new Date();
         const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const month = String(today.getMonth() + 1).padStart(2, '0'); 
         const day = String(today.getDate()).padStart(2, '0');
         setCurrentDate(`${year}-${month}-${day}`);
 
-        console.log('Current query:', location.search);
         const fetchData = async () => {
-            // console.log('hello');
             try {
-                console.log(filter);
-                console.log(queryParams);
-            
-                // Fetch data from the API
                 const res = await axios.get(`http://localhost:5000/api/roomSearch/getHotelAndRoomByFilter/?${queryParams}`);
-            
-                const fetchedData = res.data; // Store the fetched data
-                setHotelResult(fetchedData); // Set the hotel result
+                const fetchedData = res.data; 
+                setHotelResult(fetchedData);
                 setIsFetch(1);
-            
-                console.log(fetchedData);
-            
-                // Calculate the number of pages and set the first page data
-                const totalPages = pageCalculate(fetchedData); // Pass the fetched data
+                        
+                const totalPages = pageCalculate(fetchedData);
                 setPagenumber(totalPages);
             
-                // Ensure pageselect is correctly initialized
-                const currentPage = pageselect || 0; // Default to page 0 if pageselect is not set
-                const paginatedData = pageSelection(fetchedData, currentPage); // Get the sliced data for the current page
+                const currentPage = pageselect || 0;
+                const paginatedData = pageSelection(fetchedData, currentPage);
             
-                console.log("Fetched")
                 setPagedata(paginatedData);
             } catch (error) {
                 console.error(error);
             }
         }
-        
         fetchData();
-    
-
     }, [location.search])
 
-
+    // Page control
     useEffect( () => {
-
-        const totalPages = pageCalculate(hotelResult); // Pass the fetched data
-        setPagenumber(totalPages);
-
-        const currentPage = pageselect || 0; // Default to page 0 if pageselect is not set
+        const totalPages = pageCalculate(hotelResult);
+        const currentPage = pageselect || 0;
         const paginatedData = pageSelection(hotelResult, currentPage);
         
+        setPagenumber(totalPages);
         setLoading(true)
         setTimeout(() => {setLoading(false)}, 1000)
         setPagedata(paginatedData);
 
         const updateWidth = () => {
             if (containerRef.current && parentRef.current) {
-              // Calculate total width minus parent width
               const containerScrollWidth = containerRef.current.scrollWidth;
               const parentOffsetWidth = parentRef.current.offsetWidth;
               setTotalWidth(containerScrollWidth - parentOffsetWidth);
             }
           };
 
-          updateWidth(); // Set initial width
-          window.addEventListener('resize', updateWidth);
-      
-          return () => {
-            window.removeEventListener('resize', updateWidth);
-          };
+        updateWidth();
+        window.addEventListener('resize', updateWidth);
+    
+        return () => {
+        window.removeEventListener('resize', updateWidth);
+        };
       
     }, [pageselect])
 
 
-    const addPetTypeArray = () => {
-        hotelResult.forEach( (hotel) => {
-            let petTypeArray  = []
-            hotel.roomsAvailable.forEach( (room) => {
-                if (!petTypeArray.includes(room.petAllowedType)) {
-                    petTypeArray.push(room.petAllowedType)
-                }
-            })
-            const updatedHotelResult = hotelResult.map(hotel => ({
-                ...hotel,
-                petTypeArray: petTypeArray
-            }))
-            setHotelResult(updatedHotelResult);
-        })
-    }
-
-    const addLowestRoomPrice = () => {
-        hotelResult.forEach((hotel)=> {
-            let lowestPrice = hotel.roomsAvailable[0].pricePerNight;
-            hotel.roomsAvailable.forEach((room) => {
-                if (lowestPrice > room.pricePerNight) {
-                    lowestPrice = room.pricePerNight
-                }
-            })
-
-            const updatedHotelResult = hotelResult.map(hotel => ({
-                ...hotel,
-                lowestPrice: lowestPrice
-            }))
-            setHotelResult(updatedHotelResult);
-        }) 
-        return;
-    }
-
+    //mapping function
     useEffect(() => {
-        console.log('aa')
         const updatedWithPetType = hotelResult.map(hotel => {
             const petTypeArray = hotel.roomsAvailable.reduce((acc, room) => {
                 if (!acc.includes(room.petAllowedType)) {
@@ -291,11 +208,7 @@ function Home() {
     }, [isFetch]);
 
 
-    useEffect(()=> {
-        console.log(isFetch)
-    }, [hotelResult])
-
-
+    //search function
     useEffect(() => {
         if (filter.checkIn == null || filter.checkOut == null) {
             return; 
@@ -328,7 +241,7 @@ function Home() {
     <div>
       <Navbar />
       {/* section1 */}
-      <div className="text-start mt-20 lg:mt-32 bg-pethub-color1 w-11/12 xl:w-10/12 max-w-[1200px] h-[270px] md:h-full mx-auto p-8 md:py-10 md:px-12 xl:px-28 relative rounded-md overflow-hidden z-10 opacity-80">
+      <div className="text-start mt-20 lg:mt-32 bg-pethub-color1 w-11/12 xl:w-10/12 max-w-[1200px] h-[250px] sm:h-[270px] md:h-full mx-auto p-8 md:py-10 md:px-12 xl:px-28 relative rounded-md overflow-hidden z-10 opacity-80">
         <div className="absolute top-0 right-0 left-0 md:bottom-0 z-0">
             <img
                 src="https://tidypets.store/cdn/shop/files/view-cats-dogs-being-friends.jpg?v=1726648599&width=2000"
@@ -397,7 +310,7 @@ function Home() {
                 <button onClick={handleSearchClick} className="btn bg-pethub-color1 border-pethub-color1 font-medium max-md:hidden text-white relative z-20">ค้นหา</button>
             </div>
         </div>  
-        <div className="absolute bottom-0 right-0 left-0 h-12 md:h-16 bg-white z-10"></div>
+        <div className="absolute bottom-0 right-0 left-0 h-10 md:h-16 bg-white z-10"></div>
       </div>
       {/* section2 */}
       <div className="mx-auto my-5 grid grid-cols-12 w-11/12 md:w-[750px] h-full lg:w-full gap-5 lg:gap-10">
@@ -449,6 +362,10 @@ function Home() {
                 <option className="text-black">2000-5000 บาท</option>
             </select>
         </div>
+    </div>
+    <div className="md:hidden col-span-12 flex justify-center">
+        <button onClick={handleSearchClick} className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white max-sm:text-[2.5vw] h-[7vw] w-[20vw] sm:w-32 md:w-32 font-medium text-xs lg:text-sm xl:text-base">ค้นหา</button>
+
     </div>
 
         <div className="col-span-12">
@@ -516,7 +433,7 @@ function Home() {
         </div>
       </div>
       {/* section3 */}
-      {/* <div ref={parentRef} className="mt-10 w-11/12 xl:w-8/12 overflow-hidden mx-auto relative h-[83vw] md:h-[590px]">
+      <div ref={parentRef} className="mt-10 w-11/12 xl:w-8/12 overflow-hidden mx-auto relative h-[83vw] md:h-[590px]">
         <motion.div ref={containerRef} className="absolute h-[80vw] md:h-[570px] rounded-md mx-auto p-5 flex gap-5" drag="x" dragConstraints={{ left: -totalWidth, right: 0 }} animate={{ x }} transition={{ type: "spring", stiffness: 300, damping: 30 }}>
             {hotelResult ? <div></div> : <HotelRecommendLoading />}
             {hotelResult.map((hotel, index) => (
@@ -533,7 +450,7 @@ function Home() {
             ))}
 
         </motion.div>
-      </div> */}
+      </div>
       <Footer />
     </div>
   )
