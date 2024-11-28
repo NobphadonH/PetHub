@@ -7,16 +7,26 @@ import axios from "axios";
 
 
 function Profile() {
+  
+  //router state
+  const navigate = useNavigate();
+  //router state
+
+  //page state
   const [isClick, setIsClick] = useState(Array(0).fill(false));
+  const [loading, setLoading] = useState(true); // Loading state
+  //page state
+
+  //data state
   const [userData, setuserData] = useState([]);
   const [petData, setpetData] = useState([]);
   const [bookingStatus, setBookingStatus] = useState([]);
   const [shouldFetch, setShouldFetch] = useState(true);
-  const [loading, setLoading] = useState(true); // Loading state
-
-  const navigate = useNavigate();
   const user = userData[0] || {};
+  //data state
 
+
+  //function
   const calculatePetAge = (dob) => {
     const birthDate = new Date(dob);
     const today = new Date();
@@ -27,7 +37,7 @@ function Profile() {
       : `${years} ปี ${months} เดือน`;
   };
 
-  function handleClick(index) {
+  const handleClick = (index) => {
     setIsClick((prev) =>
       prev.map((value, i) => (i === index ? !value : false))
     );
@@ -35,7 +45,7 @@ function Profile() {
 
   const fetchUserProfile = async () => {
     try {
-      setLoading(true); // Set loading to true before fetch
+      setLoading(true); 
       const response = await axios.get(`http://localhost:5000/api/user/getProfilebyUserID`, { 
         withCredentials: true,
       });
@@ -44,13 +54,13 @@ function Profile() {
     } catch (error) {
       console.error('Error fetching user profile:', error.response?.data || error.message);
     } finally {
-      setLoading(false); // Set loading to false after fetch completion
+      setLoading(false);
     }
   };
 
   const fetchPets = async () => {
     try {
-      setLoading(true); // Set loading to true before fetch
+      setLoading(true);
       const response = await axios.get(`http://localhost:5000/api/pet/getAllPetsByUserID`, { 
         withCredentials: true,
       });
@@ -59,13 +69,13 @@ function Profile() {
     } catch (error) {
       console.error('Error fetching pet data:', error.response?.data || error.message);
     } finally {
-      setLoading(false); // Set loading to false after fetch completion
+      setLoading(false);
     }
   };
 
   const fetchbookingStatus = async () => {
     try {
-      setLoading(true); // Set loading to true before fetch
+      setLoading(true); 
       const response = await axios.get(`http://localhost:5000/api/booking/getBookingStatusbyUserID`, { 
         withCredentials: true,
       });
@@ -74,7 +84,7 @@ function Profile() {
     } catch (error) {
       console.error('Error fetching Booking Status:', error.response?.data || error.message);
     } finally {
-      setLoading(false); // Set loading to false after fetch completion
+      setLoading(false);
     }
   };
 
@@ -94,9 +104,11 @@ function Profile() {
       console.error('Error to cancel:', err.response?.data || err.message);
     }
   };
+  //function
 
+  //prevent user role
   useEffect(() => {
-    const role = Cookies.get('user-role'); // Retrieve the role from cookies
+    const role = Cookies.get('user-role'); 
     console.log(role);
 
     if (!role) {
@@ -108,20 +120,23 @@ function Profile() {
     }
   }, [Cookies]);
 
+
+  //check loading state
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        setLoading(true); // Set loading true before data fetch
+        setLoading(true);
         await Promise.all([fetchUserProfile(), fetchPets()]);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        setLoading(false); // Set loading to false after fetch completion
+        setLoading(false);
       }
     };
     fetchAllData();
   }, []);
 
+  //fetch booking data
   useEffect(() => {
     const fetchbooking = async () => {
       try {
@@ -136,6 +151,7 @@ function Profile() {
     }
   }, [shouldFetch]);
 
+  //setIsClick to expand the booking list
   useEffect(() => {
     if (bookingStatus.length > 0) {
       setIsClick(Array(bookingStatus.length).fill(false));

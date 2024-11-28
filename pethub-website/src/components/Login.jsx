@@ -8,12 +8,19 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 function Login() {
+  
+  //router state
   const navigate = useNavigate();
+  //router state
+
+  //data state
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  //data state
 
+  //function
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -67,6 +74,7 @@ function Login() {
       }
     }
   };
+  //function
   
 
   return (

@@ -7,44 +7,35 @@ import { toast } from "react-toastify";
 import axios from "axios";
 
 function RoomsBooking() {
+  
+  //router state
   const param = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  //router state
+
+  //page state
   const [currentDate, setCurrentDate] = useState('');
   const [addbut, setAddbut] = useState(false)
   const [myPet, setMyPet] = useState([false, false])
   const [customPet, setCustomPet] = useState(0)
   const elementRef = useRef(null);
-  const [imageFile, setImageFile] = useState(null);
+  //page state
   
+  //data state
+  const [imageFile, setImageFile] = useState(null);
   const [bookingData, setBookingData] = useState({});
-
   const [petData, setPetData] = useState([]);
   const [chosenPet, setChosenPet] = useState();
-
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const roomData = location.state;
-  console.log("ROOMDATA");
-//   console.log(location.state);
-
-//   const cookie  = Cookies.get("jwt");
+  //data state
 
 
-  useEffect(() => {
-    // Get today's date in the format YYYY-MM-DD
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const day = String(today.getDate()).padStart(2, '0');
-    setCurrentDate(`${year}-${month}-${day}`);
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
 
-  }, []);
 
+
+  //function
   const numberOfDate = (checkIn, checkOut) => {
     const checkInDate = new Date(checkIn);
     const checkOutDate = new Date(checkOut);
@@ -52,25 +43,6 @@ function RoomsBooking() {
     const dayDifference = timeDifference / (1000 * 60 * 60 * 24);
     return dayDifference
   }
-  useEffect(() => {
-    const fetchData = async () => {
-        try {
-            const res = await axios.get("http://localhost:5000/api/pet/getMatchingPets", {
-                params:{ petAllowedType: roomData.petAllowedType}, 
-                withCredentials: true, 
-              });            
-              setPetData(res.data);
-            console.log(res.data);
-
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    fetchData()
-  }, [])
-
-  
   
   const countPrice = (checkIn, checkOut, pricePerNight) => {
     const date1 = new Date(checkIn);
@@ -100,30 +72,12 @@ function RoomsBooking() {
   const handleAddMyPet = (newPet) => {
     console.log(newPet)
     setChosenPet(newPet)
-//     if (chosenPet) {
-//         const petExists = chosenPet.some((pet) => pet.petName === newPet.petName);
-    
-//         if (petExists || chosenPet.length == 1) {
-//           toast.info('คุณได้เลือกสัตว์เลี้ยงของคุณแล้ว');
-//           return;  // Prevent adding the pet if it already exists
-//         }
-//     }
-
-//     setChosenPet((prev) => {
-//         return prev ? [...prev, newPet] : [newPet];
-//     });
 
 };
   
   const handleRemoveMyPet = () => {
     setChosenPet(null);
-    // setChosenPet((prev) => {prev.filter( (_, petIndex) => petIndex !== index)});
-    // console.log(chosenPet)
-    // setMyPet((prevMyPet) => {
-    //   const updatedMyPet = [...prevMyPet];
-    //   updatedMyPet[id] = false; 
-    //   return updatedMyPet;
-    // });
+
   };
   
 
@@ -159,9 +113,6 @@ function RoomsBooking() {
 
     setBookingData( (prev) => ({
         ...prev,
-        // checkInDate : roomData.checkIn,
-        // checkOutDate : roomData.checkOut,
-        // roomTypeID : roomData.roomTypeID,
         petID : chosenPet.petID
     }))
 
@@ -175,16 +126,6 @@ function RoomsBooking() {
         numberOfNight : numberOfDate(roomData.checkIn, roomData.checkOut),
         amount : countPrice(roomData.checkIn, roomData.checkOut, roomData.pricePerNight)
     }});
-
-    // try {
-    //     const res = await axios.post('http://localhost:5000/api/booking/createBooking', bookingData, {withCredentials:true})
-    //     if (res.status==201) {
-    //         console.log("booking created");
-    //     }
-
-    // } catch (err) {
-    //     console.log(err);
-    // }
   } 
 
   const calculateAge = (dob) => {
@@ -194,20 +135,53 @@ function RoomsBooking() {
     let years = today.getFullYear() - birthDate.getFullYear();
     let months = today.getMonth() - birthDate.getMonth();
   
-    // Adjust if the birthday hasn't occurred yet this year
     if (months < 0) {
       years--;
-      months += 12;  // Account for negative month difference
+      months += 12; 
     }
   
-    // Return both years and months
     return { years, months };
   };
+  //function
 
 
+  //page state control
+  useEffect(() => {
+    // Get today's date in the format YYYY-MM-DD
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(today.getDate()).padStart(2, '0');
+    setCurrentDate(`${year}-${month}-${day}`);
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+
+  }, []);
 
 
-  console.log(customPet)
+  //API connect
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const res = await axios.get("http://localhost:5000/api/pet/getMatchingPets", {
+                params:{ petAllowedType: roomData.petAllowedType}, 
+                withCredentials: true, 
+              });            
+              setPetData(res.data);
+            console.log(res.data);
+
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    fetchData()
+  }, [])
+
+
 
   return (
     <>

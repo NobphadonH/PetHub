@@ -6,31 +6,40 @@ import { useParams } from 'react-router-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 function RoomManagement() {
-    const [roomDetails, setRoomDetails] = useState(null);
-    const [bookingDetails, setBookingDetails] = useState({});
-    const [selectedBooking, setSelectedBooking] = useState({});
-    const [allDatesBetweenBookings, setAllDatesBetweenBookings] = useState(null)
-    const { roomID } = useParams();
-    const roomTypeID = roomID;
-
+    
+    //router state
     const navigate = useNavigate();
     const location = useLocation()
+    //router state
+
+    //page state
+    const [selectedBooking, setSelectedBooking] = useState({});
+    const [allDatesBetweenBookings, setAllDatesBetweenBookings] = useState(null)
+    //page state
+    
+    //data state
+    const [roomDetails, setRoomDetails] = useState(null);
+    const [bookingDetails, setBookingDetails] = useState({});
+    const { roomID } = useParams();
+    const roomTypeID = roomID;
+    //data state
 
 
 
+    //function
     const handleAddRoomClick = () => {
-        navigate('/pethub-website/addrooms'); // Navigate to the add rooms page
+        navigate('/pethub-website/addrooms');
       };
 
     const formatDate = (date) => {
-        if (!date) return ''; // Handle null or undefined date
+        if (!date) return '';
         
         const dateObj = new Date(date);
-        const day = String(dateObj.getDate()).padStart(2, '0'); // Get day and pad with leading 0 if needed
-        const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Get month (0-indexed, so add 1)
-        const year = dateObj.getFullYear(); // Use AD (Gregorian calendar year)
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const year = dateObj.getFullYear();
         
-        return `${day}/${month}/${year}`; // Return formatted date in AD
+        return `${day}/${month}/${year}`;
       };
 
     const calculateNights = (checkIn, checkOut) => {
@@ -84,11 +93,9 @@ function RoomManagement() {
 
     const handleApproveBooking = async (bookingID) => {
         try {
-            // Updated API endpoint to match the backend route
             const response = await axios.put(`http://localhost:5000/api/roomManage/bookings/${bookingID}/status`, {status: 'Waiting for payment'});
                 
             if (response.status === 200) {
-                // Update the local state to reflect the change
                 setBookingDetails(prevBookings => 
                     prevBookings.map(booking => 
                         booking.bookingID === bookingID 
@@ -97,15 +104,12 @@ function RoomManagement() {
                     )
                 );
         
-                // Update selectedBooking if it's the one being modified
                 if (selectedBooking?.bookingID === bookingID) {
                     setSelectedBooking(prev => ({...prev, bookingStatus: 'Waiting for payment'}));
                 }
         
-                // Optional: Show success message
                 alert('Booking has been approved successfully');
                     
-                // Optionally refresh the data
                 const refreshResponse = await axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`);
                 if (refreshResponse.data) {
                     setRoomDetails(refreshResponse.data);
@@ -123,11 +127,9 @@ function RoomManagement() {
 
     const handleRejectBooking = async (bookingID) => {
         try {
-            // Send a request to update the booking status to "Canceled"
             const response = await axios.put(`http://localhost:5000/api/roomManage/bookings/${bookingID}/status`, {status: 'Canceled'});
     
             if (response.status === 200) {
-                // Update the local state to reflect the change
                 setBookingDetails(prevBookings => 
                     prevBookings.map(booking => 
                         booking.bookingID === bookingID 
@@ -136,15 +138,12 @@ function RoomManagement() {
                     )
                 );
     
-                // Update selectedBooking if it's the one being modified
                 if (selectedBooking?.bookingID === bookingID) {
                     setSelectedBooking(prev => ({...prev, bookingStatus: 'Canceled'}));
                 }
     
-                // Optional: Show success message
                 alert('Booking has been rejected successfully.');
     
-                // Optionally refresh the data
                 const refreshResponse = await axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`, {status: 'Canceled'});
                 if (refreshResponse.data) {
                     setRoomDetails(refreshResponse.data);
@@ -159,17 +158,16 @@ function RoomManagement() {
             alert(`Failed to reject booking: ${error.message}`);
         }
     };
+    //function
 
+    //API connect 
     useEffect(() => {
         console.log("roomTypeID:", roomTypeID);
-        // Fetch room details from the backend
         axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`)
           .then(response => {
             console.log("API response:", response.data);
-            // Destructure the response data correctly
           const {roomTypeID, roomTypeName, roomCapacity, numberOfRoom, roomSize, roomDetail, roomPhoto, pricePerNight, petAllowedType, bookings } = response.data;
     
-          // Update state based on the API response
           setRoomDetails({
             roomTypeID,
             roomTypeName,
@@ -192,6 +190,7 @@ function RoomManagement() {
           });
       }, [roomTypeID]);
     
+      //loading state when fetch data
       if (!roomDetails || !bookingDetails) {
         return <>
             <Navbar />

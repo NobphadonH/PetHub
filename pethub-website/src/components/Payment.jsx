@@ -6,23 +6,28 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 
 function Payment() {
-    // State management
-    const [barSel, setBarSel] = useState(0); // Track selected payment method
-    const [month, setMonth] = useState(''); // Track selected month
-    const [year, setYear] = useState('');   // Track selected year
-    const [cardData, setCardData] = useState({});
-
+    
+    //router state
     const location = useLocation()
     const navigate = useNavigate()
+    //router state
 
+    //page state
+    const [barSel, setBarSel] = useState(0);
+    const [month, setMonth] = useState(''); 
+    const [year, setYear] = useState(''); 
+    //page state
+    
+    //data state
+    const [cardData, setCardData] = useState({});
     const bookingData = location.state;
+    //data state
 
-    // Event handler for selecting payment option
+    //function
     const handleSelect = (e) => {
         setBarSel(e.target.id);
     };
 
-    // Month and Year arrays for dropdown options
     const months = [
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
@@ -60,8 +65,6 @@ function Payment() {
         const month = months[date.getMonth()];
         const year = date.getFullYear();
         
-        console.log(`${dayOfWeek}, ${day} ${month}, ${year}`)
-
         return `${dayOfWeek}, ${day} ${month}, ${year}`;
       };
       
@@ -79,15 +82,11 @@ function Payment() {
                 bookingDetail : bookingData.bookingDetail
             }, {withCredentials:true})
             
-            console.log(bookingRes.data)
             bookingID = bookingRes.data.bookingID;
         } catch (err) {
             console.log(err);
         }
-        
-        console.log("abc")
-
-        console.log(bookingID)
+    
 
         try {
             const res = await axios.post('http://localhost:5000/api/payment/createPayment', {
@@ -122,6 +121,7 @@ function Payment() {
         const { name, value } = e.target;
         setCardData((prev) => ({ ...prev, [name]: value }));
     };
+    //function
 
     return (
         <div>

@@ -5,12 +5,15 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function Rooms() {
+
+    //router state
     const navigate = useNavigate();
     const location = useLocation();
+    //router state
 
+    //data state
     const [hotelFormData] = useState(location.state.hotelFormData);
     const [forms, setForms] = useState([{ id: 1, image: null }]);
-    const [formData, setFormData] = useState();
     const [roomFormArray, setRoomFormArray] = useState([{
         numberOfRoom: "",
         petAllowedType: "",
@@ -21,8 +24,9 @@ function Rooms() {
         roomTypeName: "",
         selectedImage: null,
     }]);
-
-
+    //data state
+    
+    //function
     const addForm = () => {
         setForms([...forms, { id: forms.length + 1, image: null }]);
         setRoomFormArray((prevData) => [...prevData, {}]);
@@ -107,7 +111,7 @@ function Rooms() {
             }
         });
     
-        return Object.keys(errors).length > 0 ? errors : null; // Return error object or null if no errors
+        return Object.keys(errors).length > 0 ? errors : null; 
     };
     
     
@@ -120,7 +124,6 @@ function Rooms() {
         if (validationErrors) {
             let step = 0;
     
-            // Sequentially show errors for each room, one at a time
             const roomIndices = Object.keys(validationErrors);
     
             const showNextError = () => {
@@ -128,21 +131,19 @@ function Rooms() {
                     const roomIndex = roomIndices[step];
                     const roomError = validationErrors[roomIndex];
     
-                    // Show a single toast for each room's first error
                     toast.error(`ห้องที่ ${parseInt(roomIndex) + 1}: ${roomError.message}`, {
-                        autoClose: 1000, // Adjust auto close timing here
+                        autoClose: 1000, 
                         onClose: () => {
-                            step++; // Move to the next room's error
-                            showNextError(); // Show the next error recursively
+                            step++; 
+                            showNextError(); 
                         },
                     });
                 }
             };
     
-            // Start the error notification sequence
             showNextError();
     
-            return; // Stop further processing until validation is done
+            return; 
         } else {
             try {
                 const readyRoomFormArray = await prepareRoomFormArrayForNavigation();
@@ -163,6 +164,7 @@ function Rooms() {
     const goPreviousPage = () => {
         navigate("/pethub-website/basics", { state: { hotelFormData: hotelFormData, readyRoomFormArray: location.state?.readyRoomFormArray || roomFormArray } });
     };
+    //function
 
     useEffect(() => {
         if (location.state?.readyRoomFormArray) {

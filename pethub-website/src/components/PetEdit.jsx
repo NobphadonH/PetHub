@@ -7,6 +7,13 @@ import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
 function EditPetProfile() {
+  
+  //router state
+  const location = useLocation()
+  const navigate = useNavigate()
+  //router state
+
+  //data state
   const [imageFile, setImageFile] = useState(null);
   const [formData, setFormData] = useState({
     petID : "",
@@ -16,11 +23,10 @@ function EditPetProfile() {
     petSex: "",
     petDetail: "",
   });
-  const location = useLocation()
-  const navigate = useNavigate()
+  //data state
   
 
-
+  //function
   const handleInputChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -33,24 +39,10 @@ function EditPetProfile() {
 
   const handleImageChange = (img) => {
     setFormData((prevState) => ({
-      ...prevState, // Keep the previous state
-      selectedImage: img, // Update only the hotelType
+      ...prevState, 
+      selectedImage: img, 
     }));
   };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    const file = event.dataTransfer.files[0];
-    if (file) {
-      setImageFile(URL.createObjectURL(file));
-    }
-  };
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-  };
-
-  console.log(formData)
 
   const handleDelete = async () => {
     try {
@@ -58,7 +50,7 @@ function EditPetProfile() {
         "http://localhost:5000/api/pet/updatePetByPetID",
         formData.petID,
         {
-          withCredentials: true,  // To handle authentication cookies, if needed
+          withCredentials: true, 
         }
       );
       
@@ -81,7 +73,7 @@ function EditPetProfile() {
         "http://localhost:5000/api/pet/updatePetByPetID",
         formData,
         {
-          withCredentials: true,  // To handle authentication cookies, if needed
+          withCredentials: true,  
         }
       );
       
@@ -89,7 +81,6 @@ function EditPetProfile() {
       console.log(res.status);
       toast.success("Pet profile created successfully!");
       navigate("/pethub-website/profile")
-      // Optionally, reset the form or redirect the user
     } catch (error) {
       console.error(
         "Error submitting pet data:",
@@ -98,8 +89,10 @@ function EditPetProfile() {
       toast.error(error.response?.data?.error || "Failed to create pet profile.");
     }
   };
+  //function
 
 
+  //map data from previous component into page
   useEffect(() => {
     if (location.state) {
       setFormData((prevData) => {
@@ -116,7 +109,7 @@ function EditPetProfile() {
         };
       });
   
-      // Set the image file using petPhoto
+      
       if (location.state.petPhoto) {
         const byteString = atob(location.state.petPhoto.split(",")[1]);
         const mimeString = location.state.petPhoto.split(",")[0].split(":")[1].split(";")[0];
@@ -129,7 +122,7 @@ function EditPetProfile() {
         const blob = new Blob([arrayBuffer], { type: mimeString });
         const file = new File([blob], "pet-photo.jpg", { type: mimeString });
   
-        setImageFile(file); // Set the file for use in the PictureUpload component
+        setImageFile(file);
       }
     }
   }, []);

@@ -7,7 +7,11 @@ import axios from "axios";
 
 function Register() {
 
+  //rounter state
   const navigate = useNavigate();
+  //rounter state
+
+  //data state
   const [formData, setFormData] = useState({
     fName: '',
     lName: '',
@@ -18,7 +22,9 @@ function Register() {
     address: '',
     userRole: 'Client'
   }); 
-
+  //data state
+  
+  //function
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -50,7 +56,6 @@ function Register() {
 
     // Add API call
     try {
-      // Send POST request to the Node.js API endpoint
       const response = await axios.post('http://localhost:5000/api/auth/signup', formData, { withCredentials: true });
       toast.success("Signup successful");
       console.log("Response:", response.data);
@@ -65,6 +70,7 @@ function Register() {
     }
   
   };
+  //function
 
   return (
     <>

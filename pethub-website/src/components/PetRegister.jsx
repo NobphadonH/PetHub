@@ -7,7 +7,12 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 function AddPetProfile() {
+
+  //router state
   const navigate = useNavigate();
+  //router state
+
+  //data state
   const [formData, setFormData] = useState({
     petName: "",
     petDOB: "",
@@ -15,11 +20,12 @@ function AddPetProfile() {
     petSex: "",
     petDetail: "",
   });
+  //data state
 
+  //function
   const handleInputChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    // console.log(pointerLocation);
     setFormData((values) => ({
       ...values,
       [name]: value,
@@ -29,12 +35,11 @@ function AddPetProfile() {
 
   const handleImageChange = (img) => {
     setFormData((prevState) => ({
-      ...prevState, // Keep the previous state
-      selectedImage: img, // Update only the hotelType
+      ...prevState, 
+      selectedImage: img, 
     }));
   };
 
-  console.log(formData)
 
   const handleSubmit = async () => {
 
@@ -70,7 +75,6 @@ function AddPetProfile() {
       console.log(res.status);
       toast.success("Pet profile created successfully!");
       navigate("/pethub-website/profile")
-      // Optionally, reset the form or redirect the user
     } catch (error) {
       console.error(
         "Error submitting pet data:",
@@ -79,6 +83,7 @@ function AddPetProfile() {
       toast.error(error.response?.data?.error || "Failed to create pet profile.");
     }
   };
+  //function
 
   return (
     <>
