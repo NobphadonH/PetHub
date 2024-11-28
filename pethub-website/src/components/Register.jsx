@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Navbar from './Utils/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function Register() {
@@ -17,10 +17,7 @@ function Register() {
     confirmPassword: '',
     address: '',
     userRole: 'Client'
-  });
-
-  console.log(formData)
- 
+  }); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,7 +30,6 @@ function Register() {
   const handleSubmit = async e => {
     e.preventDefault();
 
-    // Check for blank fields
     for (let key in formData) {
       if (!formData[key]) {
         toast.error(`Please fill in the ${key}`);
@@ -41,22 +37,18 @@ function Register() {
       }
     }
 
-    // Check if email is valid
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       toast.error('Please enter a valid email address.');
       return;
     }
 
-    // Check if password and confirm password match
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match.');
       return;
     }
 
-    // If validation passes, proceed with submission logic
-    console.log('Registration Data:', formData);
-    // Add API call or other registration logic here
+    // Add API call
     try {
       // Send POST request to the Node.js API endpoint
       const response = await axios.post('http://localhost:5000/api/auth/signup', formData, { withCredentials: true });

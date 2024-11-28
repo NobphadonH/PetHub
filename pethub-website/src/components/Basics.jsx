@@ -5,143 +5,22 @@ import PointerLocation from "./Utils/PointerLocation";
 import axios from 'axios'
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
+import PictureUpload from "./Utils/PictureUpload";
+import TypeChoiceBoxes from "./Utils/TypeChoicesBox";
 
 
-function PictureUpload({ onImageSelected, initialImage }) {
-    const [selectedImage, setSelectedImage] = useState(initialImage);
-  
-    // Sync initialImage with selectedImage if it changes
-    useEffect(() => {
-      setSelectedImage(initialImage);
-    }, [initialImage]);
-  
-    // Function to handle image selection
-    const handleImageChange = (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const imgUrl = URL.createObjectURL(file);
-        setSelectedImage(imgUrl);
-        onImageSelected(file);
-      }
-    };
-  
-    // Function to delete the selected image
-    const handleDeleteImage = () => {
-      setSelectedImage(null);
-      onImageSelected(null);
-    };
-  
-    return (
-      <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 w-full max-w-full mx-auto text-center">
-        {selectedImage ? (
-          <div className="relative">
-            <img
-              src={selectedImage}
-              alt="Uploaded"
-              className="max-w-full object-contain rounded-lg"
-            />
-            <button
-              onClick={handleDeleteImage}
-              className="absolute -top-1 -right-2 bg-red-500 text-xs text-white p-2 rounded-full hover:bg-red-600"
-            >
-              ลบ
-            </button>
-          </div>
-        ) : (
-          <div className="relative flex flex-col items-center justify-center h-48 lg:h-64 xl:h-80">
-            <input
-              name="selectedImage"
-              type="file"
-              id="file-upload"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            />
-            <label
-              htmlFor="file-upload"
-              className="bg-orange-500 text-white text-xs lg:text-sm py-2 px-4 rounded cursor-pointer"
-            >
-              เลือกไฟล์
-            </label>
-          </div>
-        )}
-      </div>
-    );
-  }
 
-function TypeChoiceBoxes({onSelectType, selectedType}) {
-    const [selected, setSelected] = useState(null);
-
-    const options = [
-        {
-            id: 1,
-            title: "โรงแรมสัตว์เลี้ยงระดับมืออาชีพ",
-            description: "อาคารหลายห้องสำหรับสัตว์เลี้ยง พร้อมทีมงานดูแลโดยเฉพาะ",
-        },
-        {
-            id: 2,
-            title: "เดย์แคร์สัตว์เลี้ยง",
-            description: "สำหรับการดูแลระยะสั้นหรือการดูแลระหว่างวัน",
-        },
-        {
-            id: 3,
-            title: "โรงพยาบาลหรือคลินิกสัตว์",
-            description: "สถานพยาบาลที่ออกแบบมาเพื่อสัตว์เลี้ยงโดยเฉพาะ",
-        },
-        {
-            id: 4,
-            title: "คาเฟ่สัตว์",
-            description: "คาเฟ่สัตว์ที่รองรับสัตว์เลี้ยงเข้าพัก เหมาะกับสัตว์ที่ต้องการเพื่อน",
-        }
-    ];
-
-    const handleSelect = (optionTitle) => {
-        setSelected(optionTitle);
-        onSelectType(optionTitle);
-    };
-
-    useEffect(() => {
-        if (selectedType) {
-            setSelected(selectedType);
-        }
-    }, [selectedType]);
-
-    return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            {options.map(option => (
-                <div
-                    key={option.id}
-                    className={`col-span-1 bg-white border p-6 rounded-xl drop-shadow-md cursor-pointer ${
-                        selected === option.title ? 'border-pethub-color4' : 'border-neutral-100'
-                    }`}
-                    onClick={() => handleSelect(option.title)}
-                >
-                    <div className="grid grid-cols-6 gap-2">
-                        <div className="col-start-1 col-span-1 flex items-center">
-                            <div className={`w-4 h-4 rounded-full ${
-                                selected === option.title ? 'bg-pethub-color4' : 'bg-gray-300'
-                            }`}></div>
-                        </div>
-                        <div className="col-start-2 col-span-5">
-                            <div className="text-left text-sm font-bold">{option.title}</div>
-                            <div className="text-left text-sm">{option.description}</div>
-                        </div>
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-}
 
 function Basics() {
 
+    //router state
     const navigate = useNavigate();
     const location = useLocation();
+    //router state
+
+    //data state
     const [pointerLocation, setPointerLocation] = useState({ lon: 100.56, lat: 13.74 });
     const [hotelFormData] = useState(location.state);
-
-    console.log(hotelFormData)
-   
     const [formData, setFormData] = useState({
         hotelName: "",
         hotelDescription: "",
@@ -152,8 +31,9 @@ function Basics() {
         selectedImage: null, // For the image
         cookies: Cookies.get("user-auth")
     })
+    //data state
 
-
+    // function
     const convertFileToBase64 = (file) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -166,7 +46,6 @@ function Basics() {
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
-        // console.log(pointerLocation);
         setFormData((values) => ({
             ...values,
             [name]: value,
@@ -175,20 +54,19 @@ function Basics() {
 
     const handleTypeChange = (type) => {
         setFormData(prevState => ({
-            ...prevState,  // Keep the previous state
-            hotelType: type,  // Update only the hotelType
+            ...prevState,  
+            hotelType: type,
         }));
     };
 
     const handleImageChange = (img) => {
         setFormData(prevState => ({
-            ...prevState,  // Keep the previous state
-            selectedImage: img,  // Update only the hotelType
+            ...prevState, 
+            selectedImage: img, 
         }));
     };
 
-    // console.log(formData)
-
+    //form validation
     const validateForm = () => {
         const requiredFields = [
             { field: "hotelName", label: "ชื่อที่พัก" },
@@ -235,50 +113,10 @@ function Basics() {
             toast.error("เลือกรูปภาพใหม่อีกครั้ง");
         }
     };
+    //function
 
 
-
-    const testAddHotel = async () => {
-        const data = new FormData()
-        data.append('hotelName', formData.hotelName);
-        data.append('hotelDescription', formData.hotelDescription);
-        data.append('hotelPolicy', formData.hotelPolicy);
-        data.append('hotelAddress', formData.hotelAddress);
-        data.append('district', formData.district);
-        data.append('hotelType', formData.hotelType);
-        data.append('checkInFrom', formData.checkInFrom);
-        data.append('checkOutUntil', formData.checkOutUntil);
-        data.append('mapLat', pointerLocation.lat);
-        data.append('mapLong', pointerLocation.lon);
-        if (formData.selectedImage) {
-            data.append('selectedImage', formData.selectedImage, formData.selectedImage.name);
-        }
-
-        console.log(formData)
-        try{
-            const res = axios.post('http://localhost:5000/api/hotel/createHotel/', data, {headers:{"Content-Type":"multipart/form-data" }})
-            console.log(res.data)
-            console.log(res.status)
-            // console.log(formData)
-            // console.log(data)
-        } catch(error) {
-            console.error(error);
-        }
-    }
-
-    const districts = [
-        "เขตพระนคร", "เขตดุสิต", "เขตหนองจอก", "เขตบางรัก", "เขตบางเขน",
-        "เขตบางกะปิ", "เขตปทุมวัน", "เขตป้อมปราบศัตรูพ่าย", "เขตพระโขนง", "เขตมีนบุรี",
-        "เขตลาดกระบัง", "เขตยานนาวา", "เขตสัมพันธวงศ์", "เขตพญาไท", "เขตธนบุรี",
-        "เขตบางกอกใหญ่", "เขตห้วยขวาง", "เขตคลองสาน", "เขตตลิ่งชัน", "เขตบางกอกน้อย",
-        "เขตบางขุนเทียน", "เขตภาษีเจริญ", "เขตหนองแขม", "เขตราษฎร์บูรณะ", "เขตราชเทวี",
-        "เขตบางพลัด", "เขตดินแดง", "เขตบึงกุ่ม", "เขตสาทร", "เขตบางซื่อ",
-        "เขตจตุจักร", "เขตบางคอแหลม", "เขตประเวศ", "เขตคลองเตย", "เขตสวนหลวง",
-        "เขตจอมทอง", "เขตดอนเมือง", "เขตราชบูรณะ", "เขตหลักสี่", "เขตสายไหม",
-        "เขตคันนายาว", "เขตสะพานสูง", "เขตวังทองหลาง", "เขตคลองสามวา", "เขตบางนา",
-        "เขตทวีวัฒนา", "เขตทุ่งครุ", "เขตบางบอน"
-    ];
-
+    //Map previous data into form
     useEffect(() => {
         if (hotelFormData) {
             setFormData((prevFormData) => ({
@@ -306,7 +144,7 @@ function Basics() {
 
     }, []);
     
-
+    //update location on click
     useEffect(() => {
         setFormData((prevFormData) => ({
             ...prevFormData,
@@ -315,6 +153,19 @@ function Basics() {
 
         }));
     }, [pointerLocation])
+
+    const districts = [
+        "เขตพระนคร", "เขตดุสิต", "เขตหนองจอก", "เขตบางรัก", "เขตบางเขน",
+        "เขตบางกะปิ", "เขตปทุมวัน", "เขตป้อมปราบศัตรูพ่าย", "เขตพระโขนง", "เขตมีนบุรี",
+        "เขตลาดกระบัง", "เขตยานนาวา", "เขตสัมพันธวงศ์", "เขตพญาไท", "เขตธนบุรี",
+        "เขตบางกอกใหญ่", "เขตห้วยขวาง", "เขตคลองสาน", "เขตตลิ่งชัน", "เขตบางกอกน้อย",
+        "เขตบางขุนเทียน", "เขตภาษีเจริญ", "เขตหนองแขม", "เขตราษฎร์บูรณะ", "เขตราชเทวี",
+        "เขตบางพลัด", "เขตดินแดง", "เขตบึงกุ่ม", "เขตสาทร", "เขตบางซื่อ",
+        "เขตจตุจักร", "เขตบางคอแหลม", "เขตประเวศ", "เขตคลองเตย", "เขตสวนหลวง",
+        "เขตจอมทอง", "เขตดอนเมือง", "เขตราชบูรณะ", "เขตหลักสี่", "เขตสายไหม",
+        "เขตคันนายาว", "เขตสะพานสูง", "เขตวังทองหลาง", "เขตคลองสามวา", "เขตบางนา",
+        "เขตทวีวัฒนา", "เขตทุ่งครุ", "เขตบางบอน"
+    ];
 
     return (
         <div>

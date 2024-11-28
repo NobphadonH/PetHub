@@ -6,20 +6,24 @@ import { toast } from "react-toastify";
 
 
 function Confirm() {
+
+    //router state
     const location = useLocation();
     const navigate = useNavigate();
-
-    const [hotelAndRoomFormData]= useState(location.state);
-
-    console.log(hotelAndRoomFormData)
+    //router state
     
+    //data state
+    const [hotelAndRoomFormData]= useState(location.state);
+    //data state
+
+    
+    //function
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        //hotel section
         const hotelData = new FormData()
         const hotelFormData = hotelAndRoomFormData.hotelFormData;
-        let hotelID;
-
         hotelData.append('hotelName', hotelFormData.hotelName);
         hotelData.append('hotelDescription', hotelFormData.hotelDescription);
         hotelData.append('hotelPolicy', hotelFormData.hotelPolicy);
@@ -31,6 +35,8 @@ function Confirm() {
         hotelData.append('mapLat', hotelFormData.mapLat);
         hotelData.append('mapLong', hotelFormData.mapLong);
         hotelData.append('cookies', hotelFormData.cookies);
+        let hotelID;
+
         if (hotelFormData.selectedImage) {
             const base64Data = hotelFormData.selectedImage;
             const blob = new Blob([new Uint8Array(atob(base64Data.split(',')[1]).split('').map(c => c.charCodeAt(0)))], { type: 'image/jpg' });
@@ -46,12 +52,14 @@ function Confirm() {
         } catch(error) {
             console.error(error);
         }
+        //hotel section
 
+
+        //room section
         const roomArrayData = new FormData()
         const roomFormArray = hotelAndRoomFormData.readyRoomFormArray;
         roomArrayData.append('hotelID', hotelID)
 
-        console.log(roomFormArray)
 
         roomFormArray.forEach((room, index) => {
             roomArrayData.append(`rooms[${index}][roomTypeName]`, room.roomTypeName)
@@ -76,11 +84,13 @@ function Confirm() {
         } catch(error) {
             console.error(error);
         }
+        //room section
     }
 
     const goPreviousPage = () => {
         navigate("/pethub-website/rooms", {state: hotelAndRoomFormData})
     }
+    //function
 
     return (
         <div>

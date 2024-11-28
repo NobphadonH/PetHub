@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 function AddPetProfile() {
-  const [imageFile, setImageFile] = useState(null);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     petName: "",
@@ -27,9 +26,6 @@ function AddPetProfile() {
     }));
   };
 
-  // const handleImageSelected = (event) => {
-  //   setImageFile(URL.createObjectURL(event.target.files[0]));
-  // };
 
   const handleImageChange = (img) => {
     setFormData((prevState) => ({
@@ -38,32 +34,9 @@ function AddPetProfile() {
     }));
   };
 
-  const handleDrop = (event) => {
-    event.preventDefault();
-    const file = event.dataTransfer.files[0];
-    if (file) {
-      setImageFile(URL.createObjectURL(file));
-    }
-  };
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-  };
-
   console.log(formData)
 
   const handleSubmit = async () => {
-    // Validate required fields
-    // if (
-    //   !formData.petName ||
-    //   !formData.petDOB ||
-    //   !formData.petType ||
-    //   !formData.petSex ||
-    //   !formData.cookies
-    // ) {
-    //   alert("กรุณากรอกข้อมูลให้ครบทุกช่องที่จำเป็น");
-    //   return;
-    // }
 
     const petData = new FormData();
     petData.append("petName", formData.petName);

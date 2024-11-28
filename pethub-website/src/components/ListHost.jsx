@@ -43,9 +43,9 @@ function ListHost() {
                                     เช่น โรงแรมสัตว์เลี้ยงหลายยูนิต เดย์แคร์ สถานรับฝากสัตว์ หรือที่พักสัตว์เลี้ยงที่มีมาตรฐานระดับมืออาชีพ
                                 </div>
                             </div>
-                            <div className="flex justify-start">
-                                <a href="/pethub-website/basics" className="bg-black text-white border border-black btn btn-xs sm:btn-xs md:btn-sm lg:btn-md mt-4">ลงทะเบียนโรงแรมของคุณ</a>
-                            </div>
+                            <a href="/pethub-website/basics" className="flex justify-start">
+                                <a href="/pethub-website/basics"  className="bg-black text-white border border-black btn btn-xs sm:btn-xs md:btn-sm lg:btn-md mt-4">ลงทะเบียนโรงแรมของคุณ</a>
+                            </a>
                         </div>
                     </div>
                 </div>

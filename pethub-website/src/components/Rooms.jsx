@@ -9,9 +9,6 @@ function Rooms() {
     const location = useLocation();
 
     const [hotelFormData] = useState(location.state.hotelFormData);
-
-    console.log(location.state)
-
     const [forms, setForms] = useState([{ id: 1, image: null }]);
     const [formData, setFormData] = useState();
     const [roomFormArray, setRoomFormArray] = useState([{
@@ -25,7 +22,6 @@ function Rooms() {
         selectedImage: null,
     }]);
 
-    // console.log(forms)
 
     const addForm = () => {
         setForms([...forms, { id: forms.length + 1, image: null }]);
@@ -93,7 +89,6 @@ function Rooms() {
     const validateRoomFormArray = (roomFormArray) => {
         const errors = {};
     
-        // For each room, check all fields and return the first missing field error.
         roomFormArray.forEach((room, index) => {
             if (!room.roomTypeName || room.roomTypeName.trim() === "") {
                 errors[index] = { field: "roomTypeName", message: "กรุณากรอกประเภทห้อง" };
@@ -101,8 +96,6 @@ function Rooms() {
                 errors[index] = { field: "petAllowedType", message: "กรุณากรอกประเภทสัตว์" };
             } else if (!room.numberOfRoom || isNaN(room.numberOfRoom) || room.numberOfRoom <= 0) {
                 errors[index] = { field: "numberOfRoom", message: "กรุณากรอกจำนวนห้อง" };
-            // } else if (!room.roomCapacity || isNaN(room.roomCapacity) || room.roomCapacity <= 0) {
-            //     errors[index] = { field: "roomCapacity", message: "กรุณาจำนวนของสัตว์ในห้อง" };
             } else if (!room.roomSize || isNaN(room.roomSize) || room.roomSize <= 0) {
                 errors[index] = { field: "roomSize", message: "กรุณากรอกขนาดห้อง" };
             } else if (!room.pricePerNight || isNaN(room.pricePerNight) || room.pricePerNight <= 0) {
@@ -119,7 +112,6 @@ function Rooms() {
     
     
     
-    // console.log(roomFormArray)
     
 
     const goConfirmPage = async () => {
@@ -183,7 +175,6 @@ function Rooms() {
                 image: null,   
             })));
     
-            // console.log(location.state.readyRoomFormArray);
         }
     }, []);
     

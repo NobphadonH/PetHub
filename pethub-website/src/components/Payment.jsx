@@ -14,7 +14,6 @@ function Payment() {
 
     const location = useLocation()
     const navigate = useNavigate()
-    console.log(location.state);
 
     const bookingData = location.state;
 

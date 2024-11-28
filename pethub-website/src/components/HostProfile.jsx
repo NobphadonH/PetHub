@@ -6,39 +6,47 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from "js-cookie";
 
 function HostProfile() {
+
+    //router state
+    const navigate = useNavigate();
+    //router state
+    
+    //page state
     const containerRef = useRef(null);
     const parentRef = useRef(null);
     const [totalWidth, setTotalWidth] = useState(0);
+    const [readOnly, setReadOnly] = useState(false); 
+    //page state
+
+    //data state
     const [hotelData, setHotelData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
     const [content, setContent] = useState({
-      content1: "", // First textarea content
-      content2: "", // Second textarea content
-      merge_content: "", // Merged content of both textareas
+      content1: "", 
+      content2: "", 
+      merge_content: "", 
     });
-  
-    const [readOnly, setReadOnly] = useState(false); // State for readonly toggle
-  
-    // Function to handle changes in the textareas
+    //data state
+    
+    //function
     const handleChange = (e) => {
       const { name, value } = e.target;
       setContent((prevContent) => {
-        // Update the specific content based on which textarea is changed
+        
         const newContent = { ...prevContent, [name]: value };
-        // Merge both contents to update merge_content
+
         newContent.merge_content = newContent.content1 + "\n" + newContent.content2;
         return newContent;
       });
     };
-  
-    // Function to toggle the readonly state
+
+    
     const handleReadOnly = () => {
       setReadOnly((prevReadOnly) => {
         const newReadOnly = !prevReadOnly;
         if (newReadOnly) {
-          // When switching to readOnly, update merge_content to include both text areas' values
+          
           setContent((prevContent) => ({
             ...prevContent,
             merge_content: prevContent.content1 + "\n" + prevContent.content2,
@@ -50,67 +58,63 @@ function HostProfile() {
 
 
     const formatDate = (date) => {
-      if (!date) return ''; // Handle null or undefined date
+      if (!date) return '';
       
       const dateObj = new Date(date);
-      const day = String(dateObj.getDate()).padStart(2, '0'); // Get day and pad with leading 0 if needed
-      const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Get month (0-indexed, so add 1)
-      const year = dateObj.getFullYear(); // Use AD (Gregorian calendar year)
+      const day = String(dateObj.getDate()).padStart(2, '0'); 
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0'); 
+      const year = dateObj.getFullYear(); 
       
-      return `${day}/${month}/${year}`; // Return formatted date in AD
+      return `${day}/${month}/${year}`; 
     };
 
 
     const handleDetailClick = (roomID, index) => {
-      // Navigate to the specified route with the roomID
       navigate(`/pethub-website/hostprofile/${roomID}`, {state : hotelData.rooms[index].roomPhoto});
     };
 
     const handleAddRoomClick = () => {
-      navigate('/pethub-website/addrooms'); // Navigate to the add rooms page
+      navigate('/pethub-website/addrooms');
     };
+    //function
 
-    // Fetch data from the backend
-  useEffect(() => {
-    const fetchHotelProfile = async () => {
-      try {
+  
+    useEffect(() => {
+      const fetchHotelProfile = async () => {
+        try {
+          const fName = Cookies.get('user-fName');
+          const lName = Cookies.get('user-lName');
 
-        // Retrieve fName and lName from cookies
-        const fName = Cookies.get('user-fName');
-        const lName = Cookies.get('user-lName');
-
-        if (!fName || !lName) {
-          setError("Missing user information in cookies. Please log in again.");
+          if (!fName || !lName) {
+            setError("Missing user information in cookies. Please log in again.");
+            setLoading(false);
+            return;
+        }
+          const response = await axios.get(`http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`);
+          console.log(`URL: http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`);
+          console.log("Fetched hotel profile:", response.data);
+          setHotelData(response.data);
           setLoading(false);
-          return;
-      }
+        } catch (err) {
+          console.error("Error fetching hotel profile:", err);
+          setError("Failed to load hotel profile. Please try again later.");
+          setLoading(false);
+        }
+      };
+      fetchHotelProfile();
+    }, []);
 
-        const response = await axios.get(`http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`);
-        console.log(`URL: http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`);
-        console.log("Fetched hotel profile:", response.data);
-        setHotelData(response.data);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching hotel profile:", err);
-        setError("Failed to load hotel profile. Please try again later.");
-        setLoading(false);
-      }
-    };
-
-    fetchHotelProfile();
-  }, []);
-
+    // page control
     useEffect(() => {
     const updateWidth = () => {
         if (containerRef.current && parentRef.current) {
-            // Calculate total width minus parent width
             const containerScrollWidth = containerRef.current.scrollWidth;
             const parentOffsetWidth = parentRef.current.offsetWidth;
             setTotalWidth(containerScrollWidth - parentOffsetWidth);
         }
         };
     
-        updateWidth(); // Set initial width
+        updateWidth();
         window.addEventListener('resize', updateWidth);
     
         return () => {
@@ -118,6 +122,7 @@ function HostProfile() {
         };
     }, [])
     
+    // loading page state until data come in
     if (loading) return <>
       <Navbar />
       <div className="h-[100vh] w-full flex items-center justify-center">
@@ -126,8 +131,9 @@ function HostProfile() {
     </>;
     if (error) return <div>{error}</div>;
   
-    
+    // destucturing hotelData
     const { hotelID, hotelPhoto, hotelName, hotelType, hotelDescription, hotelPolicy, hotelAddress, fName, lName, phone, rooms, bookings } = hotelData;
+    // destucturing hotelData
     
 
   return (

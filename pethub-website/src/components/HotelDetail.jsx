@@ -8,7 +8,14 @@ import { toast } from "react-toastify";
 import axios from 'axios';
 
 function HotelDetail() {
+
+    //router state
     let param = useParams()
+    const navigate = useNavigate()
+    const location = useLocation()
+    //router state
+
+    //page state
     const mapRef = useRef(null); 
     const containerRef = useRef(null);
     const parentRef = useRef(null);
@@ -16,21 +23,76 @@ function HotelDetail() {
     const [barSel, setBarSel] = useState(0)
     const [currentDate, setCurrentDate] = useState('');
     const [submitReview, setSubmitReview] = useState(0);
+    //page state
+
+    //data state
     const [reviewData, setReviewData] = useState();
     const [newReview, setNewReview] = useState({reviewDetail:"", reviewScore:0});
+    const hotelData = location.state;
+    //data state
 
-    const navigate = useNavigate()
-    const location = useLocation()
-    
+    //variable
     const emptyStarIconURL = "M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"; // Example
     const filledStarIconURL = "M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"
-
-    const hotelData = location.state;
-    console.log("HOTELDATA");
-    // console.log(hotelData);
-    
     const petIcon = {"สุนัข": "🐶", "แมว":"🐱", "อื่น ๆ":"🫎"}
+    const checkIn = hotelData.checkIn
+    const checkOut = hotelData.checkOut
+    const hotelPhoto = hotelData.hotelPhoto
+    const hotelName = hotelData.hotelName
+    const reviewScore = hotelData.avgReviewScore
+    const reviewCount = hotelData.reviewCount
+    //variable
     
+    //function
+    const handleSelect = (e) => {
+        setBarSel(e.target.id)
+    }
+
+    const handleReviewChange = (e) => {
+        const { name, value } = e.target;
+        setNewReview((prev) => ({ ...prev, [name]: value }));
+        console.log(newReview)
+      };
+
+
+    const handleStarClick = (score) => {
+        setNewReview((prevState) => ({
+            ...prevState,
+            reviewScore: score,
+        }));
+    };
+
+    const goBooking = (room) => {
+        const roomData = {
+            ...room,
+            checkIn,
+            checkOut,
+            hotelPhoto,
+            hotelName,
+            reviewScore,
+            reviewCount
+        }
+        const token = Cookies.get("user-auth");
+        const role = Cookies.get("user-role")
+
+      
+        if (!token) {
+          navigate("/pethub-website/signin");
+          return;
+        } else {
+            if (role == "Client" || role == "Dev"){
+                console.log(hotelData);
+                navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData, hotelState: hotelData });
+            }else{
+                toast.error("Account นี้ไม่สามารถจองห้องพักได้");
+
+            }
+        }
+
+    };
+    //function
+
+    //API connect
     useEffect(() => {
         const fetchData = async () => {
             try{
@@ -46,6 +108,7 @@ function HotelDetail() {
         console.log(reviewData)
     }, [submitReview, hotelData])
 
+    //map
     useEffect(() => {
         console.log(hotelData);
         const today = new Date();
@@ -77,14 +140,9 @@ function HotelDetail() {
           map.Overlays.add(marker);
           map.zoomRange({ min: 6, max: 20 });
           map.location({lon: hotelData.mapLong, lat: hotelData.mapLat }, true);
-        //   map.Ui.DPad.visible(false);
           map.Ui.Zoombar.visible(false);
           map.Ui.Geolocation.visible(false);
-        //   map.Ui.Toolbar.visible(false);
-        //   map.Ui.LayerSelector.visible(false);
-        //   map.Ui.Fullscreen.visible(false);
-        //   map.Ui.Crosshair.visible(true);
-        //   map.Ui.Scale.visible(true);
+
         };
     
         if (!window.longdo) {
@@ -95,7 +153,6 @@ function HotelDetail() {
 
         const updateWidth = () => {
             if (containerRef.current && parentRef.current) {
-              // Calculate total width minus parent width
               const containerScrollWidth = containerRef.current.scrollWidth;
               const parentOffsetWidth = parentRef.current.offsetWidth;
               setTotalWidth(containerScrollWidth - parentOffsetWidth);
@@ -109,92 +166,6 @@ function HotelDetail() {
             window.removeEventListener('resize', updateWidth);
           };
       }, []);
-    
-      const handleAddressRightClick = (e) => {
-        e.preventDefault(); // Prevent the default context menu from appearing
-      
-        if (mapRef.current) {
-          mapRef.current.location(
-            { lon: hotelData.mapLong, lat: hotelData.mapLat },
-            true
-          );
-          mapRef.current.zoom(14, true);
-        }
-      };
-      
-
-    const handleSelect = (e) => {
-        setBarSel(e.target.id)
-    }
-
-    const handleReviewChange = (e) => {
-        const { name, value } = e.target;
-        setNewReview((prev) => ({ ...prev, [name]: value }));
-        console.log(newReview)
-      };
-
-
-    const handleStarClick = (score) => {
-        setNewReview((prevState) => ({
-            ...prevState,
-            reviewScore: score, // Update the reviewScore in newReview
-        }));
-    };
-
-    console.log(barSel)
-    const checkIn = hotelData.checkIn
-    const checkOut = hotelData.checkOut
-    const hotelPhoto = hotelData.hotelPhoto
-    const hotelName = hotelData.hotelName
-    const reviewScore = hotelData.avgReviewScore
-    const reviewCount = hotelData.reviewCount
-
-    const goBooking = (room) => {
-        const roomData = {
-            ...room,
-            checkIn,
-            checkOut,
-            hotelPhoto,
-            hotelName,
-            reviewScore,
-            reviewCount
-        }
-        const token = Cookies.get("user-auth");
-        const role = Cookies.get("user-role")
-
-      
-        if (!token) {
-          navigate("/pethub-website/signin");
-          return;
-        } else {
-            // console.log(hotelData);
-            // navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData});
-
-            if (role == "Client" || role == "Dev"){
-                console.log(hotelData);
-                navigate(`/pethub-website/home/${hotelData.hotelName}/${room.roomTypeName}`, { state: roomData, hotelState: hotelData });
-            }else{
-                toast.error("Account นี้ไม่สามารถจองห้องพักได้");
-
-            }
-        }
-
-      };
-      
-    function mapHotelType(typeNumber) {
-    switch (typeNumber) {
-        case "1":
-        return "โรงแรมสัตว์เลี้ยงระดับมืออาชีพ";
-        case "2":
-        return "เดย์แคร์สัตว์เลี้ยง";
-        case "3":
-        return "โรงพยาบาลหรือคลินิกสัตว์";
-        case "4":
-        return "คาเฟ่สัตว์";
-        default:
-        return "ไม่ทราบประเภทโรงแรม"; // Default case for unknown types
-    }
-    }
       
 
 

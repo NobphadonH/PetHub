@@ -4,13 +4,14 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 
 
-
-
 function HotelApprove() {
 
+  // data state
   const [hotelData, setHotelData] = useState();
   const [actionCnt, setActionCnt] = useState(0);
+  // data state
 
+  // API Connection
   useEffect(()=> {
     const fetchData = async () => {
       try {
@@ -33,6 +34,7 @@ function HotelApprove() {
         <div className='mt-10 flex flex-col gap-5'>
           {hotelData ? (hotelData.map((hotel, index) => (
             <HotelApproveBox
+            key={index}
             hotelObj={hotel}
             hotelName={hotel.hotelName}
             hotelType ={hotel.hotelType}

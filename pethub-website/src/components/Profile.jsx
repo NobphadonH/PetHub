@@ -1,8 +1,8 @@
 import Navbar from "./Utils/Navbar"
 import { useEffect, useState } from "react"
 import Cookies from 'js-cookie';
-import { ToastContainer, toast } from "react-toastify";
-import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 
@@ -141,10 +141,6 @@ function Profile() {
       setIsClick(Array(bookingStatus.length).fill(false));
     }
   }, [bookingStatus]);
-
-  console.log(userData);
-  console.log(petData);
-  console.log(bookingStatus);
 
   // Show loading indicator while data is fetching
   if (loading) {

@@ -9,6 +9,12 @@ import Cookies from 'js-cookie';
 
 
 function HostSignUp() {
+  
+  //router state
+  const navigate = useNavigate()
+  //router state
+  
+  //data state
   const [formData, setFormData] = useState({
     fName: '',
     lName: '',
@@ -19,24 +25,11 @@ function HostSignUp() {
     address: '',
     userRole: 'Host'
   });
+  //data state
 
-  const navigate = useNavigate()
 
-  console.log(formData)
 
-  useEffect(() => {
-    const role = Cookies.get('user-role'); // Retrieve the role from cookies
-    console.log(role);
-
-    // Check if the required cookie is missing
-    if (role === "Host"){
-      navigate(`/pethub-website/listhost`);
-    }else if(role === "Client"){
-      navigate('/pethub-website/home');
-    }
-
-  }, []);
-
+  //function
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -48,6 +41,7 @@ function HostSignUp() {
   const handleSubmit = async e => {
     e.preventDefault();
 
+    //validation
     if (!formData.email || !formData.password || !formData.fName || !formData.lName || !formData.confirmPassword || !formData.phone || !formData.address) {
       toast.error("Please fill in all fields.");
       return;
@@ -71,7 +65,6 @@ function HostSignUp() {
       console.log("Response:", response.data);
       const loginres = await axios.post("http://localhost:5000/api/auth/signin",{ email: formData.email, password: formData.password }, { withCredentials: true });
       if (loginres.status === 200) {
-        // Set cookies with user information
         const { token, userRole, fName, lName } = response.data;
         Cookies.set("user-auth", token, { secure: true, sameSite: "Strict" });
         Cookies.set("user-fName", fName, { secure: true, sameSite: "Strict" });
@@ -90,8 +83,19 @@ function HostSignUp() {
       }
     }
 
-    console.log("Submitted data:", formData);
   };
+  // function
+
+  useEffect(() => {
+    const role = Cookies.get('user-role');
+
+    if (role === "Host"){
+      navigate(`/pethub-website/listhost`);
+    }else if(role === "Client"){
+      navigate('/pethub-website/home');
+    }
+
+  }, []);
 
 
 

@@ -19,22 +19,17 @@ function EditPetProfile() {
   const location = useLocation()
   const navigate = useNavigate()
   
-  console.log(location)
 
 
   const handleInputChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    // console.log(pointerLocation);
     setFormData((values) => ({
       ...values,
       [name]: value,
     }));
   };
 
-  // const handleImageSelected = (event) => {
-  //   setImageFile(URL.createObjectURL(event.target.files[0]));
-  // };
 
   const handleImageChange = (img) => {
     setFormData((prevState) => ({
@@ -81,20 +76,6 @@ function EditPetProfile() {
 };
 
   const handleSubmit = async () => {
-    // Validate required fields
-    // if (
-    //   !formData.petName ||
-    //   !formData.petDOB ||
-    //   !formData.petType ||
-    //   !formData.petSex ||
-    //   !formData.cookies
-    // ) {
-    //   alert("กรุณากรอกข้อมูลให้ครบทุกช่องที่จำเป็น");
-    //   return;
-    // }
-
-
-
     try {
       const res = await axios.post(
         "http://localhost:5000/api/pet/updatePetByPetID",
@@ -118,7 +99,6 @@ function EditPetProfile() {
     }
   };
 
-  console.log(formData)
 
   useEffect(() => {
     if (location.state) {
@@ -253,7 +233,7 @@ function EditPetProfile() {
           </div>
           <div className="w-full flex justify-center gap-5">
             <div
-              onClick={handleSubmit}
+              onClick={handleDelete}
               className="my-8 flex justify-center items-center rounded-md bg-red-600 text-white h-10 lg:h-12 w-36 lg:w-40 font-medium text-sm lg:text-base cursor-pointer"
             >
               ลบ

@@ -12,12 +12,11 @@ function RoomManagement() {
     const [allDatesBetweenBookings, setAllDatesBetweenBookings] = useState(null)
     const { roomID } = useParams();
     const roomTypeID = roomID;
+
     const navigate = useNavigate();
     const location = useLocation()
 
-    console.log(location)
 
-    console.log(selectedBooking)
 
     const handleAddRoomClick = () => {
         navigate('/pethub-website/addrooms'); // Navigate to the add rooms page
@@ -66,17 +65,13 @@ function RoomManagement() {
         const endDate = new Date(end);
         const dates = [];
     
-        // Loop through each date between start and end
         while (startDate <= endDate) {
-            // Format the date as dd/mm/yyyy
-            const day = String(startDate.getDate()).padStart(2, '0'); // Day with leading 0
-            const month = String(startDate.getMonth() + 1).padStart(2, '0'); // Month with leading 0
-            const year = startDate.getFullYear(); // Full year
+            const day = String(startDate.getDate()).padStart(2, '0'); 
+            const month = String(startDate.getMonth() + 1).padStart(2, '0');
+            const year = startDate.getFullYear();
     
-            // Push the formatted date into the dates array
             dates.push(`${day}/${month}/${year}`);
     
-            // Move to the next date
             startDate.setDate(startDate.getDate() + 1);
         }
     
@@ -206,7 +201,6 @@ function RoomManagement() {
         </>;
       }
 
-      console.log(roomDetails)
 
   return (
     <>
