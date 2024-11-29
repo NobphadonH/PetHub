@@ -115,42 +115,92 @@ export const getHotelProfile = async (req, res) => {
     });
 };
 
-// // Update Hotel Profile
-// export const updateHotelProfile = async (req, res) => {
-//     const hotelID = req.params.hotelID;
-//     const { hotelDescription, hotelPolicy } = req.body; // Get the new description and policy from the request body
-    
-//     const { dbpool, sshClient } = await connectToDatabase();
-//     dbpool.getConnection((err, connection) => {
-//         if (err) {
-//             console.log(err);
-//             sshClient.end();
-//             return res.status(500).json({ message: "Database connection failed" });
-//         }
+// Update Hotel Profile by fName and lName
+export const updateHotelProfile = async (req, res) => {
+    const { fName, lName } = req.params;
+    const { content1, content2 } = req.body;
 
-//         // Query to update hotel description and policy
-//         const updateQuery = `
-//             UPDATE Hotels 
-//             SET hotelDescription = ?, hotelPolicy = ?
-//             WHERE hotelID = ?
-//         `;
+    if (!content1 || !content2) {
+        return res.status(400).json({ message: "Missing description or policy content" });
+    }
 
-//         connection.query(updateQuery, [hotelDescription, hotelPolicy, hotelID], (queryErr, result) => {
-//             if (queryErr) {
-//                 console.log(queryErr);
-//                 res.status(500).json({ message: "Failed to update hotel profile" });
-//                 sshClient.end();
-//                 return;
-//             }
+    const hotelDescription = content1;
+    const hotelPolicy = content2;
 
-//             if (result.affectedRows === 0) {
-//                 res.status(404).json({ message: "Hotel not found" });
-//             } else {
-//                 res.status(200).json({ message: "Hotel profile updated successfully" });
-//             }
+    try {
+        const { dbpool, sshClient } = await connectToDatabase();
 
-//             sshClient.end();
-//             connection.release();
-//         });
-//     });
-// };
+        dbpool.getConnection((err, connection) => {
+            if (err) {
+                console.error(err);
+                sshClient.end();
+                return res.status(500).json({ message: "Database connection failed" });
+            }
+
+            console.log("Request Body:", req.body);
+            console.log("Request cookie:", req.params);
+            console.log("Description:", hotelDescription);
+            console.log("Policy:", hotelPolicy);
+
+            // Query to get hotelID based on fName and lName
+            const getHotelIDQuery = `
+                SELECT H.hotelID 
+                FROM Hotels H
+                JOIN Users U ON U.userID = H.userID
+                WHERE U.fName = ? AND U.lName = ?
+            `;
+
+            connection.query(getHotelIDQuery, [fName, lName], (getErr, rows) => {
+                if (getErr) {
+                    console.error(getErr);
+                    res.status(500).json({ message: "Failed to fetch hotel ID" });
+                    sshClient.end();
+                    connection.release();
+                    return;
+                }
+
+                console.log("Fetched Rows:", rows);
+
+                if (rows.length === 0) {
+                    res.status(404).json({ message: "User or associated hotel not found" });
+                    sshClient.end();
+                    connection.release();
+                    return;
+                }
+
+                const hotelID = rows[0].hotelID;
+
+                // Query to update hotel description and policy
+                const updateQuery = `
+                    UPDATE Hotels 
+                    SET hotelDescription = ?, hotelPolicy = ?
+                    WHERE hotelID = ?
+                `;
+
+                connection.query(updateQuery, [hotelDescription, hotelPolicy, hotelID], (updateErr, result) => {
+                    if (updateErr) {
+                        console.error(updateErr);
+                        res.status(500).json({ message: "Failed to update hotel profile" });
+                        sshClient.end();
+                        connection.release();
+                        return;
+                    }
+
+                    console.log("Update Query Result:", result);
+
+                    if (result.affectedRows === 0) {
+                        res.status(404).json({ message: "Hotel not found" });
+                    } else {
+                        res.status(200).json({ message: "Hotel profile updated successfully" });
+                    }
+
+                    sshClient.end();
+                    connection.release();
+                });
+            });
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "An unexpected error occurred" });
+    }
+};

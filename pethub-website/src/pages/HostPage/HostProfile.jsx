@@ -15,7 +15,7 @@ function HostProfile() {
     const containerRef = useRef(null);
     const parentRef = useRef(null);
     const [totalWidth, setTotalWidth] = useState(0);
-    const [readOnly, setReadOnly] = useState(false); 
+    const [readOnly, setReadOnly] = useState(true); 
     //page state
 
     //data state
@@ -30,6 +30,35 @@ function HostProfile() {
     //data state
     
     //function
+    const updateHotelProfile = async () => {
+      try {
+        const fName = Cookies.get('user-fName');
+        const lName = Cookies.get('user-lName');
+    
+        if (!fName || !lName) {
+          setError("Missing user information in cookies. Please log in again.");
+          return;
+        }
+    
+        // Prepare the updated data
+        const updatedData = {
+          content1: content.content1,
+          content2: content.content2,
+          merge_content: content.merge_content,
+        };
+    
+        // Make API request to update the hotel profile
+        const response = await axios.put(`http://localhost:5000/api/getHotelProfile/updateHotelProfile/${fName}/${lName}`, updatedData);
+        console.log("Hotel profile updated successfully:", response.data);
+    
+        // Optional: Show success notification
+        alert("Hotel profile updated successfully");
+      } catch (err) {
+        console.error("Error updating hotel profile:", err);
+        setError("Failed to update hotel profile. Please try again later.");
+      }
+    };
+    
     const handleChange = (e) => {
       const { name, value } = e.target;
       setContent((prevContent) => {
@@ -42,15 +71,15 @@ function HostProfile() {
     };
 
     
-    const handleReadOnly = () => {
+    const handleReadOnly = async () => {
       setReadOnly((prevReadOnly) => {
         const newReadOnly = !prevReadOnly;
         if (newReadOnly) {
-          
           setContent((prevContent) => ({
             ...prevContent,
             merge_content: prevContent.content1 + "\n" + prevContent.content2,
           }));
+          updateHotelProfile();
         }
         return newReadOnly;
       });
@@ -126,6 +155,16 @@ function HostProfile() {
         window.removeEventListener('resize', updateWidth);
         };
     }, [])
+
+    useEffect(() => {
+      if (hotelData) {
+        setContent({
+          content1: hotelData.hotelDescription || '',
+          content2: hotelData.hotelPolicy || '',
+          merge_content: `${hotelData.hotelDescription || ''}\n${hotelData.hotelPolicy || ''}`,
+        });
+      }
+    }, [hotelData]);
     
     // loading page state until data come in
     if (loading) return <>
@@ -159,7 +198,7 @@ function HostProfile() {
                 </div>
                 <div className="text-[2vw] md:text-sm lg:text-lg font-semibold transition-all duration-300 ease-in-out line-clamp-1 overflow-hidden">สถานที่ตั้ง: <span className="text-pethub-color6 font-normal">{hotelAddress}</span></div>
                 <div className="text-[2vw] md:text-sm lg:text-lg font-semibold">ประเภทที่พัก: <span className="text-pethub-color6 font-normal">{hotelType}</span></div>
-                <div className="text-[2vw] md:text-sm lg:text-lg font-semibold">Cancelation Policy: <span className="text-pethub-color6 font-normal">{hotelPolicy}</span></div>
+                {/* <div className="text-[2vw] md:text-sm lg:text-lg font-semibold">Cancelation Policy: <span className="text-pethub-color6 font-normal">{hotelPolicy}</span></div> */}
             </div>
             <div className="flex justify-between items-center">
                 <div className="text-[2.5vw] md:text-base lg:text-xl font-semibold">ผู้ดูแล: <span className="text-[2vw] md:text-sm lg:text-base text-pethub-color6 font-normal">{fName} {lName}</span></div>
@@ -177,7 +216,7 @@ function HostProfile() {
       <textarea
         className="textarea w-full max-h-36 min-h-36 md:max-h-72 md:min-h-72 lg:min-h-96 lg:max-h-96 textarea-bordered hide-scrollbar text-[2vw] md:text-[1.4vw] xl:text-lg text-gray-600 p-[2vw] md:p-5"
         name="content1"
-        placeholder="คำอธิบายโรงแรม..."
+        placeholder={hotelDescription}
         value={content.content1}
         onChange={handleChange}
         readOnly={readOnly}
@@ -188,7 +227,7 @@ function HostProfile() {
       <textarea
         className="textarea w-full max-h-36 min-h-36 md:max-h-72 md:min-h-72 lg:min-h-96 lg:max-h-96 textarea-bordered hide-scrollbar text-[2vw] md:text-[1.4vw] xl:text-lg text-gray-600 p-[2vw] md:p-5"
         name="content2"
-        placeholder="ข้อกำหนดของโรงแรม..."
+        placeholder={hotelPolicy}
         value={content.content2}
         onChange={handleChange}
         readOnly={readOnly}
