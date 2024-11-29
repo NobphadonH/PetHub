@@ -7,16 +7,15 @@ import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
 function EditPetProfile() {
-  
   //router state
-  const location = useLocation()
-  const navigate = useNavigate()
+  const location = useLocation();
+  const navigate = useNavigate();
   //router state
 
   //data state
   const [imageFile, setImageFile] = useState(null);
   const [formData, setFormData] = useState({
-    petID : "",
+    petID: "",
     petName: "",
     petDOB: "",
     petType: "",
@@ -24,7 +23,6 @@ function EditPetProfile() {
     petDetail: "",
   });
   //data state
-  
 
   //function
   const handleInputChange = (event) => {
@@ -36,11 +34,10 @@ function EditPetProfile() {
     }));
   };
 
-
   const handleImageChange = (img) => {
     setFormData((prevState) => ({
-      ...prevState, 
-      selectedImage: img, 
+      ...prevState,
+      selectedImage: img,
     }));
   };
 
@@ -50,22 +47,24 @@ function EditPetProfile() {
         "http://localhost:5000/api/pet/updatePetByPetID",
         formData.petID,
         {
-          withCredentials: true, 
+          withCredentials: true,
         }
       );
-      
+
       console.log("Pet data submitted successfully:", res.data);
       console.log(res.status);
       toast.success("Pet deleted!");
-      navigate("/pethub-website/profile")
+      navigate("/pethub-website/profile");
     } catch (error) {
       console.error(
         "Error submitting pet data:",
         error.response?.data || error.message
       );
-      toast.error(error.response?.data?.error || "Failed to create pet profile.");
+      toast.error(
+        error.response?.data?.error || "Failed to create pet profile."
+      );
     }
-};
+  };
 
   const handleSubmit = async () => {
     try {
@@ -73,55 +72,58 @@ function EditPetProfile() {
         "http://localhost:5000/api/pet/updatePetByPetID",
         formData,
         {
-          withCredentials: true,  
+          withCredentials: true,
         }
       );
-      
+
       console.log("Pet data submitted successfully:", res.data);
       console.log(res.status);
       toast.success("Pet profile created successfully!");
-      navigate("/pethub-website/profile")
+      navigate("/pethub-website/profile");
     } catch (error) {
       console.error(
         "Error submitting pet data:",
         error.response?.data || error.message
       );
-      toast.error(error.response?.data?.error || "Failed to create pet profile.");
+      toast.error(
+        error.response?.data?.error || "Failed to create pet profile."
+      );
     }
   };
   //function
-
 
   //map data from previous component into page
   useEffect(() => {
     if (location.state) {
       setFormData((prevData) => {
         const formattedData = { ...location.state };
-  
+
         if (formattedData.petDOB) {
           const date = new Date(formattedData.petDOB);
-          formattedData.petDOB = date.toISOString().split('T')[0]; // Convert to YYYY-MM-DD
+          formattedData.petDOB = date.toISOString().split("T")[0]; // Convert to YYYY-MM-DD
         }
-  
+
         return {
           ...prevData,
           ...formattedData,
         };
       });
-  
-      
+
       if (location.state.petPhoto) {
         const byteString = atob(location.state.petPhoto.split(",")[1]);
-        const mimeString = location.state.petPhoto.split(",")[0].split(":")[1].split(";")[0];
+        const mimeString = location.state.petPhoto
+          .split(",")[0]
+          .split(":")[1]
+          .split(";")[0];
         const arrayBuffer = new Uint8Array(byteString.length);
-  
+
         for (let i = 0; i < byteString.length; i++) {
           arrayBuffer[i] = byteString.charCodeAt(i);
         }
-  
+
         const blob = new Blob([arrayBuffer], { type: mimeString });
         const file = new File([blob], "pet-photo.jpg", { type: mimeString });
-  
+
         setImageFile(file);
       }
     }
@@ -132,7 +134,7 @@ function EditPetProfile() {
       <Navbar />
       <div className="my-16 lg:my-32 w-full lg:w-[800px] h-full mx-auto px-6 lg:px-10 py-12">
         <div className="text-2xl lg:text-3xl font-semibold text-pethub-color6">
-          แก้ไขปข้อมูล<span className="text-pethub-color1">สัตว์เลี้ยง</span>
+          แก้ไขข้อมูล<span className="text-pethub-color1">สัตว์เลี้ยง</span>
         </div>
         <div className="text-sm lg:text-base my-4 lg:my-8">
           เพื่อความปลอดภัยของสัตว์เลี้ยงของคุณ
@@ -144,7 +146,10 @@ function EditPetProfile() {
             Upload รูปสัตว์เลี้ยงของคุณ
           </div>
           <div className="w-10/12 lg:w-9/12 mx-auto my-5">
-            <PictureUpload onImageSelected={handleImageChange} initialImage={imageFile ? URL.createObjectURL(imageFile) : null} />
+            <PictureUpload
+              onImageSelected={handleImageChange}
+              initialImage={imageFile ? URL.createObjectURL(imageFile) : null}
+            />
             {/* {imageFile && <p>Selected Image: {imageFile.name}</p>} */}
           </div>
         </div>
@@ -213,7 +218,7 @@ function EditPetProfile() {
 
           <div>
             <p className="text-start text-sm lg:text-base my-2">
-              คำอธิบายรายระเอียดของสัตว์เลี้ยง เช่น สายพันธุ์, ลักษณะที่โดดเด่น
+              คำอธิบายรายละเอียดของสัตว์เลี้ยง เช่น สายพันธุ์, ลักษณะที่โดดเด่น
               และอื่นๆ
             </p>
             <textarea
