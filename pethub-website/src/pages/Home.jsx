@@ -155,7 +155,10 @@ function Home() {
         setLoading(true)
         setTimeout(() => {setLoading(false)}, 1000)
         setPagedata(paginatedData);
+      
+    }, [pageselect])
 
+    useEffect(() => {
         const updateWidth = () => {
             if (containerRef.current && parentRef.current) {
               const containerScrollWidth = containerRef.current.scrollWidth;
@@ -170,8 +173,7 @@ function Home() {
         return () => {
         window.removeEventListener('resize', updateWidth);
         };
-      
-    }, [pageselect])
+    }, [hotelResult])
 
 
     //mapping function
