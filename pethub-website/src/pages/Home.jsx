@@ -1,10 +1,10 @@
-import Navbar from "./Utils/Navbar"
-import HomeHotelBox from "./Utils/HomeHotelBox"
-import HomeHotelBoxLoading from "./Utils/HomeHotelBoxLoading";
-import HotelRecommend from "./Utils/HotelRecommend";
-import HotelRecommendLoading from "./Utils/HotelRecommedLoading";
+import Navbar from "../components/Navbar"
+import HomeHotelBox from "../components/HomeHotelBox"
+import HomeHotelBoxLoading from "../components/HomeHotelBoxLoading";
+import HotelRecommend from "../components/HotelRecommend";
+import HotelRecommendLoading from "../components/HotelRecommedLoading";
 import { motion } from "framer-motion";
-import Footer from "./Utils/Footer"
+import Footer from "../components/Footer"
 import { useState, useEffect, useRef } from "react"
 import { useNavigate, useLocation } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";

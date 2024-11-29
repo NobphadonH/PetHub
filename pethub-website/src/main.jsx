@@ -2,40 +2,41 @@ import { createRoot } from 'react-dom/client'
 import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import './index.css'
 import 'rsuite/dist/rsuite-no-reset.min.css';
-import App from './App.jsx'
+import { Navigate } from "react-router-dom";
+
 
 //client
-import Register from './components/ClientPage/Register.jsx';
-import Profile from './components/ClientPage/Profile.jsx';
-import RoomsBooking from './components/BookingPage/RoomsBooking.jsx';
-import Payment from './components/BookingPage/Payment.jsx';
-import PetRegister from './components/PetPage/PetRegister.jsx';
-import PetEdit from './components/PetPage/PetEdit.jsx';
+import Register from './pages/ClientPage/Register.jsx';
+import Profile from './pages/ClientPage/Profile.jsx';
+import RoomsBooking from './pages/BookingPage/RoomsBooking.jsx';
+import Payment from './pages/BookingPage/Payment.jsx';
+import PetRegister from './pages/PetPage/PetRegister.jsx';
+import PetEdit from './pages/PetPage/PetEdit.jsx';
 
 //host
-import HostSignUp from './components/HostPage/HostSIgnup/HostSignUp.jsx';
-import ListHost from './components/HostPage/HostSIgnup/ListHost.jsx';
-import Basics from './components/HostPage/HostSIgnup/Basics.jsx';
-import Rooms from './components/HostPage/HostSIgnup/Rooms.jsx';
-import Confirm from './components/HostPage/HostSIgnup/Confirm.jsx';
-import Finish from './components/HostPage/HostSIgnup/Finish.jsx';
-import HostProfile from './components/HostPage/HostProfile.jsx';
-import HotelProfileManagement from './components/HostPage/HotelProfileManagement.jsx';
-import AddRooms from './components/HostPage/AddRooms.jsx';
-import RoomManagement from './components/HostPage/RoomManagement.jsx';
+import HostSignUp from './pages/HostPage/HostSIgnup/HostSignUp.jsx';
+import ListHost from './pages/HostPage/HostSIgnup/ListHost.jsx';
+import Basics from './pages/HostPage/HostSIgnup/Basics.jsx';
+import Rooms from './pages/HostPage/HostSIgnup/Rooms.jsx';
+import Confirm from './pages/HostPage/HostSIgnup/Confirm.jsx';
+import Finish from './pages/HostPage/HostSIgnup/Finish.jsx';
+import HostProfile from './pages/HostPage/HostProfile.jsx';
+import HotelProfileManagement from './pages/HostPage/HotelProfileManagement.jsx';
+import AddRooms from './pages/HostPage/AddRooms.jsx';
+import RoomManagement from './pages/HostPage/RoomManagement.jsx';
 
 //admin
-import HotelApprove from './components/AdminPage/HotelApprove.jsx';
+import HotelApprove from './pages/AdminPage/HotelApprove.jsx';
 
 //guest
-import Home from './components/Home.jsx';
-import Login from './components/Login.jsx';
-import HotelDetail from './components/HotelDetail.jsx';
+import Home from './pages/Home.jsx';
+import Login from './pages/Login.jsx';
+import HotelDetail from './pages/HotelDetail.jsx';
 
 
 
 const router = createBrowserRouter([
-  {path: "/pethub-website", element: <App />,},
+  {path: "/pethub-website",  element: <Navigate to="/pethub-website/home" replace />,},
   {path: "/pethub-website/profile", element: <Profile />,},
   {path: "/pethub-website/home", element: <Home />,},
   {path: "/pethub-website/signin", element: <Login />,},

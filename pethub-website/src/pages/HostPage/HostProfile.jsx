@@ -1,4 +1,4 @@
-import Navbar from "../Utils/Navbar"
+import Navbar from "../../components/Navbar"
 import { motion } from "framer-motion"
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";

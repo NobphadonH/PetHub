@@ -1,7 +1,7 @@
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import Navbar from "../Utils/Navbar";
+import Navbar from "../../components/Navbar";
 import { useState, useEffect, useRef } from 'react';
-import PictureUpload from "../Utils/PictureUpload";
+import PictureUpload from "../../components/PictureUpload";
 import Cookies from "js-cookie"
 import { toast } from "react-toastify";
 import axios from "axios";

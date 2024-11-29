@@ -1,5 +1,5 @@
- import Navbar from './Utils/Navbar'
-import Footer from './Utils/Footer'
+ import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import Cookies from 'js-cookie';

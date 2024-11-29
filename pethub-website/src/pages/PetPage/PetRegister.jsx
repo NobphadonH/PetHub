@@ -1,5 +1,5 @@
-import Navbar from "../Utils/Navbar";
-import PictureUpload from "../Utils/PictureUpload";
+import Navbar from "../../components/Navbar";
+import PictureUpload from "../../components/PictureUpload";
 import { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";

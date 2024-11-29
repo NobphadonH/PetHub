@@ -1,12 +1,12 @@
-import Navbar from "../../Utils/Navbar"
+import Navbar from "../../../components/Navbar"
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
-import PointerLocation from "../../Utils/PointerLocation";
+import PointerLocation from "../../../components/PointerLocation";
 import axios from 'axios'
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
-import PictureUpload from "../../Utils/PictureUpload";
-import TypeChoiceBoxes from "../../Utils/TypeChoicesBox";
+import PictureUpload from "../../../components/PictureUpload";
+import TypeChoiceBoxes from "../../../components/TypeChoicesBox";
 
 
 

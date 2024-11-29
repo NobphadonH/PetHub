@@ -1,5 +1,5 @@
-import Navbar from "../Utils/Navbar";
-import AddRoomsForm from "../Utils/AddRoomsForm";
+import Navbar from "../../components/Navbar";
+import AddRoomsForm from "../../components/AddRoomsForm";
 import { useState } from 'react';
 
 function AddRooms() {

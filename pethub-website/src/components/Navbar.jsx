@@ -1,4 +1,4 @@
-import logo from '../../../public/logo.svg';
+import logo from '../../public/logo.svg';
 import { useState, useEffect, useRef } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';

@@ -1,4 +1,4 @@
-import Navbar from "../../Utils/Navbar";
+import Navbar from "../../../components/Navbar";
 import logo from "../../../../public/logo.svg";
 import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
