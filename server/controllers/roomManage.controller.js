@@ -1,5 +1,11 @@
 import { connectToDatabase } from "../utils/dbConnection.js";
-import { downloadFileFromS3 } from "../utils/s3FileTransfer.js";
+import {
+    uploadFileToS3,
+    downloadFileFromS3,
+    deleteFileFromS3,
+  } from "../utils/s3FileTransfer.js";
+import fs from "fs";
+
 
 //function for fetching details
 export const getRoomDetails = async (req, res) => {
@@ -15,7 +21,7 @@ export const getRoomDetails = async (req, res) => {
 
         // Query to get the specific room details
         const roomQuery = `
-            SELECT roomTypeID, roomTypeName, roomCapacity, numberOfRoom, roomSize, roomDetail, 
+            SELECT roomTypeID, hotelID, roomTypeName, roomCapacity, numberOfRoom, roomSize, roomDetail, 
                    petAllowedType, pricePerNight, roomPhoto
             FROM RoomTypes
             WHERE roomTypeID = ?
@@ -164,54 +170,136 @@ export const updateBookingStatus = async (req, res) => {
         res.status(500).json({ message: "Failed to update booking status.", error });
     }
 };
-// Function to update room details
-// export const updateRoomDetails = async (req, res) => {
-//     const { roomTypeID } = req.params;
-//     const {
-//         roomTypeName,
-//         roomSize,
-//         petAllowedType,
-//         pricePerNight,
-//         roomPhoto,
-//     } = req.body;
 
-//     try {
-//         const { dbpool, sshClient } = await connectToDatabase();
-//         const connection = await dbpool.promise().getConnection();
+export const updateRoom  = async (req, res) => {
+    console.log("abcd");
+    try {
+        const {roomTypeID, roomTypeName, numberOfRoom, roomSize, roomDetail, petAllowedType, pricePerNight} = req.body;
+        const { dbpool, sshClient } = await connectToDatabase();
 
-//         try {
-//             // Update query
-//             const updateQuery = `
-//                 UPDATE RoomTypes
-//                 SET 
-//                     roomTypeName = ?,
-//                     roomSize = ?,
-//                     petAllowedType = ?,
-//                     pricePerNight = ?,
-//                     roomPhoto = ?
-//                 WHERE 
-//                     roomTypeID = ?
-//             `;
+        console.log(req.body);
 
-//             const [result] = await connection.query(updateQuery, [
-//                 roomTypeName,
-//                 roomSize,
-//                 petAllowedType,
-//                 pricePerNight,
-//                 roomPhoto,
-//                 roomTypeID,
-//             ]);
+        const updates = [];
+        const values = [];
 
-//             if (result.affectedRows === 0) {
-//                 return res.status(404).json({ message: "Room not found or no changes made" });
-//             }
+        if (roomTypeName) {
+            updates.push("roomTypeName = ?");
+            values.push(roomTypeName);
+          }
+          if (numberOfRoom) {
+            updates.push("numberOfRoom = ?");
+            values.push(numberOfRoom);
+          }
+          if (roomSize) {
+            updates.push("roomSize = ?");
+            values.push(roomSize);
+          }
+          if (roomDetail) {
+            updates.push(" roomDetail = ?");
+            values.push(roomDetail);
+          }
+          if (petAllowedType) {
+            updates.push(" petAllowedType = ?");
+            values.push(petAllowedType);
+          }
+          if (pricePerNight) {
+            updates.push(" pricePerNight = ?");
+            values.push(pricePerNight);
+          }
 
-//             res.status(200).json({ message: "Room details updated successfully" });
-//         } finally {
-//             connection.release();
-//         }
-//     } catch (err) {
-//         console.error("Error updating room details:", err);
-//         res.status(500).json({ message: "An error occurred while updating room details" });
-//     }
-// };
+          dbpool.getConnection((err, connection) => {
+            if (err) {
+                console.error("Error getting connection from pool:", err);
+                sshClient.end()
+                return res.status(500).json({ error: "Database connection failed" });
+            }
+            if (req.file) {
+                console.log("file deteced");
+                connection.query(
+                    `SELECT roomPhoto FROM RoomTypes WHERE roomTypeID = ?`,
+                    [roomTypeID],
+                    async (err, results) => {
+                      if (err) {
+                        console.error("Error fetching room photo:", err);
+                        connection.release();
+                        sshClient.end();
+                        return res
+                          .status(500)
+                          .json({ error: "Failed to retrieve room photo" });
+                      }
+          
+                      const currentPhotoUrl = results[0]?.roomPhoto;
+                      if (currentPhotoUrl) {
+                        await deleteFileFromS3(currentPhotoUrl); // Delete the old file from S3
+                      }
+          
+                      // Upload the new image to S3
+                      const filePath = req.file.path;
+                      const fileName = req.file.filename;
+                      const fileContent = fs.readFileSync(filePath);
+                      const fileMimeType = req.file.mimetype;
+                      const newPhotoUrl = await uploadFileToS3(
+                        fileName,
+                        fileContent,
+                        fileMimeType
+                      );
+          
+                      // Add new photo URL to the update query
+                      updates.push("roomPhoto = ?");
+                      values.push(newPhotoUrl);
+
+                      values.push(roomTypeID);
+                      const query = `UPDATE RoomTypes SET ${updates.join(", ")} WHERE roomTypeID = ?`
+                      connection.query(query, values, (err, result) => {
+                        if (err) {
+                            console.error("Error updating room:", err);
+                            connection.release();
+                            sshClient.end();
+                            return res
+                              .status(500)
+                              .json({ error: "Failed to update room information" });
+                        }
+        
+                        res.status(200).json({message: "Room updated successfully"})
+                        connection.release();
+                        sshClient.end();
+                    })
+
+                    }
+                  );
+            }
+
+
+          })
+
+          
+        // values.push(roomTypeID);
+        // const query = `UPDATE RoomTypes SET ${updates.join(", ")} WHERE roomTypeID = ?`
+        // dbpool.getConnection((err, connection) => {
+        //     if (err) {
+        //         console.error("Error getting connection from pool:", err);
+        //         sshClient.end();
+        //         return res.status(500).json({ error: "Database connection failed" });
+        //     }
+        //     connection.query(query, values, (err, result) => {
+        //         if (err) {
+        //             console.error("Error updating room:", err);
+        //             connection.release();
+        //             sshClient.end();
+        //             return res
+        //               .status(500)
+        //               .json({ error: "Failed to update room information" });
+        //         }
+
+        //         res.status(200).json({message: "Room updated successfully"})
+        //         connection.release();
+        //         sshClient.end();
+        //     })
+        // })
+          
+
+    } catch (error) {
+        console.log("Error in updateRoom:", error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+}

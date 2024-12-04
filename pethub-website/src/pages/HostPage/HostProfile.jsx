@@ -122,17 +122,26 @@ function HostProfile() {
           if (!fName || !lName) {
             setError("Missing user information in cookies. Please log in again.");
             setLoading(false);
+            navigate(-1);
             return;
         }
-          const response = await axios.get(`http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`);
+          const response = await axios.get(`http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`, {withCredentials: true});
           console.log(`URL: http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`);
+
           console.log("Fetched hotel profile:", response.data);
+          if (response.data.verification !== "verified") {
+            setError("Your hotel is not verified")
+            setLoading(false);
+            navigate(-1);
+            return;
+          }
           setHotelData(response.data);
           setLoading(false);
         } catch (err) {
           console.error("Error fetching hotel profile:", err);
           setError("Failed to load hotel profile. Please try again later.");
           setLoading(false);
+          navigate(-1)
         }
       };
       fetchHotelProfile();

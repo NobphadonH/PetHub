@@ -52,12 +52,11 @@ const router = createBrowserRouter([
   {path: "/pethub-website/finish", element: <Finish />,}, 
   {path: "/pethub-website/petregister", element: <PetRegister />,},
   {path: "/pethub-website/petedit", element: <PetEdit />,},
-  {path: "/pethub-website/hotel-profile", element: <HotelProfileManagement /> }, 
   {path: "/pethub-website/addrooms", element: <AddRooms />,}, 
   {path: "/pethub-website/editrooms", element: <EditRooms />,}, 
   {path: "/pethub-website/hostprofile/:roomID", element: <RoomManagement />,}, 
   {path: "/pethub-website/payment", element: <Payment />,},
-  {path: "/pethub-website/hostprofile", element: <HostProfile />,},
+  {path: "/pethub-website/hostprofile", element: <HostProfile />,},   
   {path: "/pethub-website/hotelapprove", element: <HotelApprove />,},
 ]);
 

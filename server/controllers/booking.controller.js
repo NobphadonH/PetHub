@@ -188,7 +188,7 @@ export const rejectBooking = async (req, res) => {
         }
 
         res.status(200).json({
-          message: "Booking and payment cancelled successfully",
+          message: "Booking and payment rejected successfully",
           bookingID,
         });
       });

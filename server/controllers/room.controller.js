@@ -2,7 +2,7 @@ import { connectToDatabase } from "../utils/dbConnection.js";
 import { uploadFileToS3, downloadFileFromS3 } from "../utils/s3FileTransfer.js";
 import fs from 'fs'
 
-const createOneRoom = async (room, connection) => {
+export const createOneRoom = async (room, connection) => {
     const fileName = room.image.fileName;
     const fileContent = room.image.fileContent;
     const mimetype = room.image.mimetype;
@@ -19,7 +19,7 @@ const createOneRoom = async (room, connection) => {
         await new Promise((resolve, reject) => {
             connection.query(
                 query,
-                [room.roomTypeName, room.roomCapacity, room.numberOfRoom, room.roomSize, room.roomDetail,
+                [room.roomTypeName, 1, room.numberOfRoom, room.roomSize, room.roomDetail,
                 room.petAllowedType, room.pricePerNight, url, room.hotelID],
                 (err, result) => {
                     if (err) {

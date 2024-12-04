@@ -27,7 +27,7 @@ function RoomManagement() {
 
 
     //function
-    const handleAddRoomClick = () => {
+    const handleEditRoomClick = () => {
         navigate('/pethub-website/editrooms', {state: roomDetails});
       };
 
@@ -93,19 +93,19 @@ function RoomManagement() {
 
     const handleApproveBooking = async (bookingID) => {
         try {
-            const response = await axios.put(`http://localhost:5000/api/roomManage/bookings/${bookingID}/status`, {status: 'Waiting for payment'});
+            const response = await axios.post(`http://localhost:5000/api/booking/updateBooking`, {bookingID: bookingID}, {withCredentials: true});
                 
             if (response.status === 200) {
                 setBookingDetails(prevBookings => 
                     prevBookings.map(booking => 
                         booking.bookingID === bookingID 
-                            ? {...booking, bookingStatus: 'Waiting for payment'}
+                            ? {...booking, bookingStatus: 'Confirmed'}
                             : booking
                     )
                 );
         
                 if (selectedBooking?.bookingID === bookingID) {
-                    setSelectedBooking(prev => ({...prev, bookingStatus: 'Waiting for payment'}));
+                    setSelectedBooking(prev => ({...prev, bookingStatus: 'Confirmed'}));
                 }
         
                 alert('Booking has been approved successfully');
@@ -127,24 +127,24 @@ function RoomManagement() {
 
     const handleRejectBooking = async (bookingID) => {
         try {
-            const response = await axios.put(`http://localhost:5000/api/roomManage/bookings/${bookingID}/status`, {status: 'Canceled'});
+            const response = await axios.post(`http://localhost:5000/api/booking/rejectBooking`, {bookingID: bookingID}, {withCredentials: true});
     
             if (response.status === 200) {
                 setBookingDetails(prevBookings => 
                     prevBookings.map(booking => 
                         booking.bookingID === bookingID 
-                            ? {...booking, bookingStatus: 'Canceled'}
+                            ? {...booking, bookingStatus: 'Rejected'}
                             : booking
                     )
                 );
     
                 if (selectedBooking?.bookingID === bookingID) {
-                    setSelectedBooking(prev => ({...prev, bookingStatus: 'Canceled'}));
+                    setSelectedBooking(prev => ({...prev, bookingStatus: 'Rejected'}));
                 }
     
                 alert('Booking has been rejected successfully.');
     
-                const refreshResponse = await axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`, {status: 'Canceled'});
+                const refreshResponse = await axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`, {status: 'Rejected'});
                 if (refreshResponse.data) {
                     setRoomDetails(refreshResponse.data);
                     setBookingDetails(refreshResponse.data.bookings || []);
@@ -163,13 +163,14 @@ function RoomManagement() {
     //API connect 
     useEffect(() => {
         console.log("roomTypeID:", roomTypeID);
-        axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`)
+        axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`, {withCredentials: true})
           .then(response => {
             console.log("API response:", response.data);
-          const {roomTypeID, roomTypeName, roomCapacity, numberOfRoom, roomSize, roomDetail, roomPhoto, pricePerNight, petAllowedType, bookings } = response.data;
+          const {roomTypeID, hotelID, roomTypeName, roomCapacity, numberOfRoom, roomSize, roomDetail, roomPhoto, pricePerNight, petAllowedType, bookings } = response.data;
     
           setRoomDetails({
             roomTypeID,
+            hotelID,
             roomTypeName,
             roomCapacity,
             numberOfRoom,
@@ -220,9 +221,9 @@ function RoomManagement() {
                 <div className="text-[2vw] md:text-sm lg:text-lg">ประเภทสัตว์: <span className="text-gray-400">{roomDetails.petAllowedType}</span></div>
             </div>
             <div className="flex justify-between items-center">
-                <div className="text-[2.5vw] md:text-base lg:text-xl">สถานะ: <span className="">-------</span></div>
+                {/* <div className="text-[2.5vw] md:text-base lg:text-xl">สถานะ: <span className="">-------</span></div> */}
                 <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color1 md:bg-pethub-color1 text-white md:text-white h-[7vw] w-[15vw] sm:w-24 sm:h-10 md:w-28 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base"
-                    onClick={handleAddRoomClick}>
+                    onClick={handleEditRoomClick}>
                     แก้ไขข้อมูล</div>
             </div>
         </div>

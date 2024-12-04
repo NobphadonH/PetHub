@@ -3,8 +3,9 @@ import { downloadFileFromS3 } from "../utils/s3FileTransfer.js";
 
 export const getHotelProfile = async (req, res) => {
     const { fName, lName } = req.params;
+    const userID = req.user.userID;
 
-    if (!fName || !lName) {
+    if (!fName || !lName || !userID) {
         return res.status(400).json({ error: "Missing user information in cookies" });
     }
 
@@ -19,14 +20,14 @@ export const getHotelProfile = async (req, res) => {
             const hotelQuery = `
                 SELECT 
                     H.hotelID, H.hotelName, H.hotelType, H.hotelDescription, H.hotelPhoto,
-                    H.hotelPolicy, H.hotelAddress,
+                    H.hotelPolicy, H.hotelAddress, H.verification,
                     U.fName, U.lName, U.phone
                 FROM 
                     Hotels H
                 JOIN 
                     Users U ON H.userID = U.userID
                 WHERE 
-                    U.fName = ? AND U.lName = ?;
+                    U.userID = ? ;
             `;
 
             const roomQuery = `
@@ -54,7 +55,7 @@ export const getHotelProfile = async (req, res) => {
             `;
 
             const hotelResult = await new Promise((resolve, reject) => {
-                connection.query(hotelQuery, [fName, lName], (err, results) => {
+                connection.query(hotelQuery, [userID], (err, results) => {
                     if (err) reject(err);
                     else resolve(results);
                 });

@@ -2,6 +2,10 @@ import AddRoomsForm from "../../components/AddRoomsForm";
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
+import axios from 'axios'
+import { toast } from "react-toastify";
+
+
 
 function EditRooms() {
 
@@ -10,16 +14,30 @@ function EditRooms() {
     const location = useLocation()
     //router state
 
+    console.log(location.state)
 
     //data state
     const [image, setImage] = useState(null);
     const [roomDetails, setRoomDetails] = useState(null);
+    const [roomFormArray, setRoomFormArray] = useState([{}]);
+    const [imageUpdated, setImageUpdated] = useState(0)
     //data state
 
 
     const updateImage = (newImage) => {
         setImage(newImage);
+        setImageUpdated(1);
     };
+
+
+    // const handleImageChange = (img) => {
+    //     setFormData(prevState => ({
+    //         ...prevState, 
+    //         selectedImage: img, 
+    //     }));
+    //     setImageUpdated(1);
+    // };
+
 
     useEffect(() => {
         if (location.state) {
@@ -52,9 +70,80 @@ function EditRooms() {
         }
       }, []);
 
-    console.log(roomDetails)
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {
+            const roomData = new FormData()
+            // const {roomTypeID, roomTypeName, numberOfRoom, roomSize, roomDetail, petAllowedType, pricePerNight} = req.body;
+
+            roomData.append("roomTypeID", roomDetails.roomTypeID )
+            roomData.append("roomTypeName", roomDetails.roomTypeName)
+            roomData.append("numberOfRoom", roomDetails.numberOfRoom)
+            roomData.append("roomSize", roomDetails.roomSize)
+            roomData.append("roomDetail", roomDetails.roomDetail)
+            roomData.append("petAllowedType", roomDetails.petAllowedType)
+            roomData.append("pricePerNight", roomDetails.pricePerNight)
 
 
+            if (roomDetails.selectedImage) {
+                console.log("abcd");
+                roomData.append(
+                    "selectedImage",
+                    roomDetails.selectedImage,
+                    roomDetails.selectedImage.name
+                )
+            }
+
+
+            const roomArray = [roomDetails]
+            console.log(roomArray)
+            roomData.selectedImage = image;
+
+
+
+            // const petData = new FormData();
+            // petData.append("petName", formData.petName);
+            // petData.append("petDOB", formData.petDOB);
+            // petData.append("petType", formData.petType);
+            // petData.append("petSex", formData.petSex);
+            // petData.append("petDetail", formData.petDetail);
+        
+            //Append the pet's photo
+            // if (formData.selectedImage) {
+            //   petData.append(
+            //     "selectedImage",
+            //     formData.selectedImage,
+            //     formData.selectedImage.name
+            //   ); // Use original file name
+            // } else {
+            //   alert("Please upload a photo of your pet.");
+            //   return;
+            // }
+
+
+            // if (imageUpdated) {
+            //     roomData.roomPhoto = location.state.roomPhoto
+            // }
+            console.log(roomData)
+
+
+            const res = await axios.post('http://localhost:5000/api/roomManage/updateRoom/', roomData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
+            console.log(res)
+
+            if (res.status == 200) {
+                toast.success("แก้ไขข้อมูลสำเร็จ")
+            }
+
+        } catch(err) {
+            console.log(err)
+        }
+    }
+
+    const handleChange = (data) => {
+        setRoomDetails(data);
+
+    }
     return (
         <>
         <Navbar />
@@ -87,12 +176,13 @@ function EditRooms() {
                     </div>
                     <AddRoomsForm
                         image={image}
+                        onDataChange={(data) => handleChange(data)}
                         onImageChange={updateImage}
                         initialData={roomDetails}
                     />
                 </div>
                 <div className="flex justify-end items-center w-full max-w-3xl -mt-4 mb-4 p-6 mx-auto">
-                    <button className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
+                    <button onClick={handleSubmit} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
                         แก้ไขข้อมูล
                     </button>
                 </div>
