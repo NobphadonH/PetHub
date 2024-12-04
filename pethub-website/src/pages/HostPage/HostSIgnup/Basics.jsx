@@ -26,12 +26,13 @@ function Basics() {
         hotelDescription: "",
         hotelPolicy: "",
         hotelAddress: "",
-        district: "",
+        district: "เขตพระนคร",
         hotelType: null,
         selectedImage: null, // For the image
         cookies: Cookies.get("user-auth")
     })
     //data state
+
 
     // function
     const convertFileToBase64 = (file) => {
@@ -109,7 +110,6 @@ function Basics() {
     
             navigate("/pethub-website/rooms", { state: { hotelFormData:hotelFormData, readyRoomFormArray: location.state?.readyRoomFormArray || null } });
         } catch (error) {
-            console.error("Error preparing data:", error);
             toast.error("เลือกรูปภาพใหม่อีกครั้ง");
         }
     };
@@ -121,14 +121,34 @@ function Basics() {
         if (hotelFormData) {
             setFormData((prevFormData) => ({
                 selectedImage: null,
+                
                 ...prevFormData,
                 ...hotelFormData.hotelFormData,
             }));
 
+            if (hotelFormData.selectedImage) {
+                const byteString = atob(hotelFormData.selectedImage.split(",")[1]);
+                const mimeString = hotelFormData.selectedImage
+                  .split(",")[0]
+                  .split(":")[1]
+                  .split(";")[0];
+                const arrayBuffer = new Uint8Array(byteString.length);
+        
+                for (let i = 0; i < byteString.length; i++) {
+                  arrayBuffer[i] = byteString.charCodeAt(i);
+                }
+        
+                const blob = new Blob([arrayBuffer], { type: mimeString });
+                const file = new File([blob], "hotel-photo.jpg", { type: mimeString });
+        
+                setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    selectedImage: file
+                }));
+              }
     
             const timeoutId = setTimeout(() => {
                 if (hotelFormData.hotelFormData.mapLat && hotelFormData.hotelFormData.mapLong ) {
-                    console.log('ok')
                     setPointerLocation({
                         lat: hotelFormData.hotelFormData.mapLat,
                         lon: hotelFormData.hotelFormData.mapLong,
@@ -144,6 +164,8 @@ function Basics() {
 
     }, []);
     
+
+
     //update location on click
     useEffect(() => {
         setFormData((prevFormData) => ({
@@ -241,7 +263,7 @@ function Basics() {
 
                         <div className="text-left text-black font-bold text-xl mt-12">ใส่รูปของโรงแรมของคุณ</div>
                         <div className="text-left text-gray-600 text-sm mt-2 mb-4">ใส่รูปเพื่อให้ลูกค้าเห็นภาพบรรยากาศของโรงแรม</div>
-                        <PictureUpload onImageSelected={handleImageChange}/>
+                        <PictureUpload onImageSelected={handleImageChange} initialImage={formData.selectedImage}/>
                         
                     </div>
                 </div>

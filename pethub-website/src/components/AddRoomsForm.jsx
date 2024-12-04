@@ -1,60 +1,7 @@
 import { useState, useEffect } from 'react';
-
-function PictureUpload({onImageSelected}) {
-    const [selectedImage, setSelectedImage] = useState(null);
-
-    const handleImageChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const imgURL = URL.createObjectURL(file)
-            setSelectedImage(imgURL);
-            onImageSelected(file)
-        }
-    };
+import PictureUpload from './PictureUpload';
 
 
-    const handleDeleteImage = () => {
-        setSelectedImage(null);
-        onImageSelected(null)
-
-    };
-
-    return (
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 w-full max-w-xl mx-auto text-center">
-            {selectedImage ? (
-                <div className="relative">
-                    <img
-                        src={selectedImage}
-                        alt="Uploaded"
-                        className="max-w-full object-contain rounded-lg"
-                    />
-                    <button
-                        onClick={handleDeleteImage}
-                        className="absolute -top-1 -right-2 bg-red-500 text-xs text-white p-2 rounded-full hover:bg-red-600"
-                    >
-                        ลบ
-                    </button>
-                </div>
-            ) : (
-                <div className="relative flex flex-col items-center justify-center h-64">
-                    <input
-                        type="file"
-                        id="file-upload"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    />
-                    <label
-                        htmlFor="file-upload"
-                        className="bg-orange-500 text-white py-2 px-4 rounded cursor-pointer"
-                    >
-                        เลือกไฟล์
-                    </label>
-                </div>
-            )}
-        </div>
-    );
-}
 
 export default function AddRoomsForm({onDataChange, image, onImageChange, index, initialData}) {
 
@@ -136,7 +83,7 @@ export default function AddRoomsForm({onDataChange, image, onImageChange, index,
                 <input name="roomDetail" type="text" value = {formData.roomDetail||""} onChange={handleChange} placeholder="อธิบายห้องพักของคุณ" className="textarea textarea-bordered textarea-md drop-shadow-sm w-full max-w-xl mt-4 focus:outline-none focus:border-pethub-color4"/>
                 <div className="text-left text-black font-bold text-xl mt-12">ใส่รูปของห้องพัก</div>
                 <div className="text-left text-gray-600 text-sm mt-2 mb-4">ใส่รูปห้องพักเพื่อให้ลูกค้าเห็นภาพรายละเอียดของห้องพัก</div>
-                <PictureUpload onImageSelected={handleImageChange}/>
+                <PictureUpload onImageSelected={handleImageChange} initialImage={image  ? URL.createObjectURL(image) : null}/>
             </div>
         </div>
     );

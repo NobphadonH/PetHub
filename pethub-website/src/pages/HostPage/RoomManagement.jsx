@@ -28,7 +28,7 @@ function RoomManagement() {
 
     //function
     const handleAddRoomClick = () => {
-        navigate('/pethub-website/addrooms');
+        navigate('/pethub-website/editrooms', {state: roomDetails});
       };
 
     const formatDate = (date) => {

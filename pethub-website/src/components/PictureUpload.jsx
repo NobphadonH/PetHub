@@ -3,11 +3,16 @@ import { useState, useEffect } from "react";
 // eslint-disable-next-line react/prop-types
 function PictureUpload({ onImageSelected, initialImage }) {
   const [selectedImage, setSelectedImage] = useState(initialImage);
+  const [deleteChecked, setDeleteChecked] = useState(false)
 
   // Sync initialImage with selectedImage if it changes
   useEffect(() => {
-    setSelectedImage(initialImage);
+    if(!deleteChecked){
+      setSelectedImage(initialImage);
+    }
   }, [initialImage]);
+
+  
 
   // Function to handle image selection
   const handleImageChange = (event) => {
@@ -23,6 +28,8 @@ function PictureUpload({ onImageSelected, initialImage }) {
   const handleDeleteImage = () => {
     setSelectedImage(null);
     onImageSelected(null);
+    setDeleteChecked(true)
+    
   };
 
   return (

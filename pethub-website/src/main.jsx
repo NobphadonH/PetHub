@@ -23,6 +23,7 @@ import Finish from './pages/HostPage/HostSIgnup/Finish.jsx';
 import HostProfile from './pages/HostPage/HostProfile.jsx';
 import HotelProfileManagement from './pages/HostPage/HotelProfileManagement.jsx';
 import AddRooms from './pages/HostPage/AddRooms.jsx';
+import EditRooms from './pages/HostPage/EditRooms.jsx';
 import RoomManagement from './pages/HostPage/RoomManagement.jsx';
 
 //admin
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
   {path: "/pethub-website/petedit", element: <PetEdit />,},
   {path: "/pethub-website/hotel-profile", element: <HotelProfileManagement /> }, 
   {path: "/pethub-website/addrooms", element: <AddRooms />,}, 
+  {path: "/pethub-website/editrooms", element: <EditRooms />,}, 
   {path: "/pethub-website/hostprofile/:roomID", element: <RoomManagement />,}, 
   {path: "/pethub-website/payment", element: <Payment />,},
   {path: "/pethub-website/hostprofile", element: <HostProfile />,},
