@@ -132,7 +132,7 @@ function HostProfile() {
           if (response.data.verification !== "verified") {
             setError("Your hotel is not verified")
             setLoading(false);
-            navigate(-1);
+            navigate('/pethub-website/home');
             return;
           }
           setHotelData(response.data);
@@ -141,7 +141,7 @@ function HostProfile() {
           console.error("Error fetching hotel profile:", err);
           setError("Failed to load hotel profile. Please try again later.");
           setLoading(false);
-          navigate(-1)
+          navigate('/pethub-website/home')
         }
       };
       fetchHotelProfile();
@@ -209,10 +209,10 @@ function HostProfile() {
                 <div className="text-[2vw] md:text-sm lg:text-lg font-semibold">ประเภทที่พัก: <span className="text-pethub-color6 font-normal">{hotelType}</span></div>
                 {/* <div className="text-[2vw] md:text-sm lg:text-lg font-semibold">Cancelation Policy: <span className="text-pethub-color6 font-normal">{hotelPolicy}</span></div> */}
             </div>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-start gap-5 md:gap-10 items-center">
                 <div className="text-[2.5vw] md:text-base lg:text-xl font-semibold">ผู้ดูแล: <span className="text-[2vw] md:text-sm lg:text-base text-pethub-color6 font-normal">{fName} {lName}</span></div>
                 <div className="text-[2.5vw] md:text-base lg:text-xl font-semibold">เบอร์โทร: <span className="text-[2vw] md:text-sm lg:text-base text-pethub-color6 font-normal">{phone}</span></div>
-                <div className="text-[2vw] md:text-sm lg:text-base max-lg:hidden">ส่งคำร้องแก้ไขข้อมูล</div>
+                {/* <div className="text-[2vw] md:text-sm lg:text-base max-lg:hidden">ส่งคำร้องแก้ไขข้อมูล</div> */}
                 
             </div>
         </div>

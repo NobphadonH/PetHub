@@ -107,6 +107,7 @@ export default function Navbar() {
             <li><a href="/pethub-website/about" className="block w-full text-center text-md">About</a></li>
             <li><a href="/pethub-website/contact" className="block w-full text-center text-md">Contact</a></li>
             <li><a href="/pethub-website/hostsignup" className="block w-full text-center text-md">สมัครเป็น partner</a></li>
+            <li className={role === "Admin" ? '' : 'hidden'}><a className="block w-full text-center text-md" href="/pethub-website/hotelapprove">Approve</a></li>
           </ul>
         </div>
 
@@ -118,6 +119,7 @@ export default function Navbar() {
             <li><a href="/pethub-website/profile">Profile</a></li>
             <li><a href="/pethub-website/about">About</a></li>
             <li><a href="/pethub-website/contact">Contact</a></li>
+            <li className={role === "Admin" ? '' : 'hidden'}><a href="/pethub-website/hotelapprove">Approve</a></li>
           </ul>
         </div>
 

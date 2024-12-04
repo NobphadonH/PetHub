@@ -251,7 +251,7 @@ function RoomManagement() {
                             <div>วันที่จอง: {formatDate(booking.paymentDate) || '-'}</div>
                         </div>
                         <div className="flex justify-start gap-5">
-                            <div>สถานะ: <span className={`font-normal ${booking.bookingStatus === 'confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{booking.bookingStatus}</span></div>
+                            <div>สถานะ: <span className={`font-normal ${booking.bookingStatus === 'Confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{booking.bookingStatus}</span></div>
                             <div>การจอง: <span className="text-gray-400 font-light">{calculateNights(booking.checkInDate, booking.checkOutDate)} คืน</span></div>
                         </div>
                     </div>
@@ -276,7 +276,7 @@ function RoomManagement() {
                             <div>วันที่จอง: {formatDate(booking.paymentDate) || 'ยังไม่จ่าย'}</div>
                         </div>
                         <div className="flex justify-start gap-5">
-                            <div>สถานะ: <span className={`font-normal ${booking.bookingStatus === 'confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{booking.bookingStatus}</span></div>
+                            <div>สถานะ: <span className={`font-normal ${booking.bookingStatus === 'Confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{booking.bookingStatus}</span></div>
                             <div>การจอง: <span className="text-gray-400 font-light">{calculateNights(booking.checkInDate, booking.checkOutDate)} คืน</span></div>
                         </div>
                     </div>
@@ -287,7 +287,7 @@ function RoomManagement() {
             <div className="absolute top-0 h-[1vw] md:h-2 w-4/12 bg-pethub-color1 left-4"></div>
             <div className="flex flex-wrap gap-[2vw] md:gap-2 lg:gap-5">
                 <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">การจองเลขที่: <span className="text-gray-ุ00 font-light">{selectedBooking?.bookingID || '-'}</span></div>
-                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">สถานะ: <span className={`font-normal ${selectedBooking.bookingStatus === 'confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{selectedBooking?.bookingStatus || '-'}</span></div>
+                <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">สถานะ: <span className={`font-normal ${selectedBooking.bookingStatus === 'Confirmed' ? 'text-green-500' : 'text-yellow-500'}`}>{selectedBooking?.bookingStatus || '-'}</span></div>
                 <div className="grow font-semibold text-[2.5vw] md:text-lg lg:text-2xl">การจอง: <span className="text-gray-400 font-light">{calculateNights(selectedBooking.checkInDate, selectedBooking.checkOutDate) || '-'} คืน</span></div>
             </div>
             <div className="my-[2vw] md:my-4 text-[1.5vw] md:text-xs lg:text-sm">จองวันที่ {formatDate(selectedBooking.paymentDate)|| 'ยังไม่จ่าย'}</div>
