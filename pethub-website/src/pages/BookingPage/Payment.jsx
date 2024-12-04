@@ -28,6 +28,42 @@ function Payment() {
         setBarSel(e.target.id);
     };
 
+    //validate function
+    const validateCardForm = () => {
+        const requiredFields = [
+          { field: "cardName", label: "ชื่อผู้ถือบัตร" },
+          { field: "cardNumber", label: "หมายเลขบัตรของคุณ" },
+          { field: "month", label: "เดือนหมดอายุ" },
+          { field: "year", label: "ปีหมดอายุ" },
+          { field: "cvv", label: "CVV / CVC" },
+        ];
+      
+        // Loop through the required fields to check if they are empty
+        for (const { field, label } of requiredFields) {
+          if (!cardData[field] || cardData[field] === "") {
+            toast.error(`ยังไม่ได้ใส่ข้อมูล ${label}`);
+            return false;
+          }
+        }
+      
+        // Validate card number format (e.g., "xxxx xxxx xxxx xxxx")
+        const cardNumberPattern = /^[0-9]{4}([ ]?[0-9]{4}){3}$/;
+        if (!cardNumberPattern.test(cardData.cardNumber)) {
+          toast.error("หมายเลขบัตรต้องเป็นรูปแบบ xxxx xxxx xxxx xxxx");
+          return false;
+        }
+      
+        // Validate CVV format (3 digits)
+        const cvvPattern = /^[0-9]{3}$/;
+        if (!cvvPattern.test(cardData.cvv)) {
+          toast.error("CVV ต้องเป็นตัวเลข 3 หลัก");
+          return false;
+        }
+      
+        return true;
+      };
+      
+
     const months = [
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
@@ -71,6 +107,7 @@ function Payment() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        if (!validateCardForm()) return;
         let bookingID;
         
         try {

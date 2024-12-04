@@ -16,13 +16,17 @@ function AddPetProfile() {
   const [formData, setFormData] = useState({
     petName: "",
     petDOB: "",
-    petType: "",
-    petSex: "",
+    petType: "สุนัข",
+    petSex: "เพศผู้",
     petDetail: "",
+    selectedImage: null,
   });
+
   //data state
 
-  //function
+  console.log(formData)
+
+  //function to handle input change
   const handleInputChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -32,7 +36,6 @@ function AddPetProfile() {
     }));
   };
 
-
   const handleImageChange = (img) => {
     setFormData((prevState) => ({
       ...prevState, 
@@ -40,8 +43,36 @@ function AddPetProfile() {
     }));
   };
 
+  // Validation function
+  const validateForm = () => {
+    const requiredFields = [
+      { field: "petName", label: "ชื่อสัตว์เลี้ยง" },
+      { field: "petDOB", label: "วันเกิดสัตว์เลี้ยง" },
+      { field: "petType", label: "ประเภทสัตว์" },
+      { field: "petSex", label: "เพศสัตว์" },
+      { field: "petDetail", label: "คำอธิบายรายละเอียดสัตว์เลี้ยง" },
+    ];
+
+    // Loop through the required fields to check if they are empty
+    for (const { field, label } of requiredFields) {
+      if (!formData[field] || formData[field] === "") {
+        toast.error(`ยังไม่ได้ใส่ข้อมูล${label}`);
+        return false;
+      }
+    }
+
+    // Check if image is selected
+    if (!formData.selectedImage) {
+      toast.error("กรุณา Upload รูปสัตว์เลี้ยง");
+      return false;
+    }
+
+    return true;
+  };
 
   const handleSubmit = async () => {
+    // Validate form before submission
+    if (!validateForm()) return;
 
     const petData = new FormData();
     petData.append("petName", formData.petName);
@@ -50,17 +81,16 @@ function AddPetProfile() {
     petData.append("petSex", formData.petSex);
     petData.append("petDetail", formData.petDetail);
 
-    //Append the pet's photo
+    // Append the pet's photo
     if (formData.selectedImage) {
       petData.append(
         "selectedImage",
         formData.selectedImage,
         formData.selectedImage.name
       ); // Use original file name
-    } else {
-      alert("Please upload a photo of your pet.");
-      return;
     }
+
+    console.log(petData)
 
     try {
       const res = await axios.post(
@@ -72,18 +102,13 @@ function AddPetProfile() {
         }
       );
       console.log("Pet data submitted successfully:", res.data);
-      console.log(res.status);
       toast.success("Pet profile created successfully!");
-      navigate("/pethub-website/profile")
+      navigate("/pethub-website/profile");
     } catch (error) {
-      console.error(
-        "Error submitting pet data:",
-        error.response?.data || error.message
-      );
+      console.error("Error submitting pet data:", error.response?.data || error.message);
       toast.error(error.response?.data?.error || "Failed to create pet profile.");
     }
   };
-  //function
 
   return (
     <>
@@ -103,7 +128,6 @@ function AddPetProfile() {
           </div>
           <div className="w-10/12 lg:w-9/12 mx-auto my-5">
             <PictureUpload onImageSelected={handleImageChange} />
-            {/* {imageFile && <p>Selected Image: {imageFile.name}</p>} */}
           </div>
         </div>
 
@@ -138,7 +162,6 @@ function AddPetProfile() {
               <p className="text-start text-sm lg:text-base my-2">
                 ประเภทสัตว์
               </p>
-              {/* ทำให้ petType มันไม่เลือกอะไรมาให้ */}
               <select
                 name="petType"
                 value={formData.petType}
@@ -150,6 +173,7 @@ function AddPetProfile() {
                 </option>
                 <option value="สุนัข">สุนัข</option>
                 <option value="แมว">แมว</option>
+                <option value="อื่น ๆ">สัตว์ประเภทอื่นๆ</option>
               </select>
             </div>
             <div className="grow">

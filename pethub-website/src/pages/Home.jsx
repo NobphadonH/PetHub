@@ -259,7 +259,7 @@ function Home() {
                     <option disabled selected style={{ color: 'gray' }}>ประเภทสัตว์</option>
                     <option value = "สุนัข" style={{ color: 'black' }}>สุนัข</option>
                     <option value = "แมว" style={{ color: 'black' }}>แมว</option>
-                    <option value = "สัตว์ประเภทอื่นๆ" style={{ color: 'black' }}>สัตว์ประเภทอื่นๆ</option>
+                    <option value = "อื่น ๆ" style={{ color: 'black' }}>สัตว์ประเภทอื่นๆ</option>
                 </select>
             </div>
             <div className="hidden md:block col-span-4">

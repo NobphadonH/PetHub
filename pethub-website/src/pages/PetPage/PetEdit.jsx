@@ -3,7 +3,6 @@ import PictureUpload from "../../components/PictureUpload";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
 function EditPetProfile() {
@@ -24,6 +23,8 @@ function EditPetProfile() {
   });
   //data state
 
+  console.log(imageFile)
+
   //function
   const handleInputChange = (event) => {
     const name = event.target.name;
@@ -34,6 +35,8 @@ function EditPetProfile() {
     }));
   };
 
+  console.log(formData)
+
   const handleImageChange = (img) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -41,56 +44,96 @@ function EditPetProfile() {
     }));
   };
 
+  // Validation function
+  const validateForm = () => {
+    const requiredFields = [
+      { field: "petName", label: "ชื่อสัตว์เลี้ยง" },
+      { field: "petDOB", label: "วันเกิดสัตว์เลี้ยง" },
+      { field: "petType", label: "ประเภทสัตว์" },
+      { field: "petSex", label: "เพศสัตว์" },
+      { field: "petDetail", label: "คำอธิบายรายละเอียดสัตว์เลี้ยง" },
+    ];
+
+    for (const { field, label } of requiredFields) {
+      if (!formData[field] || formData[field] === "") {
+        toast.error(`ยังไม่ได้ใส่ข้อมูล ${label}`);
+        return false;
+      }
+    }
+
+    if (!formData.selectedImage && !imageFile) {
+      toast.error("กรุณา Upload รูปสัตว์เลี้ยง");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleDelete = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/pet/updatePetByPetID",
-        formData.petID,
+        "http://localhost:5000/api/pet/deletePetByPetID",
+        { petID: formData.petID },
         {
           withCredentials: true,
         }
       );
 
       console.log("Pet data submitted successfully:", res.data);
-      console.log(res.status);
       toast.success("Pet deleted!");
       navigate("/pethub-website/profile");
     } catch (error) {
       console.error(
-        "Error submitting pet data:",
+        "Error deleting pet data:",
         error.response?.data || error.message
       );
-      toast.error(
-        error.response?.data?.error || "Failed to create pet profile."
-      );
+      toast.error(error.response?.data?.error || "Failed to delete pet.");
     }
   };
 
+  
+
   const handleSubmit = async () => {
+    // Validate the form before submitting
+    if (!validateForm()) return; // If validation fails, don't proceed
+  
+    const petData = new FormData();
+    petData.append("petName", formData.petName); 
+    petData.append("petDOB", formData.petDOB);  
+    petData.append("petType", formData.petType);
+    petData.append("petSex", formData.petSex);
+    petData.append("petDetail", formData.petDetail);
+    petData.append("petID", formData.petID);
+  
+
+    if (formData.selectedImage) {
+      petData.append(
+        "selectedImage",
+        formData.selectedImage,
+        formData.selectedImage.name 
+      );
+    }
+  
     try {
       const res = await axios.post(
         "http://localhost:5000/api/pet/updatePetByPetID",
-        formData,
+        petData,  
         {
-          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" }, 
+          withCredentials: true,  
         }
       );
-
+  
       console.log("Pet data submitted successfully:", res.data);
-      console.log(res.status);
-      toast.success("Pet profile created successfully!");
-      navigate("/pethub-website/profile");
+      toast.success("Pet profile updated successfully!");
+      navigate("/pethub-website/profile");  
     } catch (error) {
-      console.error(
-        "Error submitting pet data:",
-        error.response?.data || error.message
-      );
-      toast.error(
-        error.response?.data?.error || "Failed to create pet profile."
-      );
+      // Error response handling
+      console.error("Error submitting pet data:", error.response?.data || error.message);
+      toast.error(error.response?.data?.error || "Failed to update pet profile.");
     }
   };
-  //function
+  
 
   //map data from previous component into page
   useEffect(() => {
@@ -124,10 +167,11 @@ function EditPetProfile() {
         const blob = new Blob([arrayBuffer], { type: mimeString });
         const file = new File([blob], "pet-photo.jpg", { type: mimeString });
 
-        setImageFile(file);
+        // setImageFile(file);
+        setFormData((prevData) => ({...prevData, selectedImage: file}))
       }
     }
-  }, []);
+  }, [location.state]);
 
   return (
     <>
@@ -148,18 +192,15 @@ function EditPetProfile() {
           <div className="w-10/12 lg:w-9/12 mx-auto my-5">
             <PictureUpload
               onImageSelected={handleImageChange}
-              initialImage={imageFile ? URL.createObjectURL(imageFile) : null}
+              initialImage={formData.selectedImage ? URL.createObjectURL(formData.selectedImage) : null}
             />
-            {/* {imageFile && <p>Selected Image: {imageFile.name}</p>} */}
           </div>
         </div>
 
         <div className="w-full px-8 lg:px-16">
           <div className="flex flex-col lg:flex-row w-full justify-start lg:justify-between flex-wrap gap-4 lg:gap-5">
             <div className="grow">
-              <p className="text-start text-sm lg:text-base my-2">
-                ชื่อสัตว์เลี้ยง
-              </p>
+              <p className="text-start text-sm lg:text-base my-2">ชื่อสัตว์เลี้ยง</p>
               <input
                 type="text"
                 name="petName"
@@ -170,9 +211,7 @@ function EditPetProfile() {
               />
             </div>
             <div className="grow">
-              <p className="text-start text-sm lg:text-base my-2">
-                วันเกิดสัตว์เลี้ยง
-              </p>
+              <p className="text-start text-sm lg:text-base my-2">วันเกิดสัตว์เลี้ยง</p>
               <input
                 type="date"
                 name="petDOB"
@@ -182,21 +221,19 @@ function EditPetProfile() {
               />
             </div>
             <div className="grow">
-              <p className="text-start text-sm lg:text-base my-2">
-                ประเภทสัตว์
-              </p>
-              {/* ทำให้ petType มันไม่เลือกอะไรมาให้ */}
+              <p className="text-start text-sm lg:text-base my-2">ประเภทสัตว์</p>
               <select
                 name="petType"
                 value={formData.petType}
                 onChange={handleInputChange}
                 className="select input-bordered w-full h-10 lg:h-12 text-xs lg:text-sm bg-gray-100 mb-3"
               >
-                <option disabled selected>
+                <option value="สุนัข" disabled selected>
                   ประเภทสัตว์
                 </option>
                 <option value="สุนัข">สุนัข</option>
                 <option value="แมว">แมว</option>
+                <option value="อื่น ๆ">สัตว์ประเภทอื่นๆ</option>
               </select>
             </div>
             <div className="grow">
@@ -207,7 +244,7 @@ function EditPetProfile() {
                 onChange={handleInputChange}
                 className="select input-bordered w-full h-10 lg:h-12 text-xs lg:text-sm bg-gray-100 mb-3"
               >
-                <option disabled selected>
+                <option value="เพศผู้" disabled selected>
                   เพศ
                 </option>
                 <option value="เพศผู้">เพศผู้</option>

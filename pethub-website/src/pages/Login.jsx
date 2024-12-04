@@ -94,7 +94,7 @@ function Login() {
               </span>
             </div>
             <h2 className=" font-medium mt-10 mb-5">
-              เข้าสู๋ระบบด้วย PET HUB account
+              เข้าสู่ระบบด้วย PET HUB account
             </h2>
             <form onSubmit={handleSubmit}>
               <p className="text-start text-sm my-3">อีเมล</p>
