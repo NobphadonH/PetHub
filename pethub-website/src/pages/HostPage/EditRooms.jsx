@@ -30,15 +30,6 @@ function EditRooms() {
     };
 
 
-    // const handleImageChange = (img) => {
-    //     setFormData(prevState => ({
-    //         ...prevState, 
-    //         selectedImage: img, 
-    //     }));
-    //     setImageUpdated(1);
-    // };
-
-
     useEffect(() => {
         if (location.state) {
           setRoomDetails((prevData) => {
@@ -85,9 +76,7 @@ function EditRooms() {
             roomData.append("petAllowedType", roomDetails.petAllowedType)
             roomData.append("pricePerNight", roomDetails.pricePerNight)
 
-
             if (roomDetails.selectedImage) {
-                console.log("abcd");
                 roomData.append(
                     "selectedImage",
                     roomDetails.selectedImage,
@@ -95,38 +84,7 @@ function EditRooms() {
                 )
             }
 
-
-            const roomArray = [roomDetails]
-            console.log(roomArray)
-            roomData.selectedImage = image;
-
-
-
-            // const petData = new FormData();
-            // petData.append("petName", formData.petName);
-            // petData.append("petDOB", formData.petDOB);
-            // petData.append("petType", formData.petType);
-            // petData.append("petSex", formData.petSex);
-            // petData.append("petDetail", formData.petDetail);
-        
-            //Append the pet's photo
-            // if (formData.selectedImage) {
-            //   petData.append(
-            //     "selectedImage",
-            //     formData.selectedImage,
-            //     formData.selectedImage.name
-            //   ); // Use original file name
-            // } else {
-            //   alert("Please upload a photo of your pet.");
-            //   return;
-            // }
-
-
-            // if (imageUpdated) {
-            //     roomData.roomPhoto = location.state.roomPhoto
-            // }
             console.log(roomDetails)
-
 
             const res = await axios.post('http://localhost:5000/api/roomManage/updateRoom/', roomData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
             console.log(res)

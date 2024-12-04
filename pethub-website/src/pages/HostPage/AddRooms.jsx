@@ -1,13 +1,65 @@
 import Navbar from "../../components/Navbar";
 import AddRoomsForm from "../../components/AddRoomsForm";
 import { useState } from 'react';
+import axios from 'axios'
+import { toast } from "react-toastify";
+import { useLocation, useNavigate } from "react-router-dom";
+
 
 function AddRooms() {
+
+    const location = useLocation()
+    console.log(location.state)
+
     const [image, setImage] = useState(null);
+
+    const [roomForm, setRoomForm] = useState({});
 
     const updateImage = (newImage) => {
         setImage(newImage);
     };
+
+
+    const handleChange = (data) => {
+        setRoomForm(data);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log(roomForm);
+        console.log(image);
+
+        try {
+            const roomArrayData = new FormData()
+
+            roomArrayData.append("hotelID", location.state.hotelID)
+            roomArrayData.append("rooms[0][roomTypeName]", roomForm.roomTypeName)
+            roomArrayData.append("rooms[0][numberOfRoom]", roomForm.numberOfRoom)
+            roomArrayData.append("rooms[0][roomSize]", roomForm.roomSize)
+            roomArrayData.append("rooms[0][roomDetail]", roomForm.roomDetail)
+            roomArrayData.append("rooms[0][petAllowedType]", roomForm.petAllowedType)
+            roomArrayData.append("rooms[0][pricePerNight]", roomForm.pricePerNight)
+
+            if (roomForm.selectedImage) {
+                roomArrayData.append(
+                    "rooms[0][selectedImage]",
+                    roomForm.selectedImage,
+                    roomForm.selectedImage.name
+                )
+            } else {
+                toast.error("กรุณาใส่รูปภาพของห้องพัก")
+                return;
+            }
+
+            const res = await axios.post('http://localhost:5000/api/room/createRooms/', roomArrayData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
+            console.log(res);
+            if (res.status==200) {
+                toast.success("เพิ่มข้อมูลห้องพักสำเร็จ")
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     return (
         <div>
@@ -47,12 +99,14 @@ function AddRooms() {
                         </div>
                     </div>
                     <AddRoomsForm
+                        onDataChange={(data) => handleChange(data)}
                         image={image}
                         onImageChange={updateImage}
+                        initialData = ""
                     />
                 </div>
                 <div className="flex justify-end items-center w-full max-w-3xl -mt-4 mb-4 p-6 mx-auto">
-                    <button className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
+                    <button onClick={handleSubmit} className="bg-black text-white border border-black rounded-2xl mt-6 btn sm:btn-xs md:btn-sm lg:btn-md">
                         เพิ่มห้องพัก
                     </button>
                 </div>

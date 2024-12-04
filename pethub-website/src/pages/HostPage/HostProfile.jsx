@@ -108,7 +108,7 @@ function HostProfile() {
     };
 
     const handleAddRoomClick = () => {
-      navigate('/pethub-website/addrooms');
+      navigate('/pethub-website/addrooms', {state: hotelData});
     };
     //function
 
