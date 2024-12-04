@@ -125,7 +125,7 @@ function EditRooms() {
             // if (imageUpdated) {
             //     roomData.roomPhoto = location.state.roomPhoto
             // }
-            console.log(roomData)
+            console.log(roomDetails)
 
 
             const res = await axios.post('http://localhost:5000/api/roomManage/updateRoom/', roomData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})

@@ -1,5 +1,9 @@
 import express from "express";
-import { getRoomDetails, updateBookingStatus } from "../controllers/roomManage.controller.js";
+import { getRoomDetails, updateBookingStatus, updateRoom } from "../controllers/roomManage.controller.js";
+import multer from "multer";
+import { verifyRole } from "../middleware/authVerify.js";
+
+const upload = multer({ dest: "uploads/" });
 
 const router = express.Router();
 
@@ -8,7 +12,7 @@ router.get("/:roomTypeID", getRoomDetails);
 
 router.put('/bookings/:bookingID/status', updateBookingStatus);
 
-// Update hotel description and policy by hotelID
-// router.put("/update/:roomTypeID", updateRoomDetails);
+router.post('/updateRoom', verifyRole("Host"), upload.single("selectedImage"), updateRoom)
 
 export default router;
+
