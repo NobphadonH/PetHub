@@ -28,7 +28,7 @@ const corsOption = {
 app.use(cors(corsOption));
 
 app.get("/", (req, res) => {
-  res.send("Hello, world!");
+  res.send("Hello, world! From Branch");
 });
 
 app.use("/api/auth", authRoutes);
