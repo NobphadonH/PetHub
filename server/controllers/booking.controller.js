@@ -45,8 +45,8 @@ export const createBooking = async (req, res) => {
           petResult &&
           roomTypeResult &&
           (petResult.petType === roomTypeResult.petAllowedType ||
-            (petResult.petType === "อื่นๆ" &&
-              roomTypeResult.petAllowedType === "อื่นๆ"))
+            (petResult.petType === "อื่น ๆ" &&
+              roomTypeResult.petAllowedType === "อื่น ๆ"))
         ) {
           bookingStatus = "Confirmed";
         }
@@ -147,6 +147,58 @@ export const cancelBooking = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+export const rejectBooking = async (req, res) => {
+  try {
+    const { bookingID } = req.body; // Assume bookingID is sent in the request body
+    const { dbpool, sshClient } = await connectToDatabase();
+
+    dbpool.getConnection((err, connection) => {
+      if (err) {
+        console.error("Error getting connection from pool:", err);
+        sshClient.end();
+        return res.status(500).json({ error: "Database connection failed" });
+      }
+
+      const updateQuery = `
+        UPDATE Bookings
+        SET bookingStatus = 'Rejected'
+        WHERE bookingID = ?
+      `;
+
+      connection.query(updateQuery, [bookingID], async (err, result) => {
+        connection.release(); // Release the connection back to the pool
+        sshClient.end();
+
+        if (err) {
+          console.error("Error updating booking status:", err);
+          return res.status(500).json({ error: "Failed to reject booking" });
+        }
+
+        if (result.affectedRows === 0) {
+          return res.status(404).json({ error: "Booking not found" });
+        }
+
+        // Call updatePayment to update payment status to 'Refunded'
+        const paymentUpdateResult = await updatePayment(bookingID, "Cancelled");
+        if (!paymentUpdateResult.success) {
+          return res
+            .status(500)
+            .json({ error: "Failed to update payment status" });
+        }
+
+        res.status(200).json({
+          message: "Booking and payment cancelled successfully",
+          bookingID,
+        });
+      });
+    });
+  } catch (error) {
+    console.error("Error in cancelBooking controller:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 
 export const updateBooking = async (req, res) => {
   try {
