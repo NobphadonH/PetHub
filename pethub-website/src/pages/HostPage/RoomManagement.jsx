@@ -4,6 +4,11 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useNavigate, useLocation } from 'react-router-dom';
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
 
 function RoomManagement() {
     
@@ -93,7 +98,7 @@ function RoomManagement() {
 
     const handleApproveBooking = async (bookingID) => {
         try {
-            const response = await axios.post(`http://localhost:5000/api/booking/updateBooking`, {bookingID: bookingID}, {withCredentials: true});
+            const response = await axios.post(`${BASE_URL}/api/booking/updateBooking`, {bookingID: bookingID}, {withCredentials: true});
                 
             if (response.status === 200) {
                 setBookingDetails(prevBookings => 
@@ -110,7 +115,7 @@ function RoomManagement() {
         
                 alert('Booking has been approved successfully');
                     
-                const refreshResponse = await axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`);
+                const refreshResponse = await axios.get(`${BASE_URL}/api/roomManage/${roomTypeID}`);
                 if (refreshResponse.data) {
                     setRoomDetails(refreshResponse.data);
                     setBookingDetails(refreshResponse.data.bookings || []);
@@ -127,7 +132,7 @@ function RoomManagement() {
 
     const handleRejectBooking = async (bookingID) => {
         try {
-            const response = await axios.post(`http://localhost:5000/api/booking/rejectBooking`, {bookingID: bookingID}, {withCredentials: true});
+            const response = await axios.post(`${BASE_URL}/api/booking/rejectBooking`, {bookingID: bookingID}, {withCredentials: true});
     
             if (response.status === 200) {
                 setBookingDetails(prevBookings => 
@@ -144,7 +149,7 @@ function RoomManagement() {
     
                 alert('Booking has been rejected successfully.');
     
-                const refreshResponse = await axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`, {status: 'Rejected'});
+                const refreshResponse = await axios.get(`${BASE_URL}/api/roomManage/${roomTypeID}`, {status: 'Rejected'});
                 if (refreshResponse.data) {
                     setRoomDetails(refreshResponse.data);
                     setBookingDetails(refreshResponse.data.bookings || []);
@@ -163,7 +168,7 @@ function RoomManagement() {
     //API connect 
     useEffect(() => {
         console.log("roomTypeID:", roomTypeID);
-        axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`, {withCredentials: true})
+        axios.get(`${BASE_URL}/api/roomManage/${roomTypeID}`, {withCredentials: true})
           .then(response => {
             console.log("API response:", response.data);
           const {roomTypeID, hotelID, roomTypeName, roomCapacity, numberOfRoom, roomSize, roomDetail, roomPhoto, pricePerNight, petAllowedType, bookings } = response.data;

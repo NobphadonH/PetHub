@@ -6,7 +6,11 @@ import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import Cookies from 'js-cookie';
+import dotenv from 'dotenv';
 
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
 
 function HostSignUp() {
   
@@ -60,10 +64,10 @@ function HostSignUp() {
 
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signup', formData, { withCredentials: true });
+      const response = await axios.post(`${BASE_URL}/api/auth/signup`, formData, { withCredentials: true });
       toast.success("Signup successful");
       console.log("Response:", response.data);
-      const loginres = await axios.post("http://localhost:5000/api/auth/signin",{ email: formData.email, password: formData.password }, { withCredentials: true });
+      const loginres = await axios.post(`${BASE_URL}/api/auth/signin`,{ email: formData.email, password: formData.password }, { withCredentials: true });
       if (loginres.status === 200) {
         const { token, userRole, fName, lName } = response.data;
         Cookies.set("user-auth", token, { secure: true, sameSite: "Strict" });

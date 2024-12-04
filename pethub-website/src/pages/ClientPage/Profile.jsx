@@ -4,7 +4,11 @@ import Cookies from 'js-cookie';
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import dotenv from 'dotenv';
 
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
 
 function Profile() {
   
@@ -46,7 +50,7 @@ function Profile() {
   const fetchUserProfile = async () => {
     try {
       setLoading(true); 
-      const response = await axios.get(`http://localhost:5000/api/user/getProfilebyUserID`, { 
+      const response = await axios.get(`${BASE_URL}/api/user/getProfilebyUserID`, { 
         withCredentials: true,
       });
       console.log('User Profile:', response.data);
@@ -61,7 +65,7 @@ function Profile() {
   const fetchPets = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/pet/getAllPetsByUserID`, { 
+      const response = await axios.get(`${BASE_URL}/api/pet/getAllPetsByUserID`, { 
         withCredentials: true,
       });
       console.log('Pet data:', response.data);
@@ -76,7 +80,7 @@ function Profile() {
   const fetchbookingStatus = async () => {
     try {
       setLoading(true); 
-      const response = await axios.get(`http://localhost:5000/api/booking/getBookingStatusbyUserID`, { 
+      const response = await axios.get(`${BASE_URL}/api/booking/getBookingStatusbyUserID`, { 
         withCredentials: true,
       });
       console.log('Booking Status:', response.data);
@@ -94,7 +98,7 @@ function Profile() {
 
   const handleCancelBooking = async (bookingID) => {
     try {
-      const response = await axios.post("http://localhost:5000/api/booking/cancelBooking", { bookingID }, { 
+      const response = await axios.post(`${BASE_URL}/api/booking/cancelBooking`, { bookingID }, { 
         withCredentials: true, 
       });
       console.log("Response:", response.data);

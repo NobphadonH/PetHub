@@ -3,7 +3,11 @@ import Navbar from "../../components/Navbar";
 import { useState } from 'react';
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
+import dotenv from 'dotenv';
 
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
 
 function Payment() {
     
@@ -111,7 +115,7 @@ function Payment() {
         let bookingID;
         
         try {
-            const bookingRes = await axios.post('http://localhost:5000/api/booking/createBooking', {
+            const bookingRes = await axios.post(`${BASE_URL}/api/booking/createBooking`, {
                 petID : bookingData.petID,
                 roomTypeID : bookingData.roomTypeID,
                 checkInDate : bookingData.checkIn,
@@ -126,7 +130,7 @@ function Payment() {
     
 
         try {
-            const res = await axios.post('http://localhost:5000/api/payment/createPayment', {
+            const res = await axios.post(`${BASE_URL}/api/payment/createPayment`, {
                 bookingID : bookingID,
                 petAllowedType : bookingData.petAllowedType,
                 amount : bookingData.amount

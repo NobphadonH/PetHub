@@ -5,6 +5,11 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
 
 function AddPetProfile() {
 
@@ -94,7 +99,7 @@ function AddPetProfile() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/pet/createPet",
+        `${BASE_URL}/api/pet/createPet`,
         petData,
         {
           headers: { "Content-Type": "multipart/form-data" },

@@ -5,6 +5,13 @@ import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
+
+
 export default function Navbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null); // Ref to track dropdown element
@@ -45,7 +52,7 @@ export default function Navbar() {
   const logout = async () => {
     try {
       // Make an API request to sign out the user
-      await axios.post('http://localhost:5000/api/auth/signout');
+      await axios.post(`${BASE_URL}/api/auth/signout`);
   
       // Remove the cookie (if any additional client-side handling is needed)
       Cookies.remove('user-auth');

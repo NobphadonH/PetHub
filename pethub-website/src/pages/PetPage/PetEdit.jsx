@@ -4,6 +4,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
 
 function EditPetProfile() {
   //router state
@@ -72,7 +77,7 @@ function EditPetProfile() {
   const handleDelete = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/pet/deletePetByPetID",
+        `${BASE_URL}/api/pet/deletePetByPetID`,
         { petID: formData.petID },
         {
           withCredentials: true,
@@ -116,7 +121,7 @@ function EditPetProfile() {
   
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/pet/updatePetByPetID",
+        `${BASE_URL}/api/pet/updatePetByPetID`,
         petData,  
         {
           headers: { "Content-Type": "multipart/form-data" }, 

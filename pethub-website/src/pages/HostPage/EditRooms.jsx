@@ -4,7 +4,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import axios from 'axios'
 import { toast } from "react-toastify";
+import dotenv from 'dotenv';
 
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
 
 
 function EditRooms() {
@@ -86,7 +90,7 @@ function EditRooms() {
 
             console.log(roomDetails)
 
-            const res = await axios.post('http://localhost:5000/api/roomManage/updateRoom/', roomData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
+            const res = await axios.post(`${BASE_URL}/api/roomManage/updateRoom/`, roomData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
             console.log(res)
 
             if (res.status == 200) {

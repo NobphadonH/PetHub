@@ -12,6 +12,11 @@ import "react-toastify/dist/ReactToastify.css";
 // import { hotelData } from "../assets/dummydata";
 import axios from "axios";
 
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
 
 function Home() {
 
@@ -126,7 +131,7 @@ function Home() {
 
         const fetchData = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/api/roomSearch/getHotelAndRoomByFilter/?${queryParams}`);
+                const res = await axios.get(`${BASE_URL}/api/roomSearch/getHotelAndRoomByFilter/?${queryParams}`);
                 const fetchedData = res.data; 
                 setHotelResult(fetchedData);
                 setIsFetch(1);

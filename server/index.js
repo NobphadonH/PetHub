@@ -12,6 +12,11 @@ import roomManageRoutes from "./routes/roomManage.route.js";
 import paymentRoutes from "./routes/payment.route.js";
 import reviewRoutes from "./routes/review.route.js";
 import cookieParser from "cookie-parser";
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load variables from .env
+
+const CLIENT_IP = process.env.CLIENT_IP
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,7 +25,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const corsOption = {
-  origin: "http://localhost:5173",
+  origin: CLIENT_IP,
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
 };
@@ -44,5 +49,5 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/review", reviewRoutes);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on ${PORT}`);
 });

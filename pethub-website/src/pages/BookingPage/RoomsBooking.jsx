@@ -5,6 +5,12 @@ import PictureUpload from "../../components/PictureUpload";
 import Cookies from "js-cookie"
 import { toast } from "react-toastify";
 import axios from "axios";
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
+
 
 function RoomsBooking() {
   
@@ -165,7 +171,7 @@ function RoomsBooking() {
   useEffect(() => {
     const fetchData = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/pet/getMatchingPets", {
+            const res = await axios.get(`${BASE_URL}/api/pet/getMatchingPets`, {
                 params:{ petAllowedType: roomData.petAllowedType}, 
                 withCredentials: true, 
               });            

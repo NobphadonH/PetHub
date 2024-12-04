@@ -4,6 +4,11 @@ import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import Cookies from "js-cookie";
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
 
 function HostProfile() {
 
@@ -48,7 +53,7 @@ function HostProfile() {
         };
     
         // Make API request to update the hotel profile
-        const response = await axios.put(`http://localhost:5000/api/getHotelProfile/updateHotelProfile/${fName}/${lName}`, updatedData);
+        const response = await axios.put(`${BASE_URL}/api/getHotelProfile/updateHotelProfile/${fName}/${lName}`, updatedData);
         console.log("Hotel profile updated successfully:", response.data);
     
         // Optional: Show success notification
@@ -125,8 +130,8 @@ function HostProfile() {
             navigate(-1);
             return;
         }
-          const response = await axios.get(`http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`, {withCredentials: true});
-          console.log(`URL: http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`);
+          const response = await axios.get(`${BASE_URL}/api/getHotelProfile/hostprofile/${fName}/${lName}`, {withCredentials: true});
+          console.log(`URL: ${BASE_URL}/api/getHotelProfile/hostprofile/${fName}/${lName}`);
 
           console.log("Fetched hotel profile:", response.data);
           if (response.data.verification !== "verified") {

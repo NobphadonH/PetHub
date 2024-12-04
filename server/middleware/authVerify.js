@@ -1,4 +1,3 @@
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { connectToDatabase } from "../utils/dbConnection.js";
 import dotenv from "dotenv";

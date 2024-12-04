@@ -6,6 +6,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
 
 function Login() {
   
@@ -46,7 +51,7 @@ function Login() {
     try {
       // Send POST request to the Node.js API endpoint
       const response = await axios.post(
-        "http://localhost:5000/api/auth/signin",
+        `${BASE_URL}/api/auth/signin`,
         formData,
         { withCredentials: true }
       );

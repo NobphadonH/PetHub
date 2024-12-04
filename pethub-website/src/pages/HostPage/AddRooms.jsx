@@ -4,7 +4,11 @@ import { useState } from 'react';
 import axios from 'axios'
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
+import dotenv from 'dotenv';
 
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
 
 function AddRooms() {
 
@@ -51,7 +55,7 @@ function AddRooms() {
                 return;
             }
 
-            const res = await axios.post('http://localhost:5000/api/room/createRooms/', roomArrayData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
+            const res = await axios.post(`${BASE_URL}/api/room/createRooms/`, roomArrayData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
             console.log(res);
             if (res.status==200) {
                 toast.success("เพิ่มข้อมูลห้องพักสำเร็จ")

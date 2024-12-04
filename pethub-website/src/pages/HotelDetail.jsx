@@ -6,6 +6,11 @@ import Cookies from 'js-cookie';
 import { motion } from 'framer-motion'
 import { toast } from "react-toastify";
 import axios from 'axios';
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
 
 function HotelDetail() {
 
@@ -96,7 +101,7 @@ function HotelDetail() {
     useEffect(() => {
         const fetchData = async () => {
             try{
-                const res = await axios.get(`http://localhost:5000/api/review/getReview/${hotelData.hotelID}` , {withCredentials: true});
+                const res = await axios.get(`${BASE_URL}/api/review/getReview/${hotelData.hotelID}` , {withCredentials: true});
                 console.log(res.data.reviews);
                 setReviewData(res.data.reviews);
 

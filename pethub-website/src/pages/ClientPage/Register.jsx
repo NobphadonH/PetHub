@@ -4,6 +4,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import dotenv from 'dotenv';
+
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
+
 
 function Register() {
 
@@ -56,7 +62,7 @@ function Register() {
 
     // Add API call
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signup', formData, { withCredentials: true });
+      const response = await axios.post(`${BASE_URL}/api/auth/signup`, formData, { withCredentials: true });
       toast.success("Signup successful");
       console.log("Response:", response.data);
       navigate('/pethub-website/signin');

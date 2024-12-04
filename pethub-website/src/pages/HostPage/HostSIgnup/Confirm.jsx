@@ -3,7 +3,11 @@ import { useState } from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from 'axios'
 import { toast } from "react-toastify";
+import dotenv from 'dotenv';
 
+dotenv.config(); // Load variables from .env
+
+const BASE_URL = process.env.SERVER_API
 
 function Confirm() {
 
@@ -44,7 +48,7 @@ function Confirm() {
         }
 
         try {
-            const res = await axios.post('http://localhost:5000/api/hotel/createHotel/', hotelData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
+            const res = await axios.post(`${BASE_URL}/api/hotel/createHotel/`, hotelData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
             console.log(res.data)
             hotelID = res.data.hotelID
             console.log(res.status)
@@ -78,7 +82,7 @@ function Confirm() {
         })
 
         try {
-            const res = await axios.post('http://localhost:5000/api/room/createRooms/', roomArrayData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
+            const res = await axios.post(`${BASE_URL}/api/room/createRooms/`, roomArrayData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
             console.log(res.data)
             console.log(res.status)
         } catch(error) {
