@@ -201,7 +201,7 @@ function Profile() {
                     className="input input-bordered w-full h-[8vw] max-h-10 shadow-md text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm md:mb-3"
                 />
               </div>
-              <div className="col-span-6">
+              {/* <div className="col-span-6">
                 <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-3">เบอร์โทรฉุกเฉิน</p>
                 <input
                     type="text"
@@ -209,7 +209,7 @@ function Profile() {
                     placeholder="เบอร์โทรฉุกเฉิน"
                     className="input input-bordered w-full h-[8vw] max-h-10 shadow-md text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm md:mb-3"
                 />
-              </div>
+              </div> */}
               <div className="col-span-12">
                 <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-3">ที่อยู่</p>
                 <input
@@ -221,7 +221,7 @@ function Profile() {
                 />
               </div>
               <div className="col-span-12 flex justify-end xl:mt-10">
-                <div className="flex justify-center items-center rounded-md md:btn bg-pethub-color6 md:bg-pethub-color6 text-white md:text-white h-[7vw] w-[15vw] sm:w-36 sm:h-10 md:w-28 font-medium text-[2vw] md:text-xs lg:text-sm xl:text-base">แก้ไขข้อมูล</div>
+                
               </div>
             </div>
           </div>
@@ -246,7 +246,7 @@ function Profile() {
                   className="input input-bordered w-full h-[8vw] max-h-10 shadow-md text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm md:mb-3"
               />
             </div>
-            <div className=" col-span-6">
+            {/* <div className=" col-span-6">
               <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-3">เบอร์โทรฉุกเฉิน</p>
               <input
                   type="text"
@@ -254,7 +254,7 @@ function Profile() {
                   placeholder="เบอร์โทรฉุกเฉิน"
                   className="input input-bordered w-full h-[8vw] max-h-10 shadow-md text-[2vw] sm:h-10 xl:h-12 sm:text-xs lg:text-sm md:mb-3"
               />
-            </div>
+            </div> */}
             <div className="col-span-12">
               <p className="text-start text-[2.5vw] md:text-xs lg:text-sm xl:text-sm my-[1vw] md:my-3">ที่อยู่</p>
               <input
