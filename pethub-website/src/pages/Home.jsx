@@ -129,6 +129,7 @@ function Home() {
 
         const fetchData = async () => {
             try {
+                console.log(`${BASE_URL}/api/roomSearch/getHotelAndRoomByFilter/?${queryParams}`);
                 const res = await axios.get(`${BASE_URL}/api/roomSearch/getHotelAndRoomByFilter/?${queryParams}`);
                 const fetchedData = res.data; 
                 setHotelResult(fetchedData);
