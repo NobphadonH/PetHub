@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const corsOption = {
-  origin: ["http://localhost:4173", "http://localhost:5173", "https://tangerine-centaur-c8fabc.netlify.app", '*'],
+  origin: ["http://localhost:4173", "http://localhost:5173", "https://tangerine-centaur-c8fabc.netlify.app", "https://pethub-cpe.netlify.app/", '*'],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
 };
