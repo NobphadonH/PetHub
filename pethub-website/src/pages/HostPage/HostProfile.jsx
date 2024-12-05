@@ -48,7 +48,7 @@ function HostProfile() {
         };
     
         // Make API request to update the hotel profile
-        const response = await axios.put(`http://localhost:5000/api/getHotelProfile/updateHotelProfile/${fName}/${lName}`, updatedData);
+        const response = await axios.put(`http://localhost:5000/api/getHotelProfile/updateHotelProfile/${fName}/${lName}`, updatedData, {withCredentials: true});
         console.log("Hotel profile updated successfully:", response.data);
     
         // Optional: Show success notification
