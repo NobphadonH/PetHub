@@ -163,7 +163,7 @@ function HostProfile() {
         return () => {
         window.removeEventListener('resize', updateWidth);
         };
-    }, [])
+    }, [hotelData])
 
     useEffect(() => {
       if (hotelData) {
