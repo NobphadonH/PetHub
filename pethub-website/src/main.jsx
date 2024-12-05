@@ -37,6 +37,7 @@ import HotelDetail from './pages/HotelDetail.jsx';
 
 
 const router = createBrowserRouter([
+  {path: "/",  element: <Navigate to="/pethub-website/home" replace />,},
   {path: "/pethub-website",  element: <Navigate to="/pethub-website/home" replace />,},
   {path: "/pethub-website/profile", element: <Profile />,},
   {path: "/pethub-website/home", element: <Home />,},
