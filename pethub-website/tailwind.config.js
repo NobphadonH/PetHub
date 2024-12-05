@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import daisyui from 'daisyui';
+
 export default {
   content: [
     "./index.html",
@@ -13,15 +15,11 @@ export default {
         'pethub-color4': '#F69A5E',
         'pethub-color5': '#FEBE98',
         'pethub-color6': '#10375C',
-
       },
     },
   },
-  plugins: [
-    require('daisyui'),
-  ],
+  plugins: [daisyui],
   daisyui: {
     themes: ["bumblebee"],
   },
 }
-
