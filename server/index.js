@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const corsOption = {
-  origin: ["http://localhost:4173", "http://localhost:5173"],
+  origin: ["http://localhost:4173", "http://localhost:5173", "https://symphonious-capybara-a42be3.netlify.app/"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
 };
