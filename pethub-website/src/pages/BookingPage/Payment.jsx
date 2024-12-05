@@ -3,11 +3,8 @@ import Navbar from "../../components/Navbar";
 import { useState } from 'react';
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
-import dotenv from 'dotenv';
 
-dotenv.config(); // Load variables from .env
-
-const BASE_URL = process.env.SERVER_API
+const BASE_URL = import.meta.env.VITE_SERVER_API
 
 function Payment() {
     

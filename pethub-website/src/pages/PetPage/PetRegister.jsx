@@ -5,11 +5,9 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import dotenv from 'dotenv';
 
-dotenv.config(); // Load variables from .env
 
-const BASE_URL = process.env.SERVER_API
+const BASE_URL = import.meta.env.VITE_SERVER_API
 
 function AddPetProfile() {
 
