@@ -165,7 +165,7 @@ function RoomsBooking() {
   useEffect(() => {
     const fetchData = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/pet/getMatchingPets", {
+            const res = await axios.get("https://pethub-3nkk.onrender.com/api/pet/getMatchingPets", {
                 params:{ petAllowedType: roomData.petAllowedType}, 
                 withCredentials: true, 
               });            

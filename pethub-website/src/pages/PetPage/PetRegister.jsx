@@ -94,7 +94,7 @@ function AddPetProfile() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/pet/createPet",
+        "https://pethub-3nkk.onrender.com/api/pet/createPet",
         petData,
         {
           headers: { "Content-Type": "multipart/form-data" },

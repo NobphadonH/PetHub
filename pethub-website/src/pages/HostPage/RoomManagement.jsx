@@ -93,7 +93,7 @@ function RoomManagement() {
 
     const handleApproveBooking = async (bookingID) => {
         try {
-            const response = await axios.post(`http://localhost:5000/api/booking/updateBooking`, {bookingID: bookingID}, {withCredentials: true});
+            const response = await axios.post(`https://pethub-3nkk.onrender.com/api/booking/updateBooking`, {bookingID: bookingID}, {withCredentials: true});
                 
             if (response.status === 200) {
                 setBookingDetails(prevBookings => 
@@ -110,7 +110,7 @@ function RoomManagement() {
         
                 alert('Booking has been approved successfully');
                     
-                const refreshResponse = await axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`);
+                const refreshResponse = await axios.get(`https://pethub-3nkk.onrender.com/api/roomManage/${roomTypeID}`);
                 if (refreshResponse.data) {
                     setRoomDetails(refreshResponse.data);
                     setBookingDetails(refreshResponse.data.bookings || []);
@@ -127,7 +127,7 @@ function RoomManagement() {
 
     const handleRejectBooking = async (bookingID) => {
         try {
-            const response = await axios.post(`http://localhost:5000/api/booking/rejectBooking`, {bookingID: bookingID}, {withCredentials: true});
+            const response = await axios.post(`https://pethub-3nkk.onrender.com/api/booking/rejectBooking`, {bookingID: bookingID}, {withCredentials: true});
     
             if (response.status === 200) {
                 setBookingDetails(prevBookings => 
@@ -144,7 +144,7 @@ function RoomManagement() {
     
                 alert('Booking has been rejected successfully.');
     
-                const refreshResponse = await axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`, {status: 'Rejected'});
+                const refreshResponse = await axios.get(`https://pethub-3nkk.onrender.com/api/roomManage/${roomTypeID}`, {status: 'Rejected'});
                 if (refreshResponse.data) {
                     setRoomDetails(refreshResponse.data);
                     setBookingDetails(refreshResponse.data.bookings || []);
@@ -163,7 +163,7 @@ function RoomManagement() {
     //API connect 
     useEffect(() => {
         console.log("roomTypeID:", roomTypeID);
-        axios.get(`http://localhost:5000/api/roomManage/${roomTypeID}`, {withCredentials: true})
+        axios.get(`https://pethub-3nkk.onrender.com/api/roomManage/${roomTypeID}`, {withCredentials: true})
           .then(response => {
             console.log("API response:", response.data);
           const {roomTypeID, hotelID, roomTypeName, roomCapacity, numberOfRoom, roomSize, roomDetail, roomPhoto, pricePerNight, petAllowedType, bookings } = response.data;

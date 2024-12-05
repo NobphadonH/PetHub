@@ -48,7 +48,7 @@ function HostProfile() {
         };
     
         // Make API request to update the hotel profile
-        const response = await axios.put(`http://localhost:5000/api/getHotelProfile/updateHotelProfile/${fName}/${lName}`, updatedData, {withCredentials: true});
+        const response = await axios.put(`https://pethub-3nkk.onrender.com/api/getHotelProfile/updateHotelProfile/${fName}/${lName}`, updatedData, {withCredentials: true});
         console.log("Hotel profile updated successfully:", response.data);
     
         // Optional: Show success notification
@@ -125,8 +125,8 @@ function HostProfile() {
             navigate(-1);
             return;
         }
-          const response = await axios.get(`http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`, {withCredentials: true});
-          console.log(`URL: http://localhost:5000/api/getHotelProfile/hostprofile/${fName}/${lName}`);
+          const response = await axios.get(`https://pethub-3nkk.onrender.com/api/getHotelProfile/hostprofile/${fName}/${lName}`, {withCredentials: true});
+          console.log(`URL: https://pethub-3nkk.onrender.com/api/getHotelProfile/hostprofile/${fName}/${lName}`);
 
           console.log("Fetched hotel profile:", response.data);
           if (response.data.verification !== "verified") {

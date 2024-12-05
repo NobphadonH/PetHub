@@ -1,6 +1,6 @@
 import { sshConfig } from "../config/sshConfig.js";
 import { connectToDatabase } from "../utils/dbConnection.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export const createPayment = async (req, res) => {
   const { bookingID, amount, petAllowedType } = req.body;

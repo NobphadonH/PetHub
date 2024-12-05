@@ -126,7 +126,7 @@ function Home() {
 
         const fetchData = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/api/roomSearch/getHotelAndRoomByFilter/?${queryParams}`);
+                const res = await axios.get(`https://pethub-3nkk.onrender.com/api/roomSearch/getHotelAndRoomByFilter/?${queryParams}`);
                 const fetchedData = res.data; 
                 setHotelResult(fetchedData);
                 setIsFetch(1);

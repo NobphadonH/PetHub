@@ -51,7 +51,7 @@ function AddRooms() {
                 return;
             }
 
-            const res = await axios.post('http://localhost:5000/api/room/createRooms/', roomArrayData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
+            const res = await axios.post('https://pethub-3nkk.onrender.com/api/room/createRooms/', roomArrayData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
             console.log(res);
             if (res.status==200) {
                 toast.success("เพิ่มข้อมูลห้องพักสำเร็จ")

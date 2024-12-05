@@ -22,7 +22,7 @@ function HotelApproveBox({
     const handleApprove =  async (e) => {
       e.preventDefault()
       try {
-        const res = await axios.post("http://localhost:5000/api/hotel/updateHotelVerification", {hotelID: hotelObj.hotelID, verification: "verified"}, { withCredentials:true})
+        const res = await axios.post("https://pethub-3nkk.onrender.com/api/hotel/updateHotelVerification", {hotelID: hotelObj.hotelID, verification: "verified"}, { withCredentials:true})
         setActionCnt(++actionCnt);
         console.log(res);
         if (res.status == 200) {
@@ -35,7 +35,7 @@ function HotelApproveBox({
     const handleReject = async (e) => {
       e.preventDefault()
       try {
-        const res = await axios.post("http://localhost:5000/api/hotel/updateHotelVerification", {hotelID: hotelObj.hotelID, verification: "rejected"}, { withCredentials:true})
+        const res = await axios.post("https://pethub-3nkk.onrender.com/api/hotel/updateHotelVerification", {hotelID: hotelObj.hotelID, verification: "rejected"}, { withCredentials:true})
         setActionCnt(++actionCnt);
         console.log(res);
         if (res.status == 200) {

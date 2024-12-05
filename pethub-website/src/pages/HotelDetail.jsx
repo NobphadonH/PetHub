@@ -96,7 +96,7 @@ function HotelDetail() {
     useEffect(() => {
         const fetchData = async () => {
             try{
-                const res = await axios.get(`http://localhost:5000/api/review/getReview/${hotelData.hotelID}` , {withCredentials: true});
+                const res = await axios.get(`https://pethub-3nkk.onrender.com/api/review/getReview/${hotelData.hotelID}` , {withCredentials: true});
                 console.log(res.data.reviews);
                 setReviewData(res.data.reviews);
 

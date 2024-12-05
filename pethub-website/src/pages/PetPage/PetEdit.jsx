@@ -72,7 +72,7 @@ function EditPetProfile() {
   const handleDelete = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/pet/deletePetByPetID",
+        "https://pethub-3nkk.onrender.com/api/pet/deletePetByPetID",
         { petID: formData.petID },
         {
           withCredentials: true,
@@ -116,7 +116,7 @@ function EditPetProfile() {
   
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/pet/updatePetByPetID",
+        "https://pethub-3nkk.onrender.com/api/pet/updatePetByPetID",
         petData,  
         {
           headers: { "Content-Type": "multipart/form-data" }, 

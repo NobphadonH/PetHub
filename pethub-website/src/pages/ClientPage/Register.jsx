@@ -56,7 +56,7 @@ function Register() {
 
     // Add API call
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signup', formData, { withCredentials: true });
+      const response = await axios.post('https://pethub-3nkk.onrender.com/api/auth/signup', formData, { withCredentials: true });
       toast.success("Signup successful");
       console.log("Response:", response.data);
       navigate('/pethub-website/signin');

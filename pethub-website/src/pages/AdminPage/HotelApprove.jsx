@@ -15,7 +15,7 @@ function HotelApprove() {
   useEffect(()=> {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/hotel/getHotelByVerification/unverified", { withCredentials:true})
+        const res = await axios.get("https://pethub-3nkk.onrender.com/api/hotel/getHotelByVerification/unverified", { withCredentials:true})
         console.log(res.data);
         setHotelData(res.data);
       } catch (err) {

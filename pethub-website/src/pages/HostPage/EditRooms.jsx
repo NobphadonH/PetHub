@@ -86,7 +86,7 @@ function EditRooms() {
 
             console.log(roomDetails)
 
-            const res = await axios.post('http://localhost:5000/api/roomManage/updateRoom/', roomData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
+            const res = await axios.post('https://pethub-3nkk.onrender.com/api/roomManage/updateRoom/', roomData, {headers:{"Content-Type":"multipart/form-data" }, withCredentials:true})
             console.log(res)
 
             if (res.status == 200) {

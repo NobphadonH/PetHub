@@ -45,7 +45,7 @@ export default function Navbar() {
   const logout = async () => {
     try {
       // Make an API request to sign out the user
-      await axios.post('http://localhost:5000/api/auth/signout');
+      await axios.post('https://pethub-3nkk.onrender.com/api/auth/signout');
   
       // Remove the cookie (if any additional client-side handling is needed)
       Cookies.remove('user-auth');

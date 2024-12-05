@@ -111,7 +111,7 @@ function Payment() {
         let bookingID;
         
         try {
-            const bookingRes = await axios.post('http://localhost:5000/api/booking/createBooking', {
+            const bookingRes = await axios.post('https://pethub-3nkk.onrender.com/api/booking/createBooking', {
                 petID : bookingData.petID,
                 roomTypeID : bookingData.roomTypeID,
                 checkInDate : bookingData.checkIn,
@@ -126,7 +126,7 @@ function Payment() {
     
 
         try {
-            const res = await axios.post('http://localhost:5000/api/payment/createPayment', {
+            const res = await axios.post('https://pethub-3nkk.onrender.com/api/payment/createPayment', {
                 bookingID : bookingID,
                 petAllowedType : bookingData.petAllowedType,
                 amount : bookingData.amount

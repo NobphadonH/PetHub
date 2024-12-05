@@ -60,10 +60,10 @@ function HostSignUp() {
 
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signup', formData, { withCredentials: true });
+      const response = await axios.post('https://pethub-3nkk.onrender.com/api/auth/signup', formData, { withCredentials: true });
       toast.success("Signup successful");
       console.log("Response:", response.data);
-      const loginres = await axios.post("http://localhost:5000/api/auth/signin",{ email: formData.email, password: formData.password }, { withCredentials: true });
+      const loginres = await axios.post("https://pethub-3nkk.onrender.com/api/auth/signin",{ email: formData.email, password: formData.password }, { withCredentials: true });
       if (loginres.status === 200) {
         const { token, userRole, fName, lName } = response.data;
         Cookies.set("user-auth", token, { secure: true, sameSite: "Strict" });
