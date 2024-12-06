@@ -5,29 +5,25 @@ import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
-import Cookies from 'js-cookie';
-
+import Cookies from "js-cookie";
 
 function HostSignUp() {
-  
   //router state
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   //router state
-  
+
   //data state
   const [formData, setFormData] = useState({
-    fName: '',
-    lName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
-    address: '',
-    userRole: 'Host'
+    fName: "",
+    lName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    address: "",
+    userRole: "Host",
   });
   //data state
-
-
 
   //function
   const handleChange = (e) => {
@@ -38,11 +34,19 @@ function HostSignUp() {
     }));
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     //validation
-    if (!formData.email || !formData.password || !formData.fName || !formData.lName || !formData.confirmPassword || !formData.phone || !formData.address) {
+    if (
+      !formData.email ||
+      !formData.password ||
+      !formData.fName ||
+      !formData.lName ||
+      !formData.confirmPassword ||
+      !formData.phone ||
+      !formData.address
+    ) {
       toast.error("Please fill in all fields.");
       return;
     }
@@ -58,23 +62,32 @@ function HostSignUp() {
       return;
     }
 
-
     try {
-      const response = await axios.post('https://pethub-3nkk.onrender.com/api/auth/signup', formData, { withCredentials: true });
+      const response = await axios.post(
+        "https://pethub-3nkk.onrender.com/api/auth/signup",
+        formData,
+        { withCredentials: true }
+      );
       toast.success("Signup successful");
       console.log("Response:", response.data);
-      const loginres = await axios.post("https://pethub-3nkk.onrender.com/api/auth/signin",{ email: formData.email, password: formData.password }, { withCredentials: true });
+      const loginres = await axios.post(
+        "https://pethub-3nkk.onrender.com/api/auth/signin",
+        { email: formData.email, password: formData.password },
+        { withCredentials: true }
+      );
       if (loginres.status === 200) {
         const { token, userRole, fName, lName } = response.data;
         Cookies.set("user-auth", token, { secure: true, sameSite: "Strict" });
         Cookies.set("user-fName", fName, { secure: true, sameSite: "Strict" });
         Cookies.set("user-lName", lName, { secure: true, sameSite: "Strict" });
-        Cookies.set("user-role", userRole, { secure: true, sameSite: "Strict" });
-  
+        Cookies.set("user-role", userRole, {
+          secure: true,
+          sameSite: "Strict",
+        });
+
         toast.success("Signin successful");
-        navigate('/pethub-website/listhost');
+        navigate("/pethub-website/listhost");
       }
-      
     } catch (error) {
       if (error.response && error.response.data) {
         toast.error(error.response.data.error || "Signup failed");
@@ -82,22 +95,18 @@ function HostSignUp() {
         toast.error("An unexpected error occurred");
       }
     }
-
   };
   // function
 
   useEffect(() => {
-    const role = Cookies.get('user-role');
+    const role = Cookies.get("user-role");
 
-    if (role === "Host"){
-      navigate(`/pethub-website/listhost`);
-    }else if(role === "Client"){
-      navigate('/pethub-website/home');
+    if (role === "Host") {
+      naigate(`./pethub-website/listhost`);
+    } else if (role === "Client") {
+      navigate("/pethub-website/home");
     }
-
   }, []);
-
-
 
   return (
     <div>
@@ -107,16 +116,12 @@ function HostSignUp() {
         <div className="mt-64 md:mt-32 w-full h-full flex justify-center items-center">
           <div className="p-10" style={{ width: "540px" }}>
             <div className="flex items-center justify-center gap-3">
-              <h1 className="text-3xl font-bold">
-                ลงทะเบียน host
-              </h1>
+              <h1 className="text-3xl font-bold">ลงทะเบียน host</h1>
               <span className="lg:inline-flex items-center hidden">
                 <img src={logo} alt="logo" width={30} />
               </span>
             </div>
-            <h2 className="font-medium mt-8 mb-2">
-              สมัคร Host Account
-            </h2>
+            <h2 className="font-medium mt-8 mb-2">สมัคร Host Account</h2>
             <form onSubmit={handleSubmit}>
               <p className="text-start text-sm my-3">อีเมล</p>
               <input
